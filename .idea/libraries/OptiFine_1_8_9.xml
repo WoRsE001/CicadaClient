@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="OptiFine 1.8.9">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/run/versions/1.8.9/OptiFine 1.8.9.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://$PROJECT_DIR$/run/versions/1.8.9/natives" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>
