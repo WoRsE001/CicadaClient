@@ -41,6 +41,7 @@ import net.cicada.Cicada;
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.LegitClickTimingEvent;
 import net.cicada.event.impl.TickEvent;
+import net.cicada.module.api.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -1395,7 +1396,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     public void clickMouse()
     {
-        if (this.leftClickCounter <= 0)
+        if (this.leftClickCounter <= 0 || (ModuleManager.FIXES.isState() && ModuleManager.FIXES.noHitDelay.isValue()))
         {
             AttackOrder.sendConditionalSwing(this.objectMouseOver);
 

@@ -17,9 +17,9 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-@ModuleInfo(name = "Speed", category = Category.Movement, key = Keyboard.KEY_V)
+@ModuleInfo(name = "Speed", category = Category.Movement)
 public class Speed extends Module {
-    ListSetting mode = new ListSetting("Mode", "Polar", List.of("Motion", "Intave", "Polar"), () -> true, this);
+    ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "Intave 1.13+", "Polar"), () -> true, this);
     NumberSetting speed = new NumberSetting("Speed", 1, 0, 5, 0.01, () -> mode.getValue().equals("Motion"), this);
     BooleanSetting autoJump = new BooleanSetting("AutoJump", true, () -> true, this);
 
@@ -44,7 +44,7 @@ public class Speed extends Module {
         }
 
         if (event instanceof UpdateEvent) {
-            if (mode.getValue().equals("Intave")) {
+            if (mode.getValue().equals("Intave 1.13+")) {
                 if (!MovementUtil.isMoving() || mc.thePlayer.onGround || mc.thePlayer.hurtTime != 0) return;
                 if (mc.theWorld.getBlockState(mc.thePlayer.getPosition().add(0, -1, 0)).getBlock() instanceof BlockAir) {
                     mc.thePlayer.sendQueue.addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));

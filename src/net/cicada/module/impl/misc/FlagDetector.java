@@ -9,7 +9,7 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.utility.LoggerUtil;
 
-@ModuleInfo(name = "FlagDetector", category = Category.Misc, state = true)
+@ModuleInfo(name = "FlagDetector", category = Category.Misc)
 public class FlagDetector extends Module {
     int count = 0;
 

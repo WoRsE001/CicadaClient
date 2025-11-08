@@ -11,7 +11,14 @@ import java.util.List;
 
 @ModuleInfo(name = "Ambience", category = Category.Render)
 public class Ambience extends Module {
-    public ListSetting weather = new ListSetting("Weather", "Snow", List.of("Sunny", "Rain", "Snow"), () -> true, this);
+    public ListSetting weather = new ListSetting("Weather", "Snow", List.of("Sunny", "Rain", "Thunder", "Snow"), () -> true, this);
+
+    @Override
+    protected void onDisable() {
+        mc.theWorld.setRainStrength(0);
+        mc.theWorld.setThunderStrength(0);
+        super.onDisable();
+    }
 
     @Override
     public void listen(Event event) {
@@ -22,6 +29,9 @@ public class Ambience extends Module {
             } else if (weather.getValue().equals("Rain") || weather.getValue().equals("Snow")) {
                 mc.theWorld.setRainStrength(1);
                 mc.theWorld.setThunderStrength(0);
+            } else if (weather.getValue().equals("Thunder")) {
+                mc.theWorld.setRainStrength(1);
+                mc.theWorld.setThunderStrength(1);
             }
         }
     }

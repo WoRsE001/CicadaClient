@@ -19,7 +19,7 @@ public class ConfigManager {
         loadConfigs();
     }
 
-    public boolean loadConfig(Config config) {
+    public boolean loadConfig(ModuleConfig config) {
         if (config == null) {
             return false;
         }
@@ -32,7 +32,7 @@ public class ConfigManager {
         }
     }
 
-    public boolean saveConfig(Config config) {
+    public boolean saveConfig(ModuleConfig config) {
         if (config == null) {
             return false;
         }

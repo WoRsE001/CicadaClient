@@ -2,6 +2,8 @@ package net.minecraft.client.gui.achievement;
 
 import java.io.IOException;
 import java.util.Random;
+
+import net.cicada.module.api.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -89,6 +91,7 @@ public class GuiAchievements extends GuiScreen implements IProgressMeter
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        if (ModuleManager.NO_RENDER.isState() && ModuleManager.NO_RENDER.achievements.isValue()) return;
         if (this.loadingAchievements)
         {
             this.drawDefaultBackground();

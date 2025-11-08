@@ -270,7 +270,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback
 
         if (button.id == 2)
         {
-            this.mc.displayGuiScreen(new GuiMultiplayer(this));
+            this.mc.displayGuiScreen(new GuiMultiplayer());
         }
 
         if (button.id == 14 && this.realmsButton.visible)

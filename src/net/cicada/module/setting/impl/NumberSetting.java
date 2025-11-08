@@ -2,6 +2,7 @@ package net.cicada.module.setting.impl;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.cicada.utility.RenderUtil;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.MathHelper;
 import net.cicada.module.api.Module;
@@ -9,6 +10,7 @@ import net.cicada.module.setting.Setting;
 import net.cicada.utility.DeltaTracker;
 import net.cicada.utility.GuiUtil;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.function.BooleanSupplier;
@@ -39,8 +41,9 @@ public class NumberSetting extends Setting {
         if (this.dragging) this.setValue(MathHelper.clamp_double(MathHelper.map(mouseX, this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posX + this.width, this.minValue, this.maxValue), this.minValue, this.maxValue));
 
         mc.fontRendererObj.drawStringWithShadow(this.getName() + ":", this.posX, this.posY + 2, 0xFFFFFFFF);
-        Gui.drawRect(this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posY + 2,
-                (float) MathHelper.map(this.value, this.minValue, this.maxValue, this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posX + this.width), this.posY + this.height - 2, 0xFF808080);
+        RenderUtil.setGlColor(new Color(255, 255, 255, 255));
+        RenderUtil.render2DRect(this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posY + 2,
+                MathHelper.map(this.value, this.minValue, this.maxValue,  0, this.width - mc.fontRendererObj.getStringWidth(this.name + ": ")), this.height - 2);
         mc.fontRendererObj.drawStringWithShadow(String.valueOf(this.value), this.posX + mc.fontRendererObj.getStringWidth(this.name + ": ") + 50, this.posY + 2, 0xFFFFFFFF);
     }
 

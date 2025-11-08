@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@ModuleInfo(name = "Scaffold", category = Category.World, key = Keyboard.KEY_F)
+@ModuleInfo(name = "Scaffold", category = Category.World, key = Keyboard.KEY_V)
 public class Scaffold extends Module {
     // ROTATION
     NumberSetting yawSpeed = new  NumberSetting("yawSpeed", 180, 0, 180, 1, () -> true, this);
@@ -27,12 +27,15 @@ public class Scaffold extends Module {
     NumberSetting offsetYaw = new  NumberSetting("OffsetYaw", 45, 0, 180, 1, () -> true, this);
     BooleanSetting telly = new BooleanSetting("Telly", false, () -> true, this);
     NumberSetting jumpTicksToRotate = new  NumberSetting("JumpTicksToRotate", 7, 0, 10, 1, () -> telly.isValue(), this);
-    NumberSetting groundTicksToJump = new  NumberSetting("GroundTicksToJump", 3, 0, 10, 1, () -> telly.isValue(), this);
+    NumberSetting groundTicksToJump = new  NumberSetting("GroundTicksToJump", 0, 0, 10, 1, () -> telly.isValue(), this);
+    BooleanSetting staticPitch = new BooleanSetting("StaticPitch", false, () -> true, this);
+    NumberSetting pitch = new  NumberSetting("Pitch", 75, -90, 90, 1, () -> staticPitch.isValue(), this);
     BooleanSetting intave = new BooleanSetting("Intave", true, () -> true, this);
-    ListSetting sortPitches = new ListSetting("SortPitches", "Lowest", List.of("Nearest", "Highest", "Lowest", "Random"), () -> true, this);
+    ListSetting sortPitches = new ListSetting("SortPitches", "Nearest", List.of("Nearest", "Highest", "Lowest", "Random"), () -> true, this);
     // Movement
     BooleanSetting moveFix = new BooleanSetting("moveFix", true, () -> true, this);
     BooleanSetting jumpFix = new BooleanSetting("JumpFix", true, () -> true, this);
+    BooleanSetting autoJump = new BooleanSetting("AutoJump", true, () -> true, this);
     BooleanSetting sameY = new BooleanSetting("SameY", false, () -> true, this);
     // VISUAL
     BooleanSetting autoF5 = new BooleanSetting("AutoF5", true, () -> true, this);
@@ -75,19 +78,19 @@ public class Scaffold extends Module {
 
         if (event instanceof LegitClickTimingEvent) {
             MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(4.5, 1, RotateUtil.rotation.getX(), RotateUtil.rotation.getY());
-            if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && (rayTrace.sideHit != EnumFacing.UP || !this.sameY.isValue()) && rayTrace.getBlockPos().equals(this.targetBlock)) {
+            if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && ((rayTrace.sideHit != EnumFacing.UP && rayTrace.sideHit != EnumFacing.DOWN) || !this.sameY.isValue()) && rayTrace.getBlockPos().equals(this.targetBlock)) {
                 mc.rightClickMouse();
             }
         }
 
         if (event instanceof MovementInputEvent e) {
             if (this.telly.isValue() && MovementUtil.isMoving() && this.groundTick >= this.groundTicksToJump.getValue()) e.setJump(true);
-            e.setJump(true);
+            if (this.autoJump.isValue()) e.setJump(true);
         }
 
         if (this.showTargetBlock.isValue() && event instanceof Render3DEvent e && e.getPriority() == Event.Priority.High) {
             RenderUtil.start3D();
-            if (this.targetBlock != null) RenderUtil.render3DBox(new AxisAlignedBB(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ(), targetBlock.getX() + 1, targetBlock.getY() + 1, targetBlock.getZ() + 1), false, new Color(0, 0, 0, 1));
+            if (this.targetBlock != null) RenderUtil.render3DBox(new AxisAlignedBB(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ(), targetBlock.getX() + 1, targetBlock.getY() + 1, targetBlock.getZ() + 1));
             RenderUtil.stop3D();
         }
 
@@ -124,7 +127,7 @@ public class Scaffold extends Module {
 
     private BlockPos getBlockPos() {
         BlockPos playerBlockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
-        Vec3 playerPos = mc.thePlayer.getPositionVector().add(new Vec3(0, mc.thePlayer.fallDistance > 0 ? -1 : 2, 0));
+        Vec3 playerPos = mc.thePlayer.getPositionVector().add(new Vec3(0, -1, 0));
         BlockPos blockPos = null;
         for (int x = playerBlockPos.getX() - 4; x <= playerBlockPos.getX() + 4; x++) {
             for (int y = playerBlockPos.getY() - 4; y <= playerBlockPos.getY() + 4; y++) {
@@ -162,6 +165,7 @@ public class Scaffold extends Module {
                 continue;
             pitches.add((float) i);
         }
+        if (this.staticPitch.isValue()) return (float) this.pitch.getValue();
         if (pitches.isEmpty()) return intave.isValue() ? 75 : RotateUtil.rotation.getY();
         if (this.sortPitches.is("Nearest")) {
             pitches.sort(Comparator.comparingDouble(pitch -> Math.abs(RotateUtil.rotation.getY() - pitch)));

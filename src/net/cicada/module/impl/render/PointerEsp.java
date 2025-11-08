@@ -1,5 +1,6 @@
 package net.cicada.module.impl.render;
 
+import net.cicada.utility.RenderUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +13,9 @@ import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.NumberSetting;
 import org.lwjgl.opengl.GL11;
 
-@ModuleInfo(name = "PointerEsp", category = Category.Render, state = true)
+import java.awt.*;
+
+@ModuleInfo(name = "PointerEsp", category = Category.Render)
 public class PointerEsp extends Module {
     NumberSetting radius = new NumberSetting("Radius", 30, 0, 1080, 1, () -> true, this);
 
@@ -28,26 +31,22 @@ public class PointerEsp extends Module {
                 float x = (float) (radius.getValue() * Math.cos(angle) + mc.displayWidth / 4D);
                 float y = (float) (radius.getValue() * Math.sin(angle) + mc.displayHeight / 4D);
 
-                GlStateManager.pushMatrix();
-                GlStateManager.disableBlend();
+                RenderUtil.setGlColor(new Color(0, 0, 0, 255));
                 GlStateManager.translate(x, y, 0);
-
                 GlStateManager.rotate((float) Math.toDegrees(angle) + 90, 0, 0, 1);
-
                 poligon(0, 0, 10, 10);
-
-                GlStateManager.enableBlend();
-                GlStateManager.popMatrix();
+                GlStateManager.rotate((float) -(Math.toDegrees(angle) + 90), 0, 0, 1);
+                GlStateManager.translate(-x, -y, 0);
             }
         }
     }
 
     private void poligon(float x, float y, float width, float height) {
+        RenderUtil.start2D();
         GL11.glPushMatrix();
         GL11.glDisable(GL11.GL_TEXTURE_2D);
 
         GL11.glBegin(GL11.GL_POLYGON);
-        GlStateManager.color(0, 0, 0);
         GL11.glVertex2f(x, y - height / 2);
         GL11.glVertex2f(x - width / 2, y + height / 2);
         GL11.glVertex2f(x, y + height / 4);
@@ -56,5 +55,6 @@ public class PointerEsp extends Module {
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glPopMatrix();
+        RenderUtil.stop2D();
     }
 }

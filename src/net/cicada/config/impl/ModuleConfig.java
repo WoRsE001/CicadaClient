@@ -2,22 +2,31 @@ package net.cicada.config.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.cicada.config.api.Config;
+import lombok.Getter;
+import lombok.Setter;
+import net.cicada.Cicada;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleManager;
 import net.cicada.module.setting.Setting;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import org.lwjgl.input.Keyboard;
 
-public class ModuleConfig extends Config {
+import java.io.File;
+
+@Getter @Setter
+public class ModuleConfig {
+    private final File file;
+    private final String name;
+
     public ModuleConfig(String name) {
-        super(name);
+        this.name = name;
+        this.file = new File(Cicada.CONFIG_DIR, name + ".json");
     }
 
-    @Override
     public void loadConfig(JsonObject object) {
-        for (net.cicada.module.api.Module module : ModuleManager.MODULES) {
+        for (Module module : ModuleManager.MODULES) {
             if (object.has(module.getName())) {
 
                 JsonObject moduleObject = object.get(module.getName()).getAsJsonObject();
@@ -27,23 +36,23 @@ public class ModuleConfig extends Config {
                 }
 
                 if (moduleObject.has("Key")) {
-                    module.setKey(moduleObject.get("Key").getAsInt());
+                    module.setKey(Keyboard.getKeyIndex(moduleObject.get("Key").getAsString()));
                 }
 
-                if (moduleObject.has("Values")) {
-                    JsonObject valuesObject = moduleObject.get("Values").getAsJsonObject();
+                if (moduleObject.has("Settings")) {
+                    JsonObject settingsObject = moduleObject.get("Settings").getAsJsonObject();
 
                     for (Setting setting : module.getSettings()) {
-                        if (valuesObject.has(setting.getName())) {
-                            JsonElement theValue = valuesObject.get(setting.getName());
+                        if (settingsObject.has(setting.getName())) {
+                            JsonElement configSetting = settingsObject.get(setting.getName());
                             if (setting instanceof NumberSetting numberSetting) {
-                                numberSetting.setValue(theValue.getAsNumber().doubleValue());
+                                numberSetting.setValue(configSetting.getAsNumber().doubleValue());
                             }
                             if (setting instanceof BooleanSetting booleanSetting) {
-                                booleanSetting.setValue(theValue.getAsBoolean());
+                                booleanSetting.setValue(configSetting.getAsBoolean());
                             }
                             if (setting instanceof ListSetting listSetting) {
-                                listSetting.setValue(theValue.getAsString());
+                                listSetting.setValue(configSetting.getAsString());
                             }
                         }
                     }
@@ -52,30 +61,29 @@ public class ModuleConfig extends Config {
         }
     }
 
-    @Override
     public JsonObject saveConfig() {
         JsonObject object = new JsonObject();
         for (Module module : ModuleManager.MODULES) {
             JsonObject moduleObject = new JsonObject();
 
             moduleObject.addProperty("State", module.isState());
-            moduleObject.addProperty("Key", module.getKey());
+            moduleObject.addProperty("Key", Keyboard.getKeyName(module.getKey()));
 
-            JsonObject valuesObject = new JsonObject();
+            JsonObject settingsObject = new JsonObject();
 
             for (Setting setting : module.getSettings()) {
                 if (setting instanceof NumberSetting numberSetting) {
-                    valuesObject.addProperty(setting.getName(), numberSetting.getValue());
+                    settingsObject.addProperty(setting.getName(), numberSetting.getValue());
                 }
                 if (setting instanceof BooleanSetting booleanSetting) {
-                    valuesObject.addProperty(setting.getName(), booleanSetting.isValue());
+                    settingsObject.addProperty(setting.getName(), booleanSetting.isValue());
                 }
                 if (setting instanceof ListSetting listSetting) {
-                    valuesObject.addProperty(setting.getName(), listSetting.getValue());
+                    settingsObject.addProperty(setting.getName(), listSetting.getValue());
                 }
             }
 
-            moduleObject.add("Values", valuesObject);
+            moduleObject.add("Settings", settingsObject);
             object.add(module.getName(), moduleObject);
         }
         return object;

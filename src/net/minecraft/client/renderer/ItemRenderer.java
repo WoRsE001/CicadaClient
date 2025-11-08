@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer;
 
+import net.cicada.module.api.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -321,6 +322,10 @@ public class ItemRenderer
             GlStateManager.enableRescaleNormal();
             GlStateManager.pushMatrix();
 
+            if (ModuleManager.ANIMATION.isState()) {
+                GL11.glTranslated(ModuleManager.ANIMATION.x.getValue(), ModuleManager.ANIMATION.y.getValue(), ModuleManager.ANIMATION.z.getValue());
+            }
+
             if (this.itemToRender != null)
             {
                 if (this.itemToRender.getItem() instanceof ItemMap)
@@ -340,16 +345,16 @@ public class ItemRenderer
                         case EAT:
                         case DRINK:
                             this.performDrinking(abstractclientplayer, partialTicks);
-                            this.transformFirstPersonItem(f, 0.0F);
+                            this.transformFirstPersonItem(f, ModuleManager.ANIMATION.isState() && ModuleManager.ANIMATION.oldAnimation.isValue() ? f1 : 0.0F);
                             break;
 
                         case BLOCK:
-                            this.transformFirstPersonItem(f, 0.0F);
+                            this.transformFirstPersonItem(f, ModuleManager.ANIMATION.isState() && ModuleManager.ANIMATION.oldAnimation.isValue() ? f1 : 0.0F);
                             this.doBlockTransformations();
                             break;
 
                         case BOW:
-                            this.transformFirstPersonItem(f, 0.0F);
+                            this.transformFirstPersonItem(f, ModuleManager.ANIMATION.isState() && ModuleManager.ANIMATION.oldAnimation.isValue() ? f1 : 0.0F);
                             this.doBowTransformations(partialTicks, abstractclientplayer);
                     }
                 }
@@ -401,7 +406,7 @@ public class ItemRenderer
             {
                 Object object = Reflector.getFieldValue(Reflector.RenderBlockOverlayEvent_OverlayType_BLOCK);
 
-                if (!Reflector.callBoolean(Reflector.ForgeEventFactory_renderBlockOverlay, new Object[] {this.mc.thePlayer, Float.valueOf(partialTicks), object, iblockstate, blockpos}))
+                if (!Reflector.callBoolean(Reflector.ForgeEventFactory_renderBlockOverlay, new Object[] {this.mc.thePlayer, Float.valueOf(partialTicks), object, iblockstate, blockpos}) && (!ModuleManager.NO_RENDER.isState() || !ModuleManager.NO_RENDER.blockOverlay.isValue()))
                 {
                     this.renderBlockInHand(partialTicks, this.mc.getBlockRendererDispatcher().getBlockModelShapes().getTexture(iblockstate));
                 }

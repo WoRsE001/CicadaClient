@@ -2,10 +2,12 @@ package net.cicada.command.api;
 
 import net.cicada.command.impl.Bind;
 import net.cicada.command.impl.Config;
+import net.cicada.command.impl.Help;
 import net.cicada.command.impl.Toggle;
 import net.cicada.event.api.Event;
 import net.cicada.event.api.EventListener;
 import net.cicada.event.impl.PacketEvent;
+import net.cicada.module.api.Module;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 
 import java.lang.reflect.Field;
@@ -17,6 +19,7 @@ public class CommandManager implements EventListener {
 
     public static Bind BIND = new Bind();
     public static Config CONFIG = new Config();
+    public static Help HELP = new Help();
     public static Toggle TOGGLE = new Toggle();
 
     public CommandManager() {
@@ -30,6 +33,13 @@ public class CommandManager implements EventListener {
                 }
             }
         }
+    }
+
+    public static Command getCommand(String name) {
+        for (Command command : COMMANDS) {
+            if (command.getName().equalsIgnoreCase(name)) return command;
+        }
+        return null;
     }
 
     @Override

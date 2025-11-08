@@ -14,12 +14,12 @@ import net.cicada.module.setting.impl.NumberSetting;
 
 import java.util.List;
 
-@ModuleInfo(name = "Velocity", category = Category.Combat, state = true)
+@ModuleInfo(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
-    ListSetting mode = new ListSetting("Mode", "Reduce", List.of("Motion", "JumpReset", "Reduce"), () -> true, this);
+    ListSetting mode = new ListSetting("Mode", "JumpReset", List.of("Motion", "JumpReset", "Reduce"), () -> true, this);
     NumberSetting motionXZ = new NumberSetting("MotionXZ", 0, 0, 1, 0.01, () -> mode.getValue().equals("Motion"), this);
     NumberSetting motionY = new NumberSetting("MotionY", 0, 0, 1, 0.01, () -> mode.getValue().equals("Motion"), this);
-    NumberSetting chance = new NumberSetting("Chance", 50, 0, 100, 1, () -> mode.getValue().equals("JumpReset"), this);
+    NumberSetting chance = new NumberSetting("Chance", 100, 0, 100, 1, () -> mode.getValue().equals("JumpReset"), this);
     NumberSetting reduceOnHit = new NumberSetting("ReduceOnHit", 0.6, 0, 1, 0.01, () -> mode.getValue().equals("Reduce"), this);
 
     @Override
@@ -43,9 +43,10 @@ public class Velocity extends Module {
         }
 
         if (event instanceof AttackEvent e && e.getPriority() == Event.Priority.Low) {
-            if (mode.getValue().equals("Reduce") && mc.thePlayer.hurtTime != 0) {
+            if (mode.getValue().equals("Reduce") && mc.thePlayer.hurtTime != 0 && mc.thePlayer.isSprinting()) {
                 mc.thePlayer.motionX *= reduceOnHit.getValue();
                 mc.thePlayer.motionZ *= reduceOnHit.getValue();
+                mc.thePlayer.setSprinting(false);
             }
         }
     }

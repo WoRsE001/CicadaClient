@@ -11,7 +11,7 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.NumberSetting;
 
-@ModuleInfo(name = "FastPlace", category = Category.World, state = true)
+@ModuleInfo(name = "FastPlace", category = Category.World)
 public class FastPlace extends Module {
     NumberSetting cps = new NumberSetting("CPS", 20, 0, 20, 1, () -> true, this);
 

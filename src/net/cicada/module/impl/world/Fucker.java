@@ -1,17 +1,20 @@
 package net.cicada.module.impl.world;
 
+import net.cicada.event.impl.*;
+import net.cicada.utility.MovementUtil;
+import net.cicada.utility.RotateUtil;
 import net.minecraft.block.BlockBed;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.cicada.event.api.Event;
-import net.cicada.event.impl.UpdateEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
+import net.minecraft.util.Vec3;
 import org.lwjgl.input.Keyboard;
 
-@ModuleInfo(name = "Fucker", category = Category.World, key = Keyboard.KEY_X)
+@ModuleInfo(name = "Fucker", category = Category.World)
 public class Fucker extends Module {
     BlockPos bedPos = null;
     float breakProgress;
@@ -24,6 +27,10 @@ public class Fucker extends Module {
 
     @Override
     public void listen(Event event) {
+        if (event instanceof TickEvent) {
+            if (this.bedPos != null) RotateUtil.rotateTo(new Vec3(this.bedPos.getX() + 0.5, this.bedPos.getY() + 0.5, this.bedPos.getZ() + 0.5), 180, 180);
+        }
+
         if (event instanceof UpdateEvent) {
             this.bedPos = this.getBedPos();
             if (this.bedPos != null) {
@@ -38,6 +45,36 @@ public class Fucker extends Module {
                 }
                 this.breakProgress += mc.theWorld.getBlockState(this.bedPos).getBlock().getPlayerRelativeBlockHardness(mc.thePlayer, mc.theWorld, this.bedPos);
                 mc.theWorld.sendBlockBreakProgress(mc.thePlayer.getEntityId(), this.bedPos, (int) (this.breakProgress * 10));
+            }
+        }
+
+        if (this.bedPos != null) {
+            if (event instanceof LookEvent e) {
+                e.setRotationYaw(RotateUtil.rotation.getX());
+                e.setRotationPitch(RotateUtil.rotation.getY());
+            }
+
+            if (event instanceof MotionEvent e) {
+                if (e.getPriority() == Event.Priority.Low) {
+                    e.setRotationYaw(RotateUtil.rotation.getX());
+                    e.setRotationPitch(RotateUtil.rotation.getY());
+                } else if (e.getPriority() == Event.Priority.High) {
+                    mc.thePlayer.rotationYawHead = RotateUtil.rotation.getX();
+                    mc.thePlayer.rotationPitchHead = RotateUtil.rotation.getY();
+                    mc.thePlayer.renderYawOffset = RotateUtil.rotation.getX();
+                }
+            }
+
+            if (event instanceof JumpEvent e) {
+                e.setRotationYaw(RotateUtil.rotation.getX());
+            }
+
+            if (event instanceof StrafeEvent e) {
+                e.setRotationYaw(RotateUtil.rotation.getX());
+            }
+
+            if (event instanceof MovementEvent e) {
+                MovementUtil.fixMovement(e, RotateUtil.rotation.getX());
             }
         }
     }

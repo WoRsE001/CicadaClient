@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import net.cicada.utility.ServerUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiDisconnected;
@@ -47,6 +49,8 @@ public class GuiConnecting extends GuiScreen
 
     private void connect(final String ip, final int port)
     {
+        ServerUtil.serverData = new ServerData("", ip + ":" + port, false);
+
         logger.info("Connecting to " + ip + ", " + port);
         (new Thread("Server Connector #" + CONNECTION_ID.incrementAndGet())
         {

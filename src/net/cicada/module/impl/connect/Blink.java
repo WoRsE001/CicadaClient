@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 import java.util.List;
 
-@ModuleInfo(name = "Blink", category = Category.Connect, key = Keyboard.KEY_Z)
+@ModuleInfo(name = "Blink", category = Category.Connect)
 public class Blink extends Module {
     List<Packet> sendQueue = new ArrayList<>();
 

@@ -60,7 +60,7 @@ public class GuiIngameMenu extends GuiScreen
                 }
                 else
                 {
-                    this.mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
+                    this.mc.displayGuiScreen(new GuiMultiplayer());
                 }
 
             case 2:

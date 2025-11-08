@@ -9,10 +9,10 @@ import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import org.lwjgl.input.Keyboard;
 
-@ModuleInfo(name = "FastBreak", category = Category.World, key = Keyboard.KEY_Y)
+@ModuleInfo(name = "FastBreak", category = Category.World)
 public class FastBreak extends Module {
     NumberSetting breakDamage = new NumberSetting("BreakDamage", 0, 0, 1, 0.01, () -> true, this);
-    BooleanSetting noBreakDelay = new BooleanSetting("BreakBlocks", true, () -> true, this);
+    BooleanSetting noBreakDelay = new BooleanSetting("NoBreakDelay", false, () -> true, this);
 
     @Override
     public void listen(Event event) {

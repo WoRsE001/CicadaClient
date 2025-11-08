@@ -6,7 +6,7 @@ import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 
-@ModuleInfo(name = "CustomF5", category = Category.Render, state = true)
+@ModuleInfo(name = "CustomF5", category = Category.Render)
 public class CustomF5 extends Module {
     public NumberSetting x = new NumberSetting("CustomX", 0, -10, 10, 0.01, () -> true, this);
     public NumberSetting y = new NumberSetting("CustomY", -0.5, -10, 10, 0.01, () -> true, this);

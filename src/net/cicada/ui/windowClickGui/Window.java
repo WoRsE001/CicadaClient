@@ -2,10 +2,12 @@ package net.cicada.ui.windowClickGui;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.cicada.utility.RenderUtil;
 import net.minecraft.client.gui.Gui;
 import net.cicada.module.api.Category;
 import net.cicada.ui.ComponentGui;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +27,8 @@ public class Window extends ComponentGui {
 
     @Override
     public void draw(int mouseX, int mouseY, float partialTicks) {
-        Gui.drawRect(this.posX, this.posY, this.posX + this.width, this.posY + this.height, 0x80000000);
-        Gui.drawRect(this.posX + 88, this.posY, this.posX + 90, this.posY + this.height, 0xFFFFFFFF);
-        Gui.drawRect(this.posX, this.posY + 9, this.posX + this.width, this.posY + 11, 0xFFFFFFFF);
+        RenderUtil.setGlColor(new  Color(0, 0, 0, 128));
+        RenderUtil.render2DRect(this.posX, this.posY, this.width, this.height);
 
         float x = this.posX + 89;
         for (Panel panel : this.panels) {

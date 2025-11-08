@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/CicadaClient_jar</output-path>
     <root id="archive" name="CicadaClient.jar">
       <element id="module-output" name="CicadaClient" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/run/versions/1.8.9/OptiFine 1.8.9.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libraries/authlib-3.11.49.2.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libraries/ca-fixer-1.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libraries/codecjorbis-20101023.jar" path-in-jar="/" />
@@ -45,7 +46,6 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/libraries/ViaBackwards-5.3.0-downgraded.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libraries/ViaRewind-4.0.6-downgraded.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libraries/ViaVersion-5.3.0-downgraded.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/run/versions/1.8.9/OptiFine 1.8.9.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

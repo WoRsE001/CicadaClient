@@ -13,7 +13,7 @@ import net.cicada.module.api.ModuleInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-@ModuleInfo(name = "AutoTool", category = Category.Player, state = true)
+@ModuleInfo(name = "AutoTool", category = Category.Player)
 public class AutoTool extends Module {
     List<Integer> lastSlot = new ArrayList<>();
 

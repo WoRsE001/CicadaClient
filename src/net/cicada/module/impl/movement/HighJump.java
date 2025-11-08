@@ -10,7 +10,7 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import org.lwjgl.input.Keyboard;
 
-@ModuleInfo(name = "HighJump", category = Category.Movement, key = Keyboard.KEY_H)
+@ModuleInfo(name = "HighJump", category = Category.Movement)
 public class HighJump extends Module {
     boolean sneak = false;
 

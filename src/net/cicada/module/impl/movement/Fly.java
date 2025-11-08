@@ -18,7 +18,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-@ModuleInfo(name = "Fly", category = Category.Movement, key = Keyboard.KEY_T)
+@ModuleInfo(name = "Fly", category = Category.Movement)
 public class Fly extends Module {
     ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "IntaveFlag", "MatrixJump"), () -> true, this);
     NumberSetting motionSpeed = new NumberSetting("Speed", 2, 0, 20, 0.01, () -> mode.getValue().equals("Motion"), this);

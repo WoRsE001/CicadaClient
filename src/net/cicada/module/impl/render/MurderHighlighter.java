@@ -24,6 +24,13 @@ public class MurderHighlighter extends Module {
     List<String> sheriffs = new ArrayList<>();
 
     @Override
+    protected void onDisable() {
+        murders.clear();
+        sheriffs.clear();
+        super.onDisable();
+    }
+
+    @Override
     public void listen(Event event) {
         if (event instanceof TickEvent) {
             for (Entity entity : mc.theWorld.getLoadedEntityList()) {
@@ -34,11 +41,17 @@ public class MurderHighlighter extends Module {
             }
         }
 
-        if (event instanceof Render3DEvent) {
+        if (event instanceof Render3DEvent e && e.getPriority() == Event.Priority.High) {
             for (Entity entity : mc.theWorld.getLoadedEntityList()) {
                 RenderUtil.start3D();
-                if (murders.contains(entity.getName())) RenderUtil.render3DEntityBox(entity, false, true, new Color(255, 0, 0, 255));
-                else if (sheriffs.contains(entity.getName())) RenderUtil.render3DEntityBox(entity, false, true, new Color(255, 255, 0, 255));
+                if (murders.contains(entity.getName())) {
+                    RenderUtil.setGlColor(new Color(255, 0, 0, 255));
+                    RenderUtil.render3DEntityBox(entity);
+                }
+                else if (sheriffs.contains(entity.getName())) {
+                    RenderUtil.setGlColor(new Color(255, 255, 0, 128));
+                    RenderUtil.render3DEntityBox(entity);
+                }
                 RenderUtil.stop3D();
             }
         }

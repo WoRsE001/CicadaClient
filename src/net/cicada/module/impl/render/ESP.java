@@ -12,18 +12,16 @@ import net.cicada.utility.RenderUtil;
 
 import java.awt.*;
 
-@ModuleInfo(name = "Esp", category = Category.Render, state = true)
+@ModuleInfo(name = "Esp", category = Category.Render)
 public class ESP extends Module {
-    BooleanSetting box = new BooleanSetting("Box", false, () -> true, this);
-    BooleanSetting outline = new BooleanSetting("Outline", true, () -> true, this);
-
     @Override
     public void listen(Event event) {
         if (event instanceof Render3DEvent e && e.getPriority() == Event.Priority.High) {
             for (Entity entity : mc.theWorld.getLoadedEntityList()) {
                 if (entity == mc.thePlayer || !(entity instanceof EntityPlayer)) continue;
                 RenderUtil.start3D();
-                RenderUtil.render3DEntityBox(entity, box.isValue(), outline.isValue(), new Color(1, 1, 1, 0.3F));
+                RenderUtil.setGlColor(new Color(0, 0, 0, 128));
+                RenderUtil.render3DEntityBox(entity);
                 RenderUtil.stop3D();
             }
         }

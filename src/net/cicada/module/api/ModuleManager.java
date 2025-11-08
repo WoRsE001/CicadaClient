@@ -50,14 +50,11 @@ public class ModuleManager implements EventListener {
     // Render
     public static Ambience AMBIENCE = new Ambience();
     public static Animation ANIMATION = new Animation();
-    public static AntiBlind ANTI_BLIND = new AntiBlind();
-    public static BlockESP BLOCK_ESP = new BlockESP();
-    public static BPS BPS = new BPS();
+    public static NoRender NO_RENDER = new NoRender();
     public static ClickGui CLICK_GUI = new ClickGui();
     public static CustomF5 CUSTOM_F5 = new CustomF5();
     public static ESP ESP = new ESP();
     public static FullBright FULL_BRIGHT = new FullBright();
-    public static MovementPredict MOVEMENT_PREDICT = new MovementPredict();
     public static MurderHighlighter MURDER_HIGHLIGHTER = new MurderHighlighter();
     public static NoHurtCam NO_HURT_CAM = new NoHurtCam();
     public static PointerEsp POINTER_ESP = new PointerEsp();

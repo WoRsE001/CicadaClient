@@ -11,7 +11,7 @@ import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import org.lwjgl.input.Keyboard;
 
-@ModuleInfo(name = "Spider", category = Category.Movement, key = Keyboard.KEY_Y)
+@ModuleInfo(name = "Spider", category = Category.Movement)
 public class Spider extends Module {
     BooleanSetting fast = new BooleanSetting("Fast", false, () -> true, this);
     NumberSetting motionY = new NumberSetting("motionY", 0.6, 0, 5, 0.01, () -> fast.isValue(), this);

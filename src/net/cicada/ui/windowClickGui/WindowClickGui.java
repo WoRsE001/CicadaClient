@@ -1,19 +1,15 @@
 package net.cicada.ui.windowClickGui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
 
 public class WindowClickGui extends GuiScreen {
-    ScaledResolution scaledResolution;
     private Window window;
 
     @Override
     public void initGui() {
-        scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
-        window = new Window(scaledResolution.getScaledWidth() / 2F - 400, scaledResolution.getScaledHeight() / 2F - 200, 800, 400);
+        window = new Window(50, 50, mc.displayWidth / 2 - 100, mc.displayHeight / 2 - 100);
     }
 
     @Override

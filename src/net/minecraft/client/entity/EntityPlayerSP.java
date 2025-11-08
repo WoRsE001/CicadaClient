@@ -2,6 +2,8 @@ package net.minecraft.client.entity;
 
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.MotionEvent;
+import net.cicada.event.impl.SlowDownEvent;
+import net.cicada.event.impl.SprintEvent;
 import net.cicada.event.impl.UpdateEvent;
 import net.cicada.module.api.ModuleManager;
 import net.minecraft.client.Minecraft;
@@ -32,7 +34,9 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
@@ -670,8 +674,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
         if (this.isUsingItem() && !this.isRiding())
         {
-            this.movementInput.moveStrafe *= 0.2F;
-            this.movementInput.moveForward *= 0.2F;
+            SlowDownEvent slowDownEvent = new SlowDownEvent(0.2F, 0.2F).call();
+            this.movementInput.moveStrafe *= slowDownEvent.getStrafeSlowDownFactor();
+            this.movementInput.moveForward *= slowDownEvent.getForwardSlowDownFactor();
             this.sprintToggleTimer = 0;
         }
 
@@ -680,8 +685,14 @@ public class EntityPlayerSP extends AbstractClientPlayer
         this.pushOutOfBlocks(this.posX + (double)this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D, this.posZ - (double)this.width * 0.35D);
         this.pushOutOfBlocks(this.posX + (double)this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D, this.posZ + (double)this.width * 0.35D);
         boolean flag3 = (float)this.getFoodStats().getFoodLevel() > 6.0F || this.capabilities.allowFlying;
+        boolean isUsingItem = this.isUsingItem();
+        if (ModuleManager.NO_SLOW.isState() && this.inventory.getCurrentItem() != null) {
+            Item currentItem = this.inventory.getCurrentItem().getItem();
+            if (ModuleManager.NO_SLOW.consumeSprint.isValue() && currentItem instanceof ItemFood) isUsingItem = false;
+            if (ModuleManager.NO_SLOW.blockSprint.isValue() && currentItem instanceof ItemSword) isUsingItem = false;
+        }
 
-        if (this.onGround && !flag1 && !flag2 && this.movementInput.moveForward >= f && !this.isSprinting() && flag3 && !this.isUsingItem() && !this.isPotionActive(Potion.blindness))
+        if (this.onGround && !flag1 && !flag2 && this.movementInput.moveForward >= f && !this.isSprinting() && flag3 && !isUsingItem && !this.isPotionActive(Potion.blindness))
         {
             if (this.sprintToggleTimer <= 0 && !this.mc.gameSettings.keyBindSprint.isKeyDown())
             {
@@ -693,7 +704,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
             }
         }
 
-        if (!this.isSprinting() && this.movementInput.moveForward >= f && flag3 && !this.isUsingItem() && !this.isPotionActive(Potion.blindness) && (this.mc.gameSettings.keyBindSprint.isKeyDown() || ModuleManager.AUTO_SPRINT.isState()))
+        if (!this.isSprinting() && this.movementInput.moveForward >= f && flag3 && !isUsingItem && !this.isPotionActive(Potion.blindness) && (this.mc.gameSettings.keyBindSprint.isKeyDown() || ModuleManager.AUTO_SPRINT.isState()))
         {
             this.setSprinting(true);
         }
@@ -702,6 +713,8 @@ public class EntityPlayerSP extends AbstractClientPlayer
         {
             this.setSprinting(false);
         }
+
+        SprintEvent sprintEvent = new SprintEvent().call();
 
         if (this.capabilities.allowFlying)
         {

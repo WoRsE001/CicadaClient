@@ -12,7 +12,9 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 
 import net.cicada.event.api.Event;
+import net.cicada.event.impl.Render2DEvent;
 import net.cicada.event.impl.Render3DEvent;
+import net.cicada.module.api.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.material.Material;
@@ -608,7 +610,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
 
     private void hurtCameraEffect(float partialTicks)
     {
-        if (this.mc.getRenderViewEntity() instanceof EntityLivingBase)
+        if (this.mc.getRenderViewEntity() instanceof EntityLivingBase && !ModuleManager.NO_HURT_CAM.isState())
         {
             EntityLivingBase entitylivingbase = (EntityLivingBase)this.mc.getRenderViewEntity();
             float f = (float)entitylivingbase.hurtTime - partialTicks;
@@ -714,7 +716,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                     f5 = f5 * 0.1F;
                     MovingObjectPosition movingobjectposition = this.mc.theWorld.rayTraceBlocks(new Vec3(d0 + (double)f3, d1 + (double)f4, d2 + (double)f5), new Vec3(d0 - d4 + (double)f3 + (double)f5, d1 - d6 + (double)f4, d2 - d5 + (double)f5));
 
-                    if (movingobjectposition != null)
+                    if (movingobjectposition != null && (!ModuleManager.CUSTOM_F5.isState() || !ModuleManager.CUSTOM_F5.cameraNoClip.isValue()))
                     {
                         double d7 = movingobjectposition.hitVec.distanceTo(new Vec3(d0, d1, d2));
 
@@ -730,9 +732,25 @@ public class EntityRenderer implements IResourceManagerReloadListener
                     GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
                 }
 
+                float offsetX = 0;
+                float offsetY = 0;
+                float offsetZ = (float) -d3;
+
+                if (ModuleManager.CUSTOM_F5.isState()) {
+                    if (mc.gameSettings.thirdPersonView == 1) {
+                        offsetX += (float) ModuleManager.CUSTOM_F5.x.getValue();
+                        offsetY += (float) ModuleManager.CUSTOM_F5.y.getValue();
+                        offsetZ = (float) (-d3 / 4 * ModuleManager.CUSTOM_F5.z.getValue());
+                    } else if (mc.gameSettings.thirdPersonView == 2) {
+                        offsetX += (float) ModuleManager.CUSTOM_F5.x1.getValue();
+                        offsetY += (float) ModuleManager.CUSTOM_F5.y1.getValue();
+                        offsetZ = (float) (-d3 / 4 * ModuleManager.CUSTOM_F5.z1.getValue());
+                    }
+                }
+
                 GlStateManager.rotate(entity.rotationPitch - f2, 1.0F, 0.0F, 0.0F);
                 GlStateManager.rotate(entity.rotationYaw - f1, 0.0F, 1.0F, 0.0F);
-                GlStateManager.translate(0.0F, 0.0F, (float)(-d3));
+                GlStateManager.translate(offsetX, offsetY, offsetZ);
                 GlStateManager.rotate(f1 - entity.rotationYaw, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(f2 - entity.rotationPitch, 1.0F, 0.0F, 0.0F);
             }
@@ -1275,6 +1293,8 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 {
                     GlStateManager.alphaFunc(516, 0.1F);
                     this.mc.ingameGUI.renderGameOverlay(partialTicks);
+
+                    Render2DEvent render2DEvent = new Render2DEvent().call();
 
                     if (this.mc.gameSettings.ofShowFps && !this.mc.gameSettings.showDebugInfo)
                     {
@@ -2044,7 +2064,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                             blockpos$mutableblockpos.set(l1, k2, k1);
                             float f1 = biomegenbase.getFloatTemperature(blockpos$mutableblockpos);
 
-                            if (world.getWorldChunkManager().getTemperatureAtHeight(f1, j2) >= 0.15F)
+                            if (world.getWorldChunkManager().getTemperatureAtHeight(f1, j2) >= 0.15F || (ModuleManager.AMBIENCE.isState() && ModuleManager.AMBIENCE.weather.is("Snow")))
                             {
                                 if (j1 != 0)
                                 {
@@ -2358,7 +2378,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
         {
             GlStateManager.setFogDensity(f);
         }
-        else if (entity instanceof EntityLivingBase && ((EntityLivingBase)entity).isPotionActive(Potion.blindness))
+        else if (entity instanceof EntityLivingBase && ((EntityLivingBase)entity).isPotionActive(Potion.blindness) && (!ModuleManager.NO_RENDER.isState() || !ModuleManager.NO_RENDER.blindness.isValue()))
         {
             float f4 = 5.0F;
             int i = ((EntityLivingBase)entity).getActivePotionEffect(Potion.blindness).getDuration();

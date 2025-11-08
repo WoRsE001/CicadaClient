@@ -1,5 +1,6 @@
 package net.cicada.module.impl.movement;
 
+import net.cicada.module.setting.impl.BooleanSetting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemSword;
@@ -20,12 +21,14 @@ import java.util.List;
 
 @ModuleInfo(name = "NoSlow", category = Category.Movement)
 public class NoSlow extends Module {
-    ListSetting consumeMode = new ListSetting("ConsumeMode", "Intave", List.of("None", "Intave"), () -> true, this);
+    ListSetting consumeMode = new ListSetting("ConsumeMode", "None", List.of("None", "Intave"), () -> true, this);
     NumberSetting consumeForwardMultiplier = new NumberSetting("ConsumeForwardMultiplier", 1, 0.2, 1, 0.01, () -> true, this);
     NumberSetting consumeStrafeMultiplier = new NumberSetting("ConsumeStrafeMultiplier", 1, 0.2, 1, 0.01, () -> true, this);
-    ListSetting blockMode = new ListSetting("BlockMode", "Intave", List.of("None", "Intave"), () -> true, this);
+    public BooleanSetting consumeSprint = new BooleanSetting("ConsumeSprint", true, () -> true, this);
+    ListSetting blockMode = new ListSetting("BlockMode", "None", List.of("None", "Intave"), () -> true, this);
     NumberSetting blockForwardMultiplier = new NumberSetting("BlockForwardMultiplier", 1, 0.2, 1, 0.01, () -> true, this);
     NumberSetting blockStrafeMultiplier = new NumberSetting("BlockStrafeMultiplier", 1, 0.2, 1, 0.01, () -> true, this);
+    public BooleanSetting blockSprint = new BooleanSetting("BlockSprint", true, () -> true, this);
 
     @Override
     public void listen(Event event) {
@@ -47,7 +50,7 @@ public class NoSlow extends Module {
             }
         }
 
-        if (event instanceof SlowDownEvent e) {
+        if (event instanceof SlowDownEvent e && mc.thePlayer.inventory.getCurrentItem() != null) {
             Item currentItem = mc.thePlayer.inventory.getCurrentItem().getItem();
             if (currentItem instanceof ItemFood) {
                 e.setForwardSlowDownFactor((float) consumeForwardMultiplier.getValue());

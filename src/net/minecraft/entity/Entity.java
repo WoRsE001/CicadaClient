@@ -16,6 +16,7 @@ import net.minecraft.block.BlockWall;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockPattern;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandResultStats;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.crash.CrashReport;
@@ -1021,7 +1022,11 @@ public abstract class Entity implements ICommandSender
 
     public void moveFlying(float strafe, float forward, float friction)
     {
-        StrafeEvent strafeEvent = new StrafeEvent(forward, strafe, friction, this.rotationYaw).call();
+        StrafeEvent strafeEvent = new StrafeEvent(forward, strafe, friction, this.rotationYaw);
+        if (this instanceof EntityPlayerSP) {
+            strafeEvent.call();
+            if (strafeEvent.isCanceled()) return;
+        }
 
         float f = strafeEvent.getMoveStrafe() * strafeEvent.getMoveStrafe() + strafeEvent.getMoveForward() * strafeEvent.getMoveForward();
 

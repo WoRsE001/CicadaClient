@@ -2,9 +2,9 @@ package net.cicada.module.impl.combat;
 
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.util.*;
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.*;
 import net.cicada.module.api.Category;
@@ -19,14 +19,14 @@ import org.lwjgl.util.vector.Vector2f;
 
 import java.util.List;
 
-@ModuleInfo(name = "AttackAura", category = Category.Combat, key = Keyboard.KEY_E)
+@ModuleInfo(name = "AttackAura", category = Category.Combat, key = Keyboard.KEY_R)
 public class AttackAura extends Module {
     // TARGETS
     ListSetting sortMode = new ListSetting("SortMode", "Distance", List.of("FOV", "Health", "Distance"), () -> true, this);
     // RANGE
     NumberSetting aimRange = new NumberSetting("aimRange", 15, 0, 15, 0.1, () -> true, this);
     NumberSetting attackRange = new NumberSetting("AttackRange", 3, 0, 6, 0.1, () -> true, this);
-    NumberSetting attackThroughWallsRange = new NumberSetting("AttackThroughWallsRange", 3, 0, 6, 0.1, () -> true, this);
+    NumberSetting attackThroughWallsRange = new NumberSetting("AttackThroughWallsRange", 0, 0, 6, 0.1, () -> true, this);
     // POINT SELECTION
     ListSetting selectionMode = new ListSetting("SelectionMode", "Best", List.of("Center", "Best", "Nearest"), () -> true, this);
     BooleanSetting smartSelection = new BooleanSetting("SmartSelection", true, () -> true, this);
@@ -36,9 +36,11 @@ public class AttackAura extends Module {
     BooleanSetting silentRotation = new BooleanSetting("SilentRotation", true, () -> true, this);
     // CLICKS
     NumberSetting cps = new NumberSetting("CPS", 20, 0, 20, 1, () -> true, this);
-    NumberSetting hitRange = new NumberSetting("HitRange", 6, 0, 15, 0.1, () -> true, this);
+    NumberSetting hitRange = new NumberSetting("HitRange", 8, 0, 15, 0.1, () -> true, this);
     NumberSetting hitFovYaw = new NumberSetting("HitFovYaw", 180, 0,180, 1, () -> true, this);
     NumberSetting hitFovPitch = new NumberSetting("HitFovPitch", 180, 0, 180, 1, () -> true, this);
+    // AUTOBLOCK
+    //BooleanSetting autoBlock = new BooleanSetting("AutoBlock", false, () -> true, this);
     // MOVEMENT
     BooleanSetting jumpFix = new BooleanSetting("JumpFix", true, () -> true, this);
     BooleanSetting moveFix = new BooleanSetting("MoveFix", true, () -> true, this);
@@ -75,14 +77,20 @@ public class AttackAura extends Module {
             }
         }
 
-        if (event instanceof LegitClickTimingEvent && this.target != null && Math.random() < this.cps.getValue() / 20) {
-            double range = mc.thePlayer.rayTrace(6, 1, RotateUtil.rotation.getX(), RotateUtil.rotation.getY()).typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY ? this.attackRange.getValue() : this.attackThroughWallsRange.getValue();
-            Vector2f FOVToTarget = CombatManager.FOVToTarget(this.target, RotateUtil.rotation.getX(), RotateUtil.rotation.getY());
-            if (RotateUtil.isLookingAtEntity(this.target, RotateUtil.rotation, range)) {
-                AttackOrder.sendFixedAttack(mc.thePlayer, this.target);
-            } else if (FOVToTarget.getX() <= hitFovYaw.getValue() && FOVToTarget.getY() <= hitFovPitch.getValue() && mc.thePlayer.getPositionEyes(1).distanceTo(this.aimPoint) <= this.hitRange.getValue()) {
-                mc.clickMouse();
+        if (event instanceof LegitClickTimingEvent) {
+            if (this.target != null) {
+                if (Math.random() < this.cps.getValue() / 20) {
+                    double range = mc.thePlayer.rayTrace(6, 1, RotateUtil.rotation.getX(), RotateUtil.rotation.getY()).typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY ? this.attackRange.getValue() : this.attackThroughWallsRange.getValue();
+                    Vector2f FOVToTarget = CombatManager.FOVToTarget(this.target, RotateUtil.rotation.getX(), RotateUtil.rotation.getY());
+                    if (RotateUtil.isLookingAtEntity(this.target, RotateUtil.rotation, range)) {
+                        AttackOrder.sendFixedAttack(mc.thePlayer, this.target);
+                    } else if (FOVToTarget.getX() <= hitFovYaw.getValue() && FOVToTarget.getY() <= hitFovPitch.getValue() && mc.thePlayer.getPositionEyes(1).distanceTo(this.aimPoint) <= this.hitRange.getValue()) {
+                        mc.clickMouse();
+                    }
+                }
             }
+
+
         }
 
         if (this.target != null && silentRotation.isValue()) {

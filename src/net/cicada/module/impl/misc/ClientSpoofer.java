@@ -9,7 +9,7 @@ import java.util.List;
 
 @ModuleInfo(name = "ClientSpoofer", category = Category.Misc, state = true)
 public class ClientSpoofer extends Module {
-    ListSetting brand = new ListSetting("Brand", "Lunar", List.of("Default", "Forge", "Optifine", "Lunar", "FML", "LabyMod"), () -> true, this);
+    ListSetting brand = new ListSetting("Brand", "Optifine", List.of("Default", "Forge", "Optifine", "Lunar", "FML", "LabyMod"), () -> true, this);
 
     public String getBrand() {
         if (brand.getValue().equals("Forge")) {

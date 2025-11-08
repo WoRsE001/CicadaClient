@@ -15,6 +15,7 @@ import net.cicada.module.api.ModuleManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
@@ -1331,8 +1332,11 @@ public abstract class EntityLivingBase extends Entity
 
     protected void jump()
     {
-        JumpEvent jumpEvent = new JumpEvent(this.getJumpUpwardsMotion(), this.rotationYaw).call();
-        if (jumpEvent.isCanceled()) return;
+        JumpEvent jumpEvent = new JumpEvent(this.getJumpUpwardsMotion(), this.rotationYaw);
+        if (this instanceof EntityPlayerSP) {
+            jumpEvent.call();
+            if (jumpEvent.isCanceled()) return;
+        }
 
         this.motionY = jumpEvent.getMotion();
 

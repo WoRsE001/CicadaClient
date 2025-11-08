@@ -20,7 +20,6 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
 {
     private static final Logger logger = LogManager.getLogger();
     private final OldServerPinger oldServerPinger = new OldServerPinger();
-    private GuiScreen parentScreen;
     private ServerSelectionList serverListSelector;
     private ServerList savedServerList;
     private GuiButton btnEditServer;
@@ -35,11 +34,6 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
     private LanServerDetector.LanServerList lanServerList;
     private LanServerDetector.ThreadLanServerFind lanServerDetector;
     private boolean initialized;
-
-    public GuiMultiplayer(GuiScreen parentScreen)
-    {
-        this.parentScreen = parentScreen;
-    }
 
     public void initGui()
     {
@@ -165,7 +159,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             }
             else if (button.id == 0)
             {
-                this.mc.displayGuiScreen(this.parentScreen);
+                this.mc.displayGuiScreen(new GuiMainMenu());
             }
             else if (button.id == 8)
             {
@@ -176,7 +170,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
 
     private void refreshServerList()
     {
-        this.mc.displayGuiScreen(new GuiMultiplayer(this.parentScreen));
+        this.mc.displayGuiScreen(new GuiMultiplayer());
     }
 
     public void confirmClicked(boolean result, int id)
