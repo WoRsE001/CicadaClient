@@ -13,10 +13,11 @@ import java.util.List;
 
 @Getter @Setter
 public class ZamorozkaClickGui extends GuiScreen {
-    private List<Panel> panels = new ArrayList<>();
+    public static ZamorozkaClickGui INSTANCE ;
+    private static List<Panel> panels = new ArrayList<>();
 
-    @Override
-    public void initGui() {
+    public static void init() {
+        INSTANCE = new ZamorozkaClickGui();
         for (Category category : Category.values()) {
             panels.add(new Panel(category));
         }
@@ -27,7 +28,7 @@ public class ZamorozkaClickGui extends GuiScreen {
         RenderUtil.setGlColor(new Color(128, 128, 255, 30));
         RenderUtil.render2DRect(0, 0, mc.displayWidth, mc.displayHeight);
         float offsetY = mc.displayHeight / 4F - (panels.getFirst().getHeight() + 10) * panels.size() / 2;
-        for (Panel panel : this.panels) {
+        for (Panel panel : panels) {
             panel.setPosX(10);
             panel.setPosY(offsetY);
             panel.draw(mouseX, mouseY, partialTicks);
@@ -37,12 +38,11 @@ public class ZamorozkaClickGui extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        for (Panel panel : this.panels) {
+        for (Panel panel : panels) {
             if (mouseButton == 0 && panel.mouseOver(mouseX, mouseY)) {
-                for (Panel p : this.panels) {
-                    p.setSelected(false);
+                for (Panel p : panels) {
+                    p.setSelected(p.equals(panel) && !p.isSelected());
                 }
-                panel.setSelected(true);
                 return;
             }
             panel.mousePressed(mouseX, mouseY, mouseButton);
@@ -51,7 +51,7 @@ public class ZamorozkaClickGui extends GuiScreen {
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
-        for (Panel panel : this.panels) {
+        for (Panel panel : panels) {
             panel.mouseReleased(mouseX, mouseY, state);
         }
     }

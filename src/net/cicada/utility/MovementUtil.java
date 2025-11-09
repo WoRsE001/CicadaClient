@@ -2,6 +2,7 @@ package net.cicada.utility;
 
 import lombok.experimental.UtilityClass;
 import net.cicada.event.impl.MovementEvent;
+import net.minecraft.util.MathHelper;
 
 @UtilityClass
 public class MovementUtil implements Access {
@@ -16,24 +17,19 @@ public class MovementUtil implements Access {
         double prevZ = mc.thePlayer.motionZ * (1.0 - strength);
         double useSpeed = speed * strength;
 
-        double angle = Math.toRadians(direction(mc.thePlayer.rotationYaw));
+        double angle = Math.toRadians(getDirs());
         mc.thePlayer.motionX = (-Math.sin(angle) * useSpeed) + prevX;
         mc.thePlayer.motionZ = (Math.cos(angle) * useSpeed) + prevZ;
     }
 
-    public double direction(float rotationYaw) {
-        if (mc.thePlayer.movementInput.moveForward < 0F) rotationYaw += 180F;
-
-        float forward = 1F;
-
-        if (mc.thePlayer.movementInput.moveForward < 0F) forward = -0.5F;
-        else if (mc.thePlayer.movementInput.moveForward > 0F) forward = 0.5F;
-
-        if (mc.thePlayer.movementInput.moveStrafe > 0F) rotationYaw -= 90F * forward;
-        if (mc.thePlayer.movementInput.moveStrafe < 0F) rotationYaw += 90F * forward;
-
-        return rotationYaw;
+    public static float getDirs() {
+        float yaw = mc.thePlayer.rotationYaw;
+        int x  = (mc.gameSettings.keyBindRight.isKeyDown() ? 1 : 0) - (mc.gameSettings.keyBindLeft.isKeyDown()  ? 1 : 0);
+        int z  = (mc.gameSettings.keyBindForward.isKeyDown() ? 1 : 0) - (mc.gameSettings.keyBindBack.isKeyDown()   ? 1 : 0);
+        if (x != 0 || z != 0) yaw += (float) Math.toDegrees(Math.atan2(x, z));
+        return MathHelper.wrapAngleTo180_float(yaw);
     }
+
 
     public void fixMovement(final MovementEvent event, final float yaw) {
         float delta_yaw = mc.thePlayer.rotationYaw - yaw;

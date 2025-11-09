@@ -5,7 +5,12 @@ import net.minecraft.client.gui.GuiScreen;
 import java.io.IOException;
 
 public class WindowClickGui extends GuiScreen {
+    public static WindowClickGui INSTANCE;
     private Window window;
+
+    public static  void init() {
+        INSTANCE = new WindowClickGui();
+    }
 
     @Override
     public void initGui() {

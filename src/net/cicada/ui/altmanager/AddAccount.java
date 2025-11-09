@@ -1,6 +1,7 @@
 package net.cicada.ui.altmanager;
 
 import net.cicada.Cicada;
+import net.cicada.utility.Account;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 public class AddAccount extends GuiScreen {
     private GuiTextField username;
-    private boolean isDirect;
+    private final boolean isDirect;
 
     public AddAccount(boolean isDirect) {
         this.isDirect = isDirect;
@@ -40,8 +41,12 @@ public class AddAccount extends GuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button.id == 0) {
-            if (!this.isDirect) Cicada.ALT_MANAGER.accountList.add(new Account(username.getText(), Account.getUUID(username.getText())));
-            else mc.setSession(new Session(username.getText(), Account.getUUID(username.getText()), "accessToken", "mojang"));
+            if (!this.isDirect) {
+                Cicada.ALT_MANAGER.accountList.add(new Account(username.getText()));
+            } else {
+                Account account = new Account(username.getText());
+                mc.setSession(new Session(account.getUsername(), account.getUuid(), account.getAccessToken(), account.getAccessToken().equals("0") ? "legacy" : "mojang"));
+            }
             mc.displayGuiScreen(Cicada.ALT_MANAGER);
         } else if (button.id == 1) {
             mc.displayGuiScreen(Cicada.ALT_MANAGER);

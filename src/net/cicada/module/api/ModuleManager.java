@@ -47,6 +47,7 @@ public class ModuleManager implements EventListener {
     public static SnapTap SNAP_TAP = new SnapTap();
     public static Speed SPEED = new Speed();
     public static Spider SPIDER = new Spider();
+    public static Strafe STRAFE = new Strafe();
     // Render
     public static Ambience AMBIENCE = new Ambience();
     public static Animation ANIMATION = new Animation();

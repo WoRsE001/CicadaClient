@@ -24,7 +24,7 @@ public class ModuleButton extends ComponentGui {
     public void draw(int mouseX, int mouseY, float partialTicks) {
         RenderUtil.setGlColor(new Color(40, 40, 40, 255));
         RenderUtil.render2DRect(this.posX, this.posY, this.width, this.height);
-        mc.fontRendererObj.drawStringWithShadow(this.module.getName(), this.posX + this.width / 2 - mc.fontRendererObj.getStringWidth(this.module.getName()) / 2F, this.posY + this.height / 2 - 4, 0xFFFFFFFF);
+        mc.fontRendererObj.drawStringWithShadow(this.module.getName(), this.posX + this.width / 2 - mc.fontRendererObj.getStringWidth(this.module.getName()) / 2F, this.posY + this.height / 2 - 4, this.module.isState() ? 0xFFFFFFFF : 0xFF808080);
         if (this.isOpenSettings) {
             float w = 400;
             float h = mc.displayHeight / 2F - 50;

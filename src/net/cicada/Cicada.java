@@ -2,6 +2,8 @@ package net.cicada;
 
 import de.florianmichael.viamcp.ViaMCP;
 import net.cicada.ui.altmanager.AltManager;
+import net.cicada.ui.windowClickGui.WindowClickGui;
+import net.cicada.ui.zamorozkaClickGui.ZamorozkaClickGui;
 import net.minecraft.client.Minecraft;
 import net.cicada.command.api.CommandManager;
 import net.cicada.config.api.ConfigManager;
@@ -33,5 +35,7 @@ public class Cicada {
 
         EventCaller.register(MODULE_MANAGER);
         EventCaller.register(COMMAND_MANAGER);
+        WindowClickGui.init();
+        ZamorozkaClickGui.init();
     }
 }

@@ -18,10 +18,10 @@ public class ClickGui extends Module {
     protected void onEnable() {
         switch(this.type.getValue()) {
             case "Augustus":
-                mc.displayGuiScreen(new WindowClickGui());
+                mc.displayGuiScreen(WindowClickGui.INSTANCE);
                 break;
             case "Zamorozka":
-                mc.displayGuiScreen(new ZamorozkaClickGui());
+                mc.displayGuiScreen(ZamorozkaClickGui.INSTANCE);
                 break;
         }
 

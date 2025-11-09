@@ -142,7 +142,7 @@ public class Scaffold extends Module {
     }
 
     private float getYaw() {
-        float yaw = mc.thePlayer.rotationYaw + 180;
+        float yaw = (float) MovementUtil.getDirs() - 180;
         float roundYaw = MathHelper.round(yaw, 45);
         if (this.snapYaw.isValue()) yaw = roundYaw;
         if (roundYaw % 90 == 0) {

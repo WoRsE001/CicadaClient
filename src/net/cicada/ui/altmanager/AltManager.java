@@ -2,6 +2,7 @@ package net.cicada.ui.altmanager;
 
 import com.google.gson.*;
 import net.cicada.Cicada;
+import net.cicada.utility.Account;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
@@ -58,19 +59,13 @@ public class AltManager extends GuiScreen {
         } else if (button.id == 1) {
             for (Account account : accountList) {
                 if (account.isSelected()) {
-                    mc.setSession(new Session(account.getUsername(), account.getUuid(), "accessToken", "mojang"));
+                    mc.setSession(new Session(account.getUsername(), account.getUuid(), "0", "legacy"));
                 }
             }
         } else if (button.id == 2) {
             mc.displayGuiScreen(new AddAccount(true));
         } else if (button.id == 3) {
-            Account delAcc = null;
-            for (Account account : this.accountList) {
-                if (account.isSelected()) {
-                    delAcc = account;
-                }
-            }
-            this.accountList.remove(delAcc);
+            this.accountList.removeIf(Account::isSelected);
         } else if (button.id == 4) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonObject jsonObject = new JsonObject();

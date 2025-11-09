@@ -54,9 +54,8 @@ public class Panel extends ComponentGui {
                     return;
                 } else if  (mouseButton == 1) {
                     for (ModuleButton MB : moduleButtons) {
-                        MB.setOpenSettings(false);
+                        MB.setOpenSettings(MB.equals(moduleButton) && !MB.isOpenSettings());
                     }
-                    moduleButton.setOpenSettings(true);
                     return;
                 }
             }
