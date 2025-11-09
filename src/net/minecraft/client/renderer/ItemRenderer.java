@@ -316,6 +316,7 @@ public class ItemRenderer
             float f1 = abstractclientplayer.getSwingProgress(partialTicks);
             float f2 = abstractclientplayer.prevRotationPitch + (abstractclientplayer.rotationPitch - abstractclientplayer.prevRotationPitch) * partialTicks;
             float f3 = abstractclientplayer.prevRotationYaw + (abstractclientplayer.rotationYaw - abstractclientplayer.prevRotationYaw) * partialTicks;
+            float var9 = MathHelper.sin(MathHelper.sqrt_float(f1) * MathHelper.PI);
             this.rotateArroundXAndY(f2, f3);
             this.setLightMapFromPlayer(abstractclientplayer);
             this.rotateWithPlayerRotations((EntityPlayerSP)abstractclientplayer, partialTicks);
@@ -323,7 +324,11 @@ public class ItemRenderer
             GlStateManager.pushMatrix();
 
             if (ModuleManager.ANIMATION.isState()) {
-                GL11.glTranslated(ModuleManager.ANIMATION.x.getValue(), ModuleManager.ANIMATION.y.getValue(), ModuleManager.ANIMATION.z.getValue());
+                if (!mc.thePlayer.isUsingItem()) {
+                    GL11.glTranslated(ModuleManager.ANIMATION.x.getValue(), ModuleManager.ANIMATION.y.getValue(), ModuleManager.ANIMATION.z.getValue());
+                } else {
+                    GL11.glTranslated(ModuleManager.ANIMATION.x1.getValue(), ModuleManager.ANIMATION.y1.getValue(), ModuleManager.ANIMATION.z1.getValue());
+                }
             }
 
             if (this.itemToRender != null)
@@ -332,9 +337,9 @@ public class ItemRenderer
                 {
                     this.renderItemMap(abstractclientplayer, f2, f, f1);
                 }
-                else if (abstractclientplayer.getItemInUseCount() > 0)
+                else if (abstractclientplayer.getItemInUseCount() > 0 || (ModuleManager.ATTACK_AURA.isState() && ModuleManager.ATTACK_AURA.isBlocking))
                 {
-                    EnumAction enumaction = this.itemToRender.getItemUseAction();
+                    EnumAction enumaction = ModuleManager.ATTACK_AURA.isState() && ModuleManager.ATTACK_AURA.isBlocking ? EnumAction.BLOCK : this.itemToRender.getItemUseAction();
 
                     switch (enumaction)
                     {
@@ -345,16 +350,49 @@ public class ItemRenderer
                         case EAT:
                         case DRINK:
                             this.performDrinking(abstractclientplayer, partialTicks);
-                            this.transformFirstPersonItem(f, ModuleManager.ANIMATION.isState() && ModuleManager.ANIMATION.oldAnimation.isValue() ? f1 : 0.0F);
+                            this.transformFirstPersonItem(f, f1);
                             break;
 
                         case BLOCK:
-                            this.transformFirstPersonItem(f, ModuleManager.ANIMATION.isState() && ModuleManager.ANIMATION.oldAnimation.isValue() ? f1 : 0.0F);
-                            this.doBlockTransformations();
+                            if (ModuleManager.ANIMATION.isState()) {
+                                switch (ModuleManager.ANIMATION.typeAnimation.getValue()) {
+                                    case "None":
+                                        transformFirstPersonItem(f, 0.0F);
+                                        doBlockTransformations();
+                                        break;
+                                    case "1.7":
+                                        transformFirstPersonItem(f, f1);
+                                        doBlockTransformations();
+                                        break;
+                                    case "Smooth":
+                                        transformFirstPersonItem(f / 1.5F, 0.0f);
+                                        doBlockTransformations();
+                                        GlStateManager.translate(-0.05f, 0.3f, 0.3f);
+                                        GlStateManager.rotate(-var9 * 140.0f, 8.0f, 0.0f, 8.0f);
+                                        GlStateManager.rotate(var9 * 90.0f, 8.0f, 0.0f, 8.0f);
+                                        break;
+                                    case "Punch":
+                                        transformFirstPersonItem(f, 0.0f);
+                                        doBlockTransformations();
+                                        GlStateManager.translate(0.1f, 0.2f, 0.3f);
+                                        GlStateManager.rotate(-var9 * 30.0f, -5.0f, 0.0f, 9.0f);
+                                        GlStateManager.rotate(-var9 * 10.0f, 1.0f, -0.4f, -0.5f);
+                                        break;
+                                    case "OldExhibition":
+                                        GL11.glTranslated(-0.04D, 0.13D, 0.0D);
+                                        transformFirstPersonItem(f / 2.5F, 0.0f);
+                                        GlStateManager.rotate(-var9 * 40.0F / 2.0F, var9 / 2.0F, 1.0F, 4.0F);
+                                        GlStateManager.rotate(-var9 * 30.0F, 1.0F, var9 / 3.0F, -0.0F);
+                                        doBlockTransformations();
+                                        break;
+                                }
+                            } else {
+                                transformFirstPersonItem(f, 0.0F);
+                                doBlockTransformations();
+                            }
                             break;
-
                         case BOW:
-                            this.transformFirstPersonItem(f, ModuleManager.ANIMATION.isState() && ModuleManager.ANIMATION.oldAnimation.isValue() ? f1 : 0.0F);
+                            this.transformFirstPersonItem(f, f1);
                             this.doBowTransformations(partialTicks, abstractclientplayer);
                     }
                 }

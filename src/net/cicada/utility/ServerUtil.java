@@ -1,7 +1,9 @@
 package net.cicada.utility;
 
+import lombok.experimental.UtilityClass;
 import net.minecraft.client.multiplayer.ServerData;
 
+@UtilityClass
 public class ServerUtil implements Access {
-    public static ServerData serverData = null;
+    public ServerData serverData = null;
 }

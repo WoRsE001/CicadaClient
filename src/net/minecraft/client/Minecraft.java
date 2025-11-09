@@ -224,7 +224,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private Entity renderViewEntity;
     public Entity pointedEntity;
     public EffectRenderer effectRenderer;
-    private final Session session;
+    private Session session;
     private boolean isGamePaused;
     public FontRenderer fontRendererObj;
     public FontRenderer standardGalacticFontRenderer;
@@ -2832,6 +2832,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     public boolean isFullScreen()
     {
         return this.fullscreen;
+    }
+
+    public void setSession(Session sessionIn) {
+        this.session = sessionIn;
     }
 
     public Session getSession()

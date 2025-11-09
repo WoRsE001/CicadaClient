@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -49,6 +50,18 @@ public class RenderUtil implements Access {
         GL11.glVertex2d(x, y + height);
         GL11.glEnd();
         GL11.glPopMatrix();
+        stop2D();
+    }
+
+    public void render2DCircle(float x, float y, float radius) {
+        start2D();
+        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+        for (int i = 0; i < 360; i++) {
+            float cos = (float) (Math.cos(Math.toRadians(i))) * radius;
+            float sin = (float) (Math.sin(Math.toRadians(i))) * radius;
+            GL11.glVertex2f(x + cos, y + sin);
+        }
+        GL11.glEnd();
         stop2D();
     }
 

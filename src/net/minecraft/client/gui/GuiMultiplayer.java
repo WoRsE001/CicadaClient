@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.List;
 
 import de.florianmichael.viamcp.ViaMCP;
+import net.cicada.Cicada;
+import net.cicada.ui.altmanager.AltManager;
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
@@ -83,6 +85,7 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
         this.buttonList.add(new GuiButton(3, this.width / 2 + 4 + 50, this.height - 52, 100, 20, I18n.format("selectServer.add", new Object[0])));
         this.buttonList.add(new GuiButton(8, this.width / 2 + 4, this.height - 28, 70, 20, I18n.format("selectServer.refresh", new Object[0])));
         this.buttonList.add(new GuiButton(0, this.width / 2 + 4 + 76, this.height - 28, 75, 20, I18n.format("gui.cancel", new Object[0])));
+        this.buttonList.add(new GuiButton(9, this.width - 115, 5, 110, 20, "AltManager"));
         this.buttonList.add(ViaMCP.INSTANCE.getAsyncVersionSlider());
         this.selectServer(this.serverListSelector.func_148193_k());
     }
@@ -164,6 +167,9 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
             else if (button.id == 8)
             {
                 this.refreshServerList();
+            }
+            else if (button.id == 9) {
+                this.mc.displayGuiScreen(Cicada.ALT_MANAGER);
             }
         }
     }

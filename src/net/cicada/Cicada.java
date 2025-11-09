@@ -1,6 +1,7 @@
 package net.cicada;
 
 import de.florianmichael.viamcp.ViaMCP;
+import net.cicada.ui.altmanager.AltManager;
 import net.minecraft.client.Minecraft;
 import net.cicada.command.api.CommandManager;
 import net.cicada.config.api.ConfigManager;
@@ -12,7 +13,7 @@ import java.io.File;
 
 public class Cicada {
     public static final String name = "Cicada";
-    public static final String version = "1.1.2";
+    public static final String version = "1.1.3";
 
     public static Cicada INSTANCE = new Cicada();
     public static File MAIN_DIR = new File(Minecraft.getMinecraft().mcDataDir, name);
@@ -20,6 +21,7 @@ public class Cicada {
     public static final ModuleManager MODULE_MANAGER = new ModuleManager();
     public static final CommandManager COMMAND_MANAGER = new CommandManager();
     public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
+    public static final AltManager ALT_MANAGER = new AltManager();
 
     public static void init() {
         Display.setTitle(name + " " + version);

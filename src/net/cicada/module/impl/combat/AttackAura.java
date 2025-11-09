@@ -2,6 +2,8 @@ package net.cicada.module.impl.combat;
 
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.*;
@@ -40,7 +42,7 @@ public class AttackAura extends Module {
     NumberSetting hitFovYaw = new NumberSetting("HitFovYaw", 180, 0,180, 1, () -> true, this);
     NumberSetting hitFovPitch = new NumberSetting("HitFovPitch", 180, 0, 180, 1, () -> true, this);
     // AUTOBLOCK
-    //BooleanSetting autoBlock = new BooleanSetting("AutoBlock", false, () -> true, this);
+    public BooleanSetting autoBlock = new BooleanSetting("AutoBlock", false, () -> true, this);
     // MOVEMENT
     BooleanSetting jumpFix = new BooleanSetting("JumpFix", true, () -> true, this);
     BooleanSetting moveFix = new BooleanSetting("MoveFix", true, () -> true, this);
@@ -48,6 +50,7 @@ public class AttackAura extends Module {
 
     public EntityLivingBase target;
     Vec3 aimPoint;
+    public boolean isBlocking;
 
     @Override
     protected void onEnable() {
@@ -58,6 +61,7 @@ public class AttackAura extends Module {
     @Override
     protected void onDisable() {
         this.target = null;
+        this.unblock();
         super.onDisable();
     }
 
@@ -74,6 +78,12 @@ public class AttackAura extends Module {
                     mc.thePlayer.rotationYaw = RotateUtil.rotation.getX();
                     mc.thePlayer.rotationPitch = RotateUtil.rotation.getY();
                 }
+
+                ItemStack itemStack = mc.thePlayer.getHeldItem();
+                if (this.autoBlock.isValue() && itemStack != null && itemStack.getItem() instanceof ItemSword) this.block();
+                else this.unblock();
+            } else {
+                this.unblock();
             }
         }
 
@@ -160,5 +170,19 @@ public class AttackAura extends Module {
 
         RotateUtil.rotateTo(aimPoint, (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
         return aimPoint;
+    }
+
+    private void block() {
+        if (!this.isBlocking) {
+            mc.thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
+            this.isBlocking = true;
+        }
+    }
+
+    private void unblock() {
+        if (this.isBlocking) {
+            mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+            this.isBlocking = false;
+        }
     }
 }

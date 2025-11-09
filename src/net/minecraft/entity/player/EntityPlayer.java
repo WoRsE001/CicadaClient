@@ -13,6 +13,7 @@ import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -154,6 +155,10 @@ public abstract class EntityPlayer extends EntityLivingBase
 
     public int getItemInUseCount()
     {
+        if (this instanceof EntityPlayerSP && ModuleManager.ATTACK_AURA.isState() && ModuleManager.ATTACK_AURA.autoBlock.isValue() && ModuleManager.ATTACK_AURA.isBlocking) {
+            return Integer.MAX_VALUE;
+        }
+
         return this.itemInUseCount;
     }
 
