@@ -32,10 +32,12 @@ public class ModuleButton extends ComponentGui {
             RenderUtil.render2DRect(mc.displayWidth / 4F - w / 2F, mc.displayHeight / 4F - h / 2, w, h);
             float offsetY = mc.displayHeight / 4F - h / 2;
             for (Setting setting : this.module.getSettings()) {
-                setting.setPosX(mc.displayWidth / 4F - w / 2F + 2);
-                setting.setPosY(offsetY);
-                setting.draw(mouseX, mouseY);
-                offsetY += setting.getHeight();
+                if (setting.getVisible().getAsBoolean()) {
+                    setting.setPosX(mc.displayWidth / 4F - w / 2F + 2);
+                    setting.setPosY(offsetY);
+                    setting.draw(mouseX, mouseY);
+                    offsetY += setting.getHeight();
+                }
             }
         }
     }
@@ -44,7 +46,9 @@ public class ModuleButton extends ComponentGui {
     public void mousePressed(int mouseX, int mouseY, int mouseButton) {
         if (this.isOpenSettings) {
             for (Setting setting : this.module.getSettings()) {
-                setting.mousePressed(mouseX, mouseY, mouseButton);
+                if (setting.getVisible().getAsBoolean()) {
+                    setting.mousePressed(mouseX, mouseY, mouseButton);
+                }
             }
         }
     }
@@ -53,7 +57,9 @@ public class ModuleButton extends ComponentGui {
     public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
         if (this.isOpenSettings) {
             for (Setting setting : this.module.getSettings()) {
-                setting.mouseReleased(mouseX, mouseY, mouseButton);
+                if (setting.getVisible().getAsBoolean()) {
+                    setting.mouseReleased(mouseX, mouseY, mouseButton);
+                }
             }
         }
     }
