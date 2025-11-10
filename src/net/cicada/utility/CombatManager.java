@@ -1,10 +1,12 @@
 package net.cicada.utility;
 
 import lombok.experimental.UtilityClass;
+import net.cicada.module.api.ModuleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import org.lwjgl.util.vector.Vector2f;
@@ -16,12 +18,11 @@ public class CombatManager implements Access {
     public void updateTarget(String sortType) {
         EntityLivingBase candidate = null;
         for (Entity entity : mc.theWorld.getLoadedEntityList()) {
-            if ((!(entity instanceof EntityPlayer) && !(entity instanceof EntityCow)) || entity.isDead || entity == mc.thePlayer) continue;
+            if (!(entity instanceof EntityLivingBase) || entity.isDead || entity == mc.thePlayer || !PlayerUtil.isValid(entity)) continue;
             if (candidate == null) {
                 candidate = (EntityLivingBase) entity;
                 continue;
             }
-
             if (sortType.equals("FOV")) {
                 if (FOVToTarget(entity, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch).length() < FOVToTarget(candidate, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch).length()) candidate = (EntityLivingBase) entity;
             } else if (sortType.equals("Health")) {
