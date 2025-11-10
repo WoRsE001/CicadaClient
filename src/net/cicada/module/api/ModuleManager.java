@@ -8,10 +8,7 @@ import net.cicada.module.impl.combat.*;
 import net.cicada.module.impl.connect.Blink;
 import net.cicada.module.impl.connect.TimerRange;
 import net.cicada.module.impl.exploit.*;
-import net.cicada.module.impl.misc.ClientSpoofer;
-import net.cicada.module.impl.misc.Fixes;
-import net.cicada.module.impl.misc.FlagDetector;
-import net.cicada.module.impl.misc.PacketLogger;
+import net.cicada.module.impl.misc.*;
 import net.cicada.module.impl.movement.*;
 import net.cicada.module.impl.player.*;
 import net.cicada.module.impl.render.*;
@@ -78,6 +75,7 @@ public class ModuleManager implements EventListener {
     public static Fixes FIXES = new Fixes();
     public static FlagDetector FLAG_DETECTOR = new FlagDetector();
     public static PacketLogger PACKET_LOGGER = new PacketLogger();
+    public static Targets TARGETS = new Targets();
     // EXPLOIT
     public static Disabler DISABLER = new Disabler();
     public static FakeGameMode FAKE_GAME_MODE = new FakeGameMode();
