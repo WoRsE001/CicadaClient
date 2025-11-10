@@ -19,7 +19,7 @@ import java.util.List;
 
 @ModuleInfo(name = "Speed", category = Category.Movement)
 public class Speed extends Module {
-    ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "Intave 1.13+", "Polar"), () -> true, this);
+    ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "Intave 1.13+", "Polar", "PolarTest"), () -> true, this);
     NumberSetting speed = new NumberSetting("Speed", 1, 0, 5, 0.01, () -> mode.getValue().equals("Motion"), this);
     BooleanSetting autoJump = new BooleanSetting("AutoJump", true, () -> true, this);
 
@@ -64,6 +64,16 @@ public class Speed extends Module {
                     mc.timer.setTimer((float) Math.random() * 0.05F + 1);
                 } else {
                     mc.timer.setTimer(1);
+                }
+            }
+
+            if (mode.getValue().equals("PolarTest")) {
+                mc.thePlayer.motionX *= Math.random() * 0.028 + 1;
+                mc.thePlayer.motionZ *= Math.random() * 0.028 + 1;
+                if (mc.thePlayer.onGround) {
+                    mc.timer.setTimer((float) Math.random() * 0.09F + 1)
+                } else {
+                    mc.timer.setTimer(1)
                 }
             }
         }
