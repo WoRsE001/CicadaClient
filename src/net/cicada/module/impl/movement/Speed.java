@@ -13,7 +13,6 @@ import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import net.cicada.utility.MovementUtil;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -71,9 +70,9 @@ public class Speed extends Module {
                 mc.thePlayer.motionX *= Math.random() * 0.028 + 1;
                 mc.thePlayer.motionZ *= Math.random() * 0.028 + 1;
                 if (mc.thePlayer.onGround) {
-                    mc.timer.setTimer((float) Math.random() * 0.09F + 1)
+                    mc.timer.setTimer((float) Math.random() * 0.09F + 1);
                 } else {
-                    mc.timer.setTimer(1)
+                    mc.timer.setTimer(1);
                 }
             }
         }
