@@ -1,6 +1,7 @@
 package net.cicada.module.impl.combat;
 
 import de.florianmichael.viamcp.fixes.AttackOrder;
+import net.cicada.module.api.ModuleManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -42,7 +43,7 @@ public class AttackAura extends Module {
     NumberSetting hitFovYaw = new NumberSetting("HitFovYaw", 180, 0,180, 1, () -> true, this);
     NumberSetting hitFovPitch = new NumberSetting("HitFovPitch", 180, 0, 180, 1, () -> true, this);
     // AUTOBLOCK
-    public BooleanSetting autoBlock = new BooleanSetting("AutoBlock", false, () -> true, this);
+    public ListSetting autoBlock = new ListSetting("AutoBlock", "None", List.of("None", "Constant", "PreAttack"), () -> true, this);
     // MOVEMENT
     BooleanSetting jumpFix = new BooleanSetting("JumpFix", true, () -> true, this);
     BooleanSetting moveFix = new BooleanSetting("MoveFix", true, () -> true, this);
@@ -67,6 +68,11 @@ public class AttackAura extends Module {
 
     @Override
     public void listen(Event event) {
+        if (this.autoBlock.is("PreAttack") && event instanceof AttackEvent e && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
+            if (e.getPriority() == Event.Priority.Low) this.unblock();
+            if (e.getPriority() == Event.Priority.High) this.block();
+        }
+
         if (event instanceof TickEvent) {
             if (mc.currentScreen != null) return;
             CombatManager.updateTarget(sortMode.getValue());
@@ -79,9 +85,7 @@ public class AttackAura extends Module {
                     mc.thePlayer.rotationPitch = RotateUtil.rotation.getY();
                 }
 
-                ItemStack itemStack = mc.thePlayer.getHeldItem();
-                if (this.autoBlock.isValue() && itemStack != null && itemStack.getItem() instanceof ItemSword) this.block();
-                else this.unblock();
+                if (!ModuleManager.ATTACK_AURA.autoBlock.is("None") && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) this.block();
             } else {
                 this.unblock();
             }

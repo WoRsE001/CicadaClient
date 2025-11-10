@@ -155,7 +155,7 @@ public abstract class EntityPlayer extends EntityLivingBase
 
     public int getItemInUseCount()
     {
-        if (this instanceof EntityPlayerSP && ModuleManager.ATTACK_AURA.isState() && ModuleManager.ATTACK_AURA.autoBlock.isValue() && ModuleManager.ATTACK_AURA.isBlocking) {
+        if (this instanceof EntityPlayerSP && ModuleManager.ATTACK_AURA.isBlocking) {
             return Integer.MAX_VALUE;
         }
 

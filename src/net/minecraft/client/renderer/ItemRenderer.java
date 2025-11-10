@@ -337,9 +337,9 @@ public class ItemRenderer
                 {
                     this.renderItemMap(abstractclientplayer, f2, f, f1);
                 }
-                else if (abstractclientplayer.getItemInUseCount() > 0 || (ModuleManager.ATTACK_AURA.isState() && ModuleManager.ATTACK_AURA.isBlocking))
+                else if (abstractclientplayer.getItemInUseCount() > 0 || ModuleManager.ATTACK_AURA.isBlocking)
                 {
-                    EnumAction enumaction = ModuleManager.ATTACK_AURA.isState() && ModuleManager.ATTACK_AURA.isBlocking ? EnumAction.BLOCK : this.itemToRender.getItemUseAction();
+                    EnumAction enumaction = ModuleManager.ATTACK_AURA.isBlocking ? EnumAction.BLOCK : this.itemToRender.getItemUseAction();
 
                     switch (enumaction)
                     {
