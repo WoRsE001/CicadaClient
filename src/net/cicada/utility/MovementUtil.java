@@ -23,11 +23,38 @@ public class MovementUtil implements Access {
     }
 
     public static float getDirs() {
-        float yaw = mc.thePlayer.rotationYaw;
-        int x  = (mc.gameSettings.keyBindRight.isKeyDown() ? 1 : 0) - (mc.gameSettings.keyBindLeft.isKeyDown()  ? 1 : 0);
-        int z  = (mc.gameSettings.keyBindForward.isKeyDown() ? 1 : 0) - (mc.gameSettings.keyBindBack.isKeyDown()   ? 1 : 0);
-        if (x != 0 || z != 0) yaw += (float) Math.toDegrees(Math.atan2(x, z));
-        return MathHelper.wrapAngleTo180_float(yaw);
+
+        float rotationYaw = mc.thePlayer.rotationYaw;
+
+        boolean forward = mc.gameSettings.keyBindForward.isKeyDown();
+        boolean backward = mc.gameSettings.keyBindBack.isKeyDown();
+        boolean left = mc.gameSettings.keyBindLeft.isKeyDown();
+        boolean right = mc.gameSettings.keyBindRight.isKeyDown();
+
+        if (forward && !backward && !left && !right) {
+            rotationYaw += 0.0f;
+        } else if (backward && !forward && !left && !right) {
+            rotationYaw += 180.0f;
+        } else if (left && !right && !forward && !backward) {
+            rotationYaw -= 90.0f;
+        } else if (right && !left && !forward && !backward) {
+            rotationYaw += 90.0f;
+        } else if (forward && left && !backward && !right) {
+            rotationYaw -= 45.0f;
+        } else if (forward && right && !backward && !left) {
+            rotationYaw += 45.0f;
+        } else if (backward && left && !forward && !right) {
+            rotationYaw -= 135.0f;
+        } else if (backward && right && !forward && !left) {
+            rotationYaw += 135.0f;
+        }
+
+        rotationYaw = rotationYaw % 360.0f;
+        if (rotationYaw < 0) {
+            rotationYaw += 360.0f;
+        }
+
+        return rotationYaw;
     }
 
 
