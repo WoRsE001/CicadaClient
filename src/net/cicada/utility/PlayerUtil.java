@@ -41,13 +41,19 @@ public class PlayerUtil implements Access {
         return false;
     }
 
+    public boolean isBot(Entity entity) {
+        if (entity.getEntityId() >= 1000000000 || entity.getEntityId() <= 0) return true;
+        if (mc.getNetHandler().getPlayerInfo(entity.getUniqueID()) == null) return true;
+        return mc.getNetHandler().getPlayerInfo(entity.getUniqueID()).getResponseTime() <= 0;
+    }
+
     public boolean isValid(Entity entity) {
         if ((ModuleManager.TARGETS.teams.isValue() && isTeam(entity))) {
             return false;
         }
         if (entity instanceof EntityLivingBase && entity.isEntityAlive() && entity != mc.thePlayer) {
             if (ModuleManager.TARGETS.typeTargets.is("Players") && entity instanceof EntityPlayer) {
-                return true;
+                return !ModuleManager.TARGETS.antiBot.isValue() || !isBot(entity);
             }
             return (ModuleManager.TARGETS.typeTargets.is("Mobs") && isMob(entity)) || (ModuleManager.TARGETS.typeTargets.is("Animals")  && isAnimal(entity));
         }

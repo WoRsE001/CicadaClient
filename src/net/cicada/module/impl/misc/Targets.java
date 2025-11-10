@@ -13,6 +13,7 @@ public class Targets extends Module {
             .add("Animals", false)
             .add("Mobs", false);
     public BooleanSetting teams = new BooleanSetting("Teams",  false, () -> true, this);
+    public BooleanSetting antiBot = new BooleanSetting("AntiBot",  true, () -> true, this);
 
     @Override
     protected void onEnable() {
