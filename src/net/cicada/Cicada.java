@@ -15,7 +15,7 @@ import java.io.File;
 
 public class Cicada {
     public static final String name = "Cicada";
-    public static final String version = "1.1.3";
+    public static final String version = "1.1.4";
 
     public static Cicada INSTANCE = new Cicada();
     public static File MAIN_DIR = new File(Minecraft.getMinecraft().mcDataDir, name);
