@@ -1,6 +1,7 @@
 package net.cicada.module.impl.movement;
 
 import net.cicada.event.impl.MotionEvent;
+import net.cicada.event.impl.TickEvent;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
@@ -49,7 +50,7 @@ public class Fly extends Module {
 
     @Override
     public void listen(Event event) {
-        if (event instanceof UpdateEvent) {
+        if (event instanceof TickEvent) {
             if (mode.is("Motion")) {
                 MovementUtil.strafe(motionSpeed.getValue(), 1);
                 mc.thePlayer.motionY = spigotBypass.isValue() ? -0.04 : 0;
