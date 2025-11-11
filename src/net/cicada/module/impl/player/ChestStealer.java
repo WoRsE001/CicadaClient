@@ -1,5 +1,6 @@
 package net.cicada.module.impl.player;
 
+import net.cicada.utility.LoggerUtil;
 import net.minecraft.inventory.ContainerChest;
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.TickEvent;
@@ -16,18 +17,26 @@ public class ChestStealer extends Module {
     int tick;
 
     @Override
+    protected void onDisable() {
+        this.tick = 0;
+        super.onDisable();
+    }
+
+    @Override
     public void listen(Event event) {
         if (event instanceof TickEvent) {
-            if (mc.thePlayer.openContainer instanceof ContainerChest container && tick < 1) {
-                int containerSize = container.getLowerChestInventory().getSizeInventory();
-                for (int i = 0; i < containerSize; i++) {
-                    if (container.getLowerChestInventory().getStackInSlot(i) == null) continue;
-                    InvUtil.stealItem(i);
-                    tick = (int) delay.getValue();
-                    break;
+            if (mc.thePlayer.openContainer instanceof ContainerChest container) {
+                if (this.tick == 0) {
+                    int containerSize = container.getLowerChestInventory().getSizeInventory();
+                    for (int i = 0; i < containerSize; i++) {
+                        if (container.getLowerChestInventory().getStackInSlot(i) == null) continue;
+                        InvUtil.stealItem(i);
+                        this.tick = (int) delay.getValue();
+                        if (this.tick != 0) break;
+                    }
                 }
+                if (this.tick > 0) this.tick--;
             }
-            tick--;
         }
     }
 }
