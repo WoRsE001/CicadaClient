@@ -1,20 +1,13 @@
-package net.cicada.utility;
+package net.cicada.utility.Render;
 
 import lombok.experimental.UtilityClass;
+import net.cicada.utility.Access;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
 
 @UtilityClass
 public class RenderUtil implements Access {
