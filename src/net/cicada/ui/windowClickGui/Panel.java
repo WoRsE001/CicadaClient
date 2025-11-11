@@ -6,6 +6,7 @@ import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleManager;
 import net.cicada.ui.ComponentGui;
+import net.cicada.utility.Render.font.FontRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,14 +28,14 @@ public class Panel extends ComponentGui {
         }
     }
 
-    public void draw(int mouseX, int mouseY, float partialTicks, Window window) {
-        mc.fontRendererObj.drawStringWithShadow(this.category.name(), this.posX, this.posY, 0xFFFFFFFF);
+    public void draw(int mouseX, int mouseY, float partialTicks, FontRenderer font, Window window) {
+        font.drawStringWithShadow(this.category.name(), this.posX, this.posY, 0xFFFFFFFF);
         if (this.selected) {
             float y = window.getPosY() + 10;
             for (ModuleButton moduleButton : this.moduleButtons) {
                 moduleButton.setPosX(window.getPosX());
                 moduleButton.setPosY(y);
-                moduleButton.draw(mouseX, mouseY, partialTicks, window);
+                moduleButton.draw(mouseX, mouseY, partialTicks, font, window);
                 y += moduleButton.getHeight();
             }
         }

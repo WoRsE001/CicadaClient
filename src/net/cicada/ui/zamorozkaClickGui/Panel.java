@@ -6,7 +6,8 @@ import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleManager;
 import net.cicada.ui.ComponentGui;
-import net.cicada.utility.RenderUtil;
+import net.cicada.utility.Render.RenderUtil;
+import net.cicada.utility.Render.font.FontRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -28,17 +29,16 @@ public class Panel extends ComponentGui {
         }
     }
 
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks) {
+    public void draw(int mouseX, int mouseY, float partialTicks, FontRenderer font) {
         RenderUtil.setGlColor(new Color(40, 40, 40, 255));
         RenderUtil.render2DRect(this.posX, this.posY, this.width, this.height);
-        mc.fontRendererObj.drawStringWithShadow(this.category.name(), this.posX + this.width / 2 - mc.fontRendererObj.getStringWidth(this.category.name()) / 2F, this.posY + this.height / 2 - 4, 0xFFFFFFFF);
+        font.drawCenteredStringWithShadow(this.category.name(), this.posX + this.width / 2, this.posY + this.height / 2 - font.getHeight() / 4F, 0xFFFFFFFF);
         if (isSelected) {
             float offsetY = mc.displayHeight / 4 - (moduleButtons.getFirst().getHeight() + 10) * moduleButtons.size() / 2;
             for (ModuleButton moduleButton : moduleButtons) {
                 moduleButton.setPosX(this.width + 20);
                 moduleButton.setPosY(offsetY);
-                moduleButton.draw(mouseX, mouseY, partialTicks);
+                moduleButton.draw(mouseX, mouseY, partialTicks, font);
                 offsetY += moduleButton.getHeight() + 10;
             }
         }

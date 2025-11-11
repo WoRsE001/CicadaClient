@@ -3,7 +3,10 @@ package net.cicada.ui.zamorozkaClickGui;
 import lombok.Getter;
 import lombok.Setter;
 import net.cicada.module.api.Category;
-import net.cicada.utility.RenderUtil;
+import net.cicada.module.api.ModuleManager;
+import net.cicada.utility.Render.RenderUtil;
+import net.cicada.utility.Render.font.FontRenderer;
+import net.cicada.utility.Render.font.Fonts;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.awt.*;
@@ -14,6 +17,7 @@ import java.util.List;
 @Getter @Setter
 public class ZamorozkaClickGui extends GuiScreen {
     public static ZamorozkaClickGui INSTANCE ;
+    public static FontRenderer font = Fonts.Minecraft.get(20);
     private static List<Panel> panels = new ArrayList<>();
 
     public static void init() {
@@ -31,7 +35,7 @@ public class ZamorozkaClickGui extends GuiScreen {
         for (Panel panel : panels) {
             panel.setPosX(10);
             panel.setPosY(offsetY);
-            panel.draw(mouseX, mouseY, partialTicks);
+            panel.draw(mouseX, mouseY, partialTicks, font);
             offsetY += panel.getHeight() + 10;
         }
     }

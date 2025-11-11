@@ -1,11 +1,14 @@
 package net.cicada.ui.windowClickGui;
 
+import net.cicada.utility.Render.font.FontRenderer;
+import net.cicada.utility.Render.font.Fonts;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.io.IOException;
 
 public class WindowClickGui extends GuiScreen {
     public static WindowClickGui INSTANCE;
+    public static FontRenderer font = Fonts.Minecraft.get(20);
     private Window window;
 
     public static  void init() {
@@ -14,12 +17,12 @@ public class WindowClickGui extends GuiScreen {
 
     @Override
     public void initGui() {
-        window = new Window(50, 50, mc.displayWidth / 2 - 100, mc.displayHeight / 2 - 100);
+        window = new Window(50, 50, mc.displayWidth / 2F - 100, mc.displayHeight / 2F - 100);
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        window.draw(mouseX, mouseY, partialTicks);
+        window.draw(mouseX, mouseY, partialTicks, font);
     }
 
     @Override

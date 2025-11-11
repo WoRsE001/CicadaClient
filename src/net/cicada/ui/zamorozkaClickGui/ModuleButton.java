@@ -5,7 +5,8 @@ import lombok.Setter;
 import net.cicada.module.api.Module;
 import net.cicada.module.setting.Setting;
 import net.cicada.ui.ComponentGui;
-import net.cicada.utility.RenderUtil;
+import net.cicada.utility.Render.RenderUtil;
+import net.cicada.utility.Render.font.FontRenderer;
 
 import java.awt.*;
 
@@ -20,11 +21,10 @@ public class ModuleButton extends ComponentGui {
         this.module = module;
     }
 
-    @Override
-    public void draw(int mouseX, int mouseY, float partialTicks) {
+    public void draw(int mouseX, int mouseY, float partialTicks, FontRenderer font) {
         RenderUtil.setGlColor(new Color(40, 40, 40, 255));
         RenderUtil.render2DRect(this.posX, this.posY, this.width, this.height);
-        mc.fontRendererObj.drawStringWithShadow(this.module.getName(), this.posX + this.width / 2 - mc.fontRendererObj.getStringWidth(this.module.getName()) / 2F, this.posY + this.height / 2 - 4, this.module.isState() ? 0xFFFFFFFF : 0xFF808080);
+        font.drawCenteredStringWithShadow(this.module.getName(), this.posX + this.width / 2, this.posY + this.height / 2 - font.getHeight() / 4F, this.module.isState() ? 0xFFFFFFFF : 0xFF808080);
         if (this.isOpenSettings) {
             float w = 400;
             float h = mc.displayHeight / 2F - 50;
