@@ -6,6 +6,7 @@ import net.cicada.event.api.EventListener;
 import net.cicada.event.impl.KeyEvent;
 import net.cicada.module.impl.combat.*;
 import net.cicada.module.impl.connect.Blink;
+import net.cicada.module.impl.connect.Ping;
 import net.cicada.module.impl.connect.TimerRange;
 import net.cicada.module.impl.exploit.*;
 import net.cicada.module.impl.misc.*;
@@ -31,12 +32,14 @@ public class ModuleManager implements EventListener {
     public static Velocity VELOCITY = new Velocity();
     // CONNECT
     public static Blink BLINK = new Blink();
+    public static Ping PING = new Ping();
     public static TimerRange TIMER_RANGE = new TimerRange();
     // Movement
     public static AirStuck AIT_STUCK = new AirStuck();
     public static AutoSprint AUTO_SPRINT = new AutoSprint();
     public static Fly FLY = new Fly();
     public static HighJump HIGH_JUMP = new HighJump();
+    public static LiquidWalk LIQUID_WALK = new LiquidWalk();
     public static LongJump LONG_JUMP = new LongJump();
     public static NoJumpDelay NO_JUMP_DELAY = new NoJumpDelay();
     public static NoSlow NO_SLOW = new NoSlow();
