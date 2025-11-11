@@ -7,7 +7,6 @@ import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.PacketEvent;
-import net.cicada.event.impl.UpdateEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
@@ -15,16 +14,17 @@ import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import net.cicada.utility.MovementUtil;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
 @ModuleInfo(name = "Fly", category = Category.Movement)
 public class Fly extends Module {
-    ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "IntaveFlag", "MatrixJump"), () -> true, this);
-    NumberSetting motionSpeed = new NumberSetting("Speed", 2, 0, 20, 0.01, () -> mode.getValue().equals("Motion"), this);
+    ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "IntaveFlag", "MatrixJump", "MatrixBackFlag"), () -> true, this);
+    NumberSetting motionSpeed = new NumberSetting("Speed", 2, 0, 20, 0.01, () -> mode.is("Motion") || mode.is("MatrixBackFlag"), this);
+    NumberSetting backMotionSpeed = new NumberSetting("BackSpeed", 1, 0, 20, 0.01, () -> mode.is("MatrixBackFlag"), this);
+    NumberSetting timer = new NumberSetting("Timer", 1, 0, 5, 0.1, () -> mode.is("MatrixBackFlag"), this);
     BooleanSetting spigotBypass = new BooleanSetting("spigotBypass", true, () -> mode.getValue().equals("Motion"), this);
-    BooleanSetting saveMotion = new BooleanSetting("saveMotion", false, () -> mode.getValue().equals("Motion"), this);
+    BooleanSetting saveMotion = new BooleanSetting("saveMotion", false, () -> true, this);
 
     boolean boosting;
     int boostTicks = 0;
@@ -36,7 +36,7 @@ public class Fly extends Module {
 
     @Override
     protected void onDisable() {
-        if (mode.getValue().equals("Motion") && !saveMotion.isValue()) {
+        if (!saveMotion.isValue()) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
             mc.thePlayer.motionZ = 0;
@@ -111,6 +111,15 @@ public class Fly extends Module {
                     this.toggle();
                 }
             }
+
+            if (this.mode.is("MatrixBackFlag")) {
+                if (!this.receiveFlag) {
+                    MovementUtil.strafe(-this.backMotionSpeed.getValue(), 1);
+                } else {
+                    mc.timer.setTimer((float) this.timer.getValue());
+                    MovementUtil.strafe(this.motionSpeed.getValue(), 1);
+                }
+            }
         }
 
         if (event instanceof MotionEvent e && e.getPriority() == Event.Priority.Low) {
@@ -138,6 +147,12 @@ public class Fly extends Module {
 
                 if (e.getPacket() instanceof S12PacketEntityVelocity v && v.getEntityID() == mc.thePlayer.getEntityId()) {
                     event.cancel();
+                }
+            }
+
+            if (this.mode.is("MatrixBackFlag")) {
+                if (e.getPacket() instanceof S08PacketPlayerPosLook) {
+                    this.receiveFlag = true;
                 }
             }
         }
