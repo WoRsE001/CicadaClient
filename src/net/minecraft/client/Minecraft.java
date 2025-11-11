@@ -39,6 +39,7 @@ import javax.imageio.ImageIO;
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.cicada.Cicada;
 import net.cicada.event.api.Event;
+import net.cicada.event.impl.GameLoopEvent;
 import net.cicada.event.impl.LegitClickTimingEvent;
 import net.cicada.event.impl.TickEvent;
 import net.cicada.module.api.ModuleManager;
@@ -976,6 +977,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     private void runGameLoop() throws IOException
     {
+        GameLoopEvent gameLoopEvent = new GameLoopEvent().call();
+        if (gameLoopEvent.isCanceled()) return;
+
         long i = System.nanoTime();
         this.mcProfiler.startSection("root");
 

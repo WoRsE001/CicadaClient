@@ -12,6 +12,7 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.utility.*;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector2f;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -72,7 +73,8 @@ public class Scaffold extends Module {
             if (!mc.thePlayer.onGround && this.onGround) this.onGround = false;
             this.targetBlock = getBlockPos();
             if (this.targetBlock != null) {
-                RotateUtil.rotateTo(this.getVectorForRotation(this.getYaw(), this.getPitch()), (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
+                Vector2f rot = this.getBestRotation();
+                RotateUtil.rotateTo(this.getVectorForRotation(rot.getX(), rot.getY()), (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
             }
         }
 
@@ -145,28 +147,27 @@ public class Scaffold extends Module {
         float yaw = (float) MovementUtil.getDirs() - 180;
         float roundYaw = MathHelper.round(yaw, 45);
         if (this.snapYaw.isValue()) yaw = roundYaw;
-        if (roundYaw % 90 == 0) {
-            if (Math.floor(mc.thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posX) || Math.floor(mc.thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posZ)) yaw += (float) this.offsetYaw.getValue();
-            else yaw -= (float) this.offsetYaw.getValue();
-        }
         if (this.telly.isValue()) {
             if ((mc.thePlayer.onGround && this.groundTick >= this.groundTicksToJump.getValue()) || mc.thePlayer.jumpTicks > this.jumpTicksToRotate.getValue()) {
                 yaw += 180;
             }
+        } else if (roundYaw % 90 == 0) {
+            if (Math.floor(mc.thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posX) || Math.floor(mc.thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posZ)) yaw += (float) this.offsetYaw.getValue();
+            else yaw -= (float) this.offsetYaw.getValue();
         }
         return yaw;
     }
 
-    private float getPitch() {
+    private float getPitch(float yaw) {
         List<Float> pitches = new ArrayList<>();
         for (int i = -90; i < 91; i++) {
-            MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(4.5, 1, RotateUtil.rotation.getX(), i);
+            MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(4.5, 1, yaw, i);
             if (rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || rayTrace.sideHit == EnumFacing.UP || !rayTrace.getBlockPos().equals(this.targetBlock))
                 continue;
             pitches.add((float) i);
         }
         if (this.staticPitch.isValue()) return (float) this.pitch.getValue();
-        if (pitches.isEmpty()) return intave.isValue() ? 75 : RotateUtil.rotation.getY();
+        if (pitches.isEmpty()) return intave.isValue() && !telly.isValue() ? 75 : RotateUtil.rotation.getY();
         if (this.sortPitches.is("Nearest")) {
             pitches.sort(Comparator.comparingDouble(pitch -> Math.abs(RotateUtil.rotation.getY() - pitch)));
             return pitches.getFirst();
@@ -179,7 +180,31 @@ public class Scaffold extends Module {
         return 0;
     }
 
-    protected final Vec3 getVectorForRotation(float yaw, float pitch) {
+    private Vector2f getBestRotation() {
+        float yaw = this.getYaw();
+        float pitch = this.getPitch(yaw);
+
+        if (this.telly.isValue()) {
+            if (!((mc.thePlayer.onGround && this.groundTick >= this.groundTicksToJump.getValue()) || mc.thePlayer.jumpTicks > this.jumpTicksToRotate.getValue()) && this.intave.isValue()) {
+                List<Float> yaws = new ArrayList<>();
+                for (int i = -180; i < 181; i++) {
+                    MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(4.5, 1, i, pitch);
+                    if (rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || rayTrace.sideHit == EnumFacing.UP || !rayTrace.getBlockPos().equals(this.targetBlock))
+                        continue;
+                    yaws.add((float) i);
+                }
+                if (!yaws.isEmpty()) {
+                    boolean isRight = Math.floor(mc.thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posX) || Math.floor(mc.thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posZ);
+                    yaws.sort(Comparator.comparingDouble(yaw1 -> Math.abs(MovementUtil.getDirs() - 180 + (isRight ? this.offsetYaw.getValue() : -this.offsetYaw.getValue()) - yaw1)));
+                    yaw =  yaws.getFirst();
+                } else yaw = RotateUtil.rotation.getX();
+            }
+        }
+
+        return new Vector2f(yaw, pitch);
+    }
+
+    private Vec3 getVectorForRotation(float yaw, float pitch) {
         float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = -MathHelper.cos(-pitch * 0.017453292F);
