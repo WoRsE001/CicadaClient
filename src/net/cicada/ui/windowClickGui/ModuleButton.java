@@ -5,6 +5,7 @@ import lombok.Setter;
 import net.cicada.module.api.Module;
 import net.cicada.module.setting.Setting;
 import net.cicada.ui.ComponentGui;
+import net.cicada.utility.Render.font.FontRenderer;
 
 @Getter @Setter
 public class ModuleButton extends ComponentGui {
@@ -17,8 +18,8 @@ public class ModuleButton extends ComponentGui {
         this.module = module;
     }
 
-    public void draw(int mouseX, int mouseY, float partialTicks, Window window) {
-        mc.fontRendererObj.drawStringWithShadow(this.module.getName(), this.posX, this.posY, this.module.isState() ? 0xFFFFFFFF : 0xFF808080);
+    public void draw(int mouseX, int mouseY, float partialTicks, FontRenderer font, Window window) {
+        font.drawStringWithShadow(this.module.getName(), this.posX, this.posY, this.module.isState() ? 0xFFFFFFFF : 0xFF808080);
         if (this.isOpenSettings()) {
             float y = window.getPosY() + 10;
             for (Setting setting : this.module.getSettings()) {

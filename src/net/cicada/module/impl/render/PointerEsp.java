@@ -1,6 +1,6 @@
 package net.cicada.module.impl.render;
 
-import net.cicada.utility.RenderUtil;
+import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -3,6 +3,7 @@ package net.cicada.module.impl.world;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.block.BlockAir;
 import net.minecraft.util.*;
 import net.cicada.event.api.Event;
@@ -14,7 +15,6 @@ import net.cicada.utility.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

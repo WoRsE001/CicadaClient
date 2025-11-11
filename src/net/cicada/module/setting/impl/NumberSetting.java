@@ -2,8 +2,7 @@ package net.cicada.module.setting.impl;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cicada.utility.RenderUtil;
-import net.minecraft.client.gui.Gui;
+import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.util.MathHelper;
 import net.cicada.module.api.Module;
 import net.cicada.module.setting.Setting;
@@ -11,8 +10,6 @@ import net.cicada.utility.DeltaTracker;
 import net.cicada.utility.GuiUtil;
 
 import java.awt.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.function.BooleanSupplier;
 
 @Getter @Setter

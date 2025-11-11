@@ -7,7 +7,7 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.MultiBooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.cicada.utility.RenderUtil;
+import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.network.Packet;
