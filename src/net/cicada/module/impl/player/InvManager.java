@@ -1,5 +1,9 @@
 package net.cicada.module.impl.player;
 
+import lombok.Getter;
+import net.cicada.event.impl.UpdateEvent;
+import net.cicada.module.setting.impl.ListSetting;
+import net.cicada.utility.LoggerUtil;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.init.Items;
 import net.minecraft.item.*;
@@ -10,75 +14,43 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.utility.InvUtil;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+
 @ModuleInfo(name = "InvManager", category = Category.Player)
 public class InvManager extends Module {
-    int[] sortHotbar = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+    ListSetting slot1 = new ListSetting("Slot1", "Sword", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot2 = new ListSetting("Slot2", "FishingRod", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot3 = new ListSetting("Slot3", "Bow", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot4 = new ListSetting("Slot4", "WaterBucket", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot5 = new ListSetting("Slot5", "Food", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot6 = new ListSetting("Slot6", "Gapple", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot7 = new ListSetting("Slot7", "EnderPearl", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot8 = new ListSetting("Slot8", "Egg", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
+    ListSetting slot9 = new ListSetting("Slot9", "Block", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
 
     @Override
     public void listen(Event event) {
-        if (event instanceof TickEvent && mc.currentScreen instanceof GuiInventory) {
+        if (event instanceof UpdateEvent && mc.currentScreen instanceof GuiInventory) {
             if (this.searchAndSort()) return;
-            if (drop()) return;
+            //if (drop()) return;
         }
     }
 
     private boolean searchAndSort() {
-        int[] slotCandidates = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1};
-
-        for (int i = 0; i < 36; i++) {
-            ItemStack itemStack = getItemStack(i);
-            if (itemStack == null) continue;
-            Item item = itemStack.getItem();
-
-            if (item instanceof ItemSword) {
-                if (slotCandidates[0] == -1) slotCandidates[0] = i;
-                else if (InvUtil.getDamage(itemStack) > InvUtil.getDamage(getItemStack(slotCandidates[0]))) slotCandidates[0] = i;
-            } if (item instanceof ItemFishingRod) {
-                if (slotCandidates[1] == -1) slotCandidates[1] = i;
-            } if (item instanceof ItemBow) {
-                if (slotCandidates[2] == -1) slotCandidates[2] = i;
-            } if (item == Items.water_bucket) {
-                if (slotCandidates[3] == -1) slotCandidates[3] = i;
-            } if (item instanceof ItemFood && !(item instanceof ItemAppleGold)) {
-                if (slotCandidates[4] == -1) slotCandidates[4] = i;
-            } if (item instanceof ItemAppleGold) {
-                if (slotCandidates[5] == -1) slotCandidates[5] = i;
-            } if (item instanceof ItemEnderPearl) {
-                if (slotCandidates[6] == -1) slotCandidates[6] = i;
-            } if (item instanceof ItemEgg) {
-                if (slotCandidates[7] == -1) slotCandidates[7] = i;
-            } if (item instanceof ItemBlock) {
-                if (slotCandidates[8] == -1) slotCandidates[8] = i;
+        List<String> items = List.of(this.slot1.getValue(), this.slot2.getValue(), this.slot3.getValue(), this.slot4.getValue(), this.slot5.getValue(), this.slot6.getValue(), this.slot7.getValue(), this.slot8.getValue(), this.slot9.getValue());
+        for (int i = 0; i < items.size(); i++) {
+            ItemCategory category = ItemCategory.get(items.get(i));
+            for (int j = 0; j < mc.thePlayer.inventory.getSizeInventory(); j++) {
+                if (mc.thePlayer.inventory.getStackInSlot(j) == null) continue;
+                ItemStack currentItemStack = mc.thePlayer.inventory.getStackInSlot(j);
+                if (category.is(currentItemStack) && i != j) {
+                    LoggerUtil.display("MOVE!" + i);
+                    InvUtil.moveItem(j, i - 36);
+                    return true;
+                }
             }
-        }
-
-        if (slotCandidates[0] != -1 && sortHotbar[0] != -1 && slotCandidates[0] != sortHotbar[0]) {
-            InvUtil.moveItem(slotCandidates[0], sortHotbar[0] - 36);
-            return true;
-        } if (slotCandidates[1] != -1 && sortHotbar[1] != -1 && slotCandidates[1] != sortHotbar[1]) {
-            InvUtil.moveItem(slotCandidates[1], sortHotbar[1] - 36);
-            return true;
-        } if (slotCandidates[2] != -1 && sortHotbar[2] != -1 && slotCandidates[2] != sortHotbar[2]) {
-            InvUtil.moveItem(slotCandidates[2], sortHotbar[2] - 36);
-            return true;
-        } if (slotCandidates[3] != -1 && sortHotbar[3] != -1 && slotCandidates[3] != sortHotbar[3]) {
-            InvUtil.moveItem(slotCandidates[3], sortHotbar[3] - 36);
-            return true;
-        } if (slotCandidates[4] != -1 && sortHotbar[4] != -1 && slotCandidates[4] != sortHotbar[4]) {
-            InvUtil.moveItem(slotCandidates[4], sortHotbar[4] - 36);
-            return true;
-        } if (slotCandidates[5] != -1 && sortHotbar[5] != -1 && slotCandidates[5] != sortHotbar[5]) {
-            InvUtil.moveItem(slotCandidates[5], sortHotbar[5] - 36);
-            return true;
-        } if (slotCandidates[6] != -1 && sortHotbar[6] != -1 && slotCandidates[6] != sortHotbar[6]) {
-            InvUtil.moveItem(slotCandidates[6], sortHotbar[6] - 36);
-            return true;
-        } if (slotCandidates[7] != -1 && sortHotbar[7] != -1 && slotCandidates[7] != sortHotbar[7]) {
-            InvUtil.moveItem(slotCandidates[7], sortHotbar[7] - 36);
-            return true;
-        } if (slotCandidates[8] != -1 && sortHotbar[8] != -1 && slotCandidates[8] != sortHotbar[8]) {
-            InvUtil.moveItem(slotCandidates[8], sortHotbar[8] - 36);
-            return true;
         }
         return false;
     }
@@ -99,5 +71,48 @@ public class InvManager extends Module {
 
     private ItemStack getItemStack(int slot) {
         return mc.thePlayer.inventory.getStackInSlot(slot);
+    }
+
+    @Getter
+    private enum ItemCategory {
+        SWORD("Sword", item -> item instanceof ItemSword),
+        FISHING_ROD("FishingRod", item -> item instanceof ItemFishingRod),
+        BOW("Bow", item -> item instanceof ItemBow),
+        WATER_BUCKET("WaterBucket", item -> item == Items.water_bucket),
+        FOOD("Food", item -> item instanceof ItemFood),
+        GOLDEN_APPLE("GoldenApple", item -> item instanceof ItemAppleGold),
+        ENDER_PEARL("EnderPearl", item -> item instanceof ItemEnderPearl),
+        EGG("Egg", item -> item instanceof ItemEgg),
+        BLOCK("Block", item -> item instanceof ItemBlock),
+        PICKAXE("Pickaxe", item -> item instanceof ItemPickaxe),
+        AXE("Axe", item -> item instanceof ItemAxe),
+        SHOVEL("Shovel", item -> item instanceof ItemSpade),
+        EMPTY("None", item -> false);
+
+        private final String displayName;
+        private final Predicate<Item> matching;
+
+        ItemCategory(String displayName, Predicate<Item> matching) {
+            this.displayName = displayName;
+            this.matching = matching;
+        }
+
+        public static ItemCategory get(String displayName) {
+            for (ItemCategory category : values()) {
+                if (category.getDisplayName().equalsIgnoreCase(displayName)) {
+                    return category;
+                }
+            }
+            return EMPTY;
+        }
+
+        public boolean is(ItemStack itemStack) {
+            if (itemStack == null) return this == EMPTY;
+
+            if (this == EMPTY) {
+                return false;
+            }
+            return matching.test(itemStack.getItem());
+        }
     }
 }
