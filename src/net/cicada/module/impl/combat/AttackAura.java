@@ -130,7 +130,7 @@ public class AttackAura extends Module {
                 }
 
                 if (event instanceof MovementEvent e && this.silentMoveFix.isValue()) {
-                    MovementUtil.moveFix(e, MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+                    MovementUtil.moveFix(e, RotateUtil.rotation.getX(), MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
                 }
             }
         }

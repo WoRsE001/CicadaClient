@@ -39,19 +39,18 @@ public class ListSetting extends Setting {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY, int mouseButton) {
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
             float offsetX = this.posX + mc.fontRendererObj.getStringWidth(this.name + ": ");
             for (String str : this.list) {
-                if (GuiUtil.mouseOver(offsetX, this.posY, this.posX + mc.fontRendererObj.getStringWidth(str + " "), this.height, mouseX, mouseY)) {
+                if (GuiUtil.mouseOver(offsetX, this.posY, mc.fontRendererObj.getStringWidth(str + " "), this.height, mouseX, mouseY)) {
                     this.setValue(str);
+                    return true;
                 }
                 offsetX += mc.fontRendererObj.getStringWidth(str + " ");
             }
         }
-    }
 
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+        return false;
     }
 }

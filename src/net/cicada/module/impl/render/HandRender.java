@@ -9,8 +9,8 @@ import net.cicada.module.setting.impl.NumberSetting;
 
 import java.util.List;
 
-@ModuleInfo(name = "Animation", category = Category.Render)
-public class Animation extends Module {
+@ModuleInfo(name = "HandRender", category = Category.Render)
+public class HandRender extends Module {
     public NumberSetting x = new NumberSetting("X", 0, -3, 3, 0.01, () -> true, this);
     public NumberSetting y = new NumberSetting("Y", 0, -3, 3, 0.01, () -> true, this);
     public NumberSetting z = new NumberSetting("Z", 0, -3, 3, 0.01, () -> true, this);

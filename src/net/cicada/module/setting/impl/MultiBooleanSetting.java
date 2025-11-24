@@ -42,17 +42,18 @@ public class MultiBooleanSetting extends Setting {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY, int mouseButton) {
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
             float offsetX = this.posX + mc.fontRendererObj.getStringWidth(this.name + ": ");
             for (Doubles<String, Boolean> value : this.values) {
-                if (GuiUtil.mouseOver(offsetX, this.posY, mc.fontRendererObj.getStringWidth(value.getT() + " "), this.height, mouseX, mouseY)) value.setE(!value.getE());
+                if (GuiUtil.mouseOver(offsetX, this.posY, mc.fontRendererObj.getStringWidth(value.getT() + " "), this.height, mouseX, mouseY)) {
+                    value.setE(!value.getE());
+                    return true;
+                }
                 offsetX += mc.fontRendererObj.getStringWidth(value.getT() + " ");
             }
         }
-    }
 
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+        return false;
     }
 }

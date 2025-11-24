@@ -47,7 +47,7 @@ public class AltManager extends GuiScreen {
         for (Account account : accountList) {
             account.setPosX(this.width / 2F - 100);
             account.setPosY(offsetY);
-            account.draw(mouseX, mouseY, partialTicks);
+            account.draw(mouseX, mouseY);
             offsetY += account.getHeight() + 5;
         }
     }

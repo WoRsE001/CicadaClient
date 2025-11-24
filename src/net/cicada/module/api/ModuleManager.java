@@ -51,14 +51,14 @@ public class ModuleManager implements EventListener {
     public static Strafe STRAFE = new Strafe();
     // Render
     public static Ambience AMBIENCE = new Ambience();
-    public static Animation ANIMATION = new Animation();
-    public static NoRender NO_RENDER = new NoRender();
     public static ClickGui CLICK_GUI = new ClickGui();
     public static CustomF5 CUSTOM_F5 = new CustomF5();
     public static ESP ESP = new ESP();
     public static FullBright FULL_BRIGHT = new FullBright();
+    public static HandRender HAND_RENDER = new HandRender();
     public static MurderHighlighter MURDER_HIGHLIGHTER = new MurderHighlighter();
     public static NoHurtCam NO_HURT_CAM = new NoHurtCam();
+    public static NoRender NO_RENDER = new NoRender();
     public static PointerEsp POINTER_ESP = new PointerEsp();
     public static TargetESP TARGETESP = new TargetESP();
     public static WaterMark WATER_MARK = new WaterMark();

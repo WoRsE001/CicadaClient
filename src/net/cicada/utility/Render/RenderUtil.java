@@ -101,7 +101,6 @@ public class RenderUtil implements Access {
 
     public void render3DBox(AxisAlignedBB box) {
         start3D();
-
         GL11.glPushMatrix();
 
         GL11.glBegin(GL11.GL_QUADS);
@@ -148,18 +147,79 @@ public class RenderUtil implements Access {
 
         GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glPopMatrix();
-
         stop3D();
     }
 
-    public void render3DEntityBox(Entity entity) {
-        AxisAlignedBB entityBox = entity.getEntityBoundingBox();
+    public void render3DHitBox(AxisAlignedBB box, float lineWidth) {
+        start3D();
+        GL11.glLineWidth(lineWidth);
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        GL11.glVertex3d(box.minX, box.minY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.minY, box.minZ);
+        GL11.glVertex3d(box.minX, box.minY, box.minZ);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
+        GL11.glVertex3d(box.minX, box.maxY, box.minZ);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        GL11.glVertex3d(box.minX, box.minY, box.minZ);
+        GL11.glVertex3d(box.minX, box.minY, box.maxZ);
+        GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
+        GL11.glVertex3d(box.minX, box.maxY, box.minZ);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        GL11.glVertex3d(box.maxX, box.minY, box.minZ);
+        GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        GL11.glVertex3d(box.minX, box.minY, box.minZ);
+        GL11.glVertex3d(box.maxX, box.minY, box.minZ);
+        GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
+        GL11.glVertex3d(box.minX, box.maxY, box.minZ);
+        GL11.glEnd();
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        GL11.glVertex3d(box.minX, box.minY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
+        GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
+        GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
+        GL11.glEnd();
+
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glLineWidth(1);
+        stop3D();
+    }
+
+    public void render3DEntityBox(Entity entity, float expand) {
+        AxisAlignedBB entityBox = entity.getEntityBoundingBox().expand(expand, expand, expand);
         double smoothOffsetX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * mc.timer.renderPartialTicks - entity.posX;
         double smoothOffsetY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * mc.timer.renderPartialTicks - entity.posY;
         double smoothOffsetZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * mc.timer.renderPartialTicks - entity.posZ;
 
         GL11.glTranslated(smoothOffsetX, smoothOffsetY, smoothOffsetZ);
         render3DBox(entityBox);
+        GL11.glTranslated(-smoothOffsetX, -smoothOffsetY, -smoothOffsetZ);
+    }
+
+    public void render3DEntityHitBox(Entity entity, float expand, float lineWidth) {
+        AxisAlignedBB entityBox = entity.getEntityBoundingBox().expand(expand, expand, expand);
+        double smoothOffsetX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * mc.timer.renderPartialTicks - entity.posX;
+        double smoothOffsetY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * mc.timer.renderPartialTicks - entity.posY;
+        double smoothOffsetZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * mc.timer.renderPartialTicks - entity.posZ;
+
+        GL11.glTranslated(smoothOffsetX, smoothOffsetY, smoothOffsetZ);
+        render3DHitBox(entityBox, lineWidth);
         GL11.glTranslated(-smoothOffsetX, -smoothOffsetY, -smoothOffsetZ);
     }
 }

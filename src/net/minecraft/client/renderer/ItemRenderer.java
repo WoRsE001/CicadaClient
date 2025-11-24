@@ -323,11 +323,11 @@ public class ItemRenderer
             GlStateManager.enableRescaleNormal();
             GlStateManager.pushMatrix();
 
-            if (ModuleManager.ANIMATION.isState()) {
+            if (ModuleManager.HAND_RENDER.isState()) {
                 if (!mc.thePlayer.isUsingItem()) {
-                    GL11.glTranslated(ModuleManager.ANIMATION.x.getValue(), ModuleManager.ANIMATION.y.getValue(), ModuleManager.ANIMATION.z.getValue());
+                    GL11.glTranslated(ModuleManager.HAND_RENDER.x.getValue(), ModuleManager.HAND_RENDER.y.getValue(), ModuleManager.HAND_RENDER.z.getValue());
                 } else {
-                    GL11.glTranslated(ModuleManager.ANIMATION.x1.getValue(), ModuleManager.ANIMATION.y1.getValue(), ModuleManager.ANIMATION.z1.getValue());
+                    GL11.glTranslated(ModuleManager.HAND_RENDER.x1.getValue(), ModuleManager.HAND_RENDER.y1.getValue(), ModuleManager.HAND_RENDER.z1.getValue());
                 }
             }
 
@@ -354,8 +354,8 @@ public class ItemRenderer
                             break;
 
                         case BLOCK:
-                            if (ModuleManager.ANIMATION.isState()) {
-                                switch (ModuleManager.ANIMATION.typeAnimation.getValue()) {
+                            if (ModuleManager.HAND_RENDER.isState()) {
+                                switch (ModuleManager.HAND_RENDER.typeAnimation.getValue()) {
                                     case "None":
                                         transformFirstPersonItem(f, 0.0F);
                                         doBlockTransformations();

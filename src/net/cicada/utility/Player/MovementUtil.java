@@ -72,7 +72,7 @@ public class MovementUtil implements Access {
         return Math.toRadians(rotationYaw);
     }
 
-    public void moveFix(MovementEvent e, float targetYaw) {
+    public void moveFix(MovementEvent e, float srcYaw, float targetYaw) {
         if (e.getMoveForward() == 0f && e.getMoveStrafe() == 0f)
             return;
         float closestDiff = Float.MAX_VALUE;
@@ -81,7 +81,7 @@ public class MovementUtil implements Access {
                 if (forward == 0f && strafe == 0)
                     continue;
 
-                float diff = Math.abs(MathHelper.wrapAngleTo180_float(targetYaw - getDirection(RotateUtil.rotation.getX(), forward, strafe)));
+                float diff = Math.abs(MathHelper.wrapAngleTo180_float(targetYaw - getDirection(srcYaw, forward, strafe)));
                 if (diff < closestDiff) {
                     closestDiff = diff;
                     e.setMoveForward(forward);

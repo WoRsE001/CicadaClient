@@ -12,7 +12,7 @@ public class ComponentGui implements Access {
         return mouseX > this.posX && mouseX < this.posX + this.width && mouseY > this.posY && mouseY < this.posY + this.height;
     }
 
-    public void draw(int mouseX, int mouseY, float partialTicks) {}
-    public void mousePressed(int mouseX, int mouseY, int mouseButton) {}
-    public void mouseReleased(int mouseX, int mouseY,int mouseButton) {}
+    public void draw(int mouseX, int mouseY) {}
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) { return false; }
+    public boolean mouseReleased(int mouseX, int mouseY,int mouseButton) { return false; }
 }

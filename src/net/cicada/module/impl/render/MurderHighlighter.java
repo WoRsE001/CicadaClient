@@ -45,11 +45,11 @@ public class MurderHighlighter extends Module {
             for (Entity entity : mc.theWorld.getLoadedEntityList()) {
                 if (murders.contains(entity.getName())) {
                     RenderUtil.setGlColor(new Color(255, 0, 0, 255));
-                    RenderUtil.render3DEntityBox(entity);
+                    RenderUtil.render3DEntityBox(entity, 1);
                 }
                 else if (sheriffs.contains(entity.getName())) {
                     RenderUtil.setGlColor(new Color(255, 255, 0, 128));
-                    RenderUtil.render3DEntityBox(entity);
+                    RenderUtil.render3DEntityBox(entity, 1);
                 }
             }
         }

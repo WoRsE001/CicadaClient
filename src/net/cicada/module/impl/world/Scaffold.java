@@ -139,7 +139,7 @@ public class Scaffold extends Module {
             }
 
             if (event instanceof MovementEvent e) {
-                MovementUtil.moveFix(e, MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+                MovementUtil.moveFix(e, RotateUtil.rotation.getX(), MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
             }
         }
     }

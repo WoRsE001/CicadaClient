@@ -6,7 +6,6 @@ import net.cicada.module.api.Module;
 import net.cicada.module.setting.Setting;
 import net.cicada.ui.ComponentGui;
 import net.cicada.utility.Render.RenderUtil;
-import net.cicada.utility.Render.font.FontRenderer;
 
 import java.awt.*;
 
@@ -16,15 +15,15 @@ public class ModuleButton extends ComponentGui {
     private boolean isOpenSettings;
 
     public ModuleButton(Module module) {
-        this.width = 110;
-        this.height = 25;
+        this.width = mc.fontRendererObj.getStringWidth("MurderHighlighter  ");
+        this.height = mc.fontRendererObj.FONT_HEIGHT;
         this.module = module;
     }
 
-    public void draw(int mouseX, int mouseY, float partialTicks, FontRenderer font) {
-        RenderUtil.setGlColor(new Color(40, 40, 40, 255));
-        RenderUtil.render2DRect(this.posX, this.posY, this.width, this.height);
-        font.drawCenteredStringWithShadow(this.module.getName(), this.posX + this.width / 2, this.posY + this.height / 2 - font.getHeight() / 4F, this.module.isState() ? 0xFFFFFFFF : 0xFF808080);
+    @Override
+    public void draw(int mouseX, int mouseY) {
+        mc.fontRendererObj.drawString(this.module.getName(), this.posX, this.posY, this.module.isState() ? 0xFFFFFFFF : 0xFF808080);
+        mc.fontRendererObj.drawString(this.isOpenSettings ? "-" : "+", this.posX + mc.fontRendererObj.getStringWidth("MurderHighlighter "), this.posY, 0xFFFFFFFF);
         if (this.isOpenSettings) {
             float w = 400;
             float h = mc.displayHeight / 2F - 50;
@@ -43,24 +42,31 @@ public class ModuleButton extends ComponentGui {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY, int mouseButton) {
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
+        if (mouseButton == 0 && this.mouseOver(mouseX, mouseY)) {
+            this.module.toggle();
+            return true;
+        }
+
         if (this.isOpenSettings) {
             for (Setting setting : this.module.getSettings()) {
-                if (setting.getVisible().getAsBoolean()) {
-                    setting.mousePressed(mouseX, mouseY, mouseButton);
-                }
+                if (!setting.getVisible().getAsBoolean()) continue;
+                if (setting.mousePressed(mouseX, mouseY, mouseButton)) return true;
             }
         }
+
+        return false;
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+    public boolean mouseReleased(int mouseX, int mouseY, int mouseButton) {
         if (this.isOpenSettings) {
             for (Setting setting : this.module.getSettings()) {
-                if (setting.getVisible().getAsBoolean()) {
-                    setting.mouseReleased(mouseX, mouseY, mouseButton);
-                }
+                if (!setting.getVisible().getAsBoolean()) continue;
+                if (setting.mouseReleased(mouseX, mouseY, mouseButton)) return true;
             }
         }
+
+        return false;
     }
 }

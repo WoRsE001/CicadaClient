@@ -20,7 +20,7 @@ public class Panel extends ComponentGui {
     private boolean isSelected;
 
     public Panel(Category category) {
-        this.width = 110;
+        this.width = mc.fontRendererObj.getStringWidth("MurderHighlighter +");
         this.height = 25;
         this.category = category;
         for (Module module : ModuleManager.MODULES) {
@@ -29,45 +29,46 @@ public class Panel extends ComponentGui {
         }
     }
 
-    public void draw(int mouseX, int mouseY, float partialTicks, FontRenderer font) {
+    @Override
+    public void draw(int mouseX, int mouseY) {
         RenderUtil.setGlColor(new Color(40, 40, 40, 255));
-        RenderUtil.render2DRect(this.posX, this.posY, this.width, this.height);
-        font.drawCenteredStringWithShadow(this.category.name(), this.posX + this.width / 2, this.posY + this.height / 2 - font.getHeight() / 4F, 0xFFFFFFFF);
+        RenderUtil.render2DRect(this.posX, this.posY, this.width,  this.isSelected ? (this.height + 5) * 8 - 5 : this.height);
+        mc.fontRendererObj.drawString(this.category.name(), this.posX + this.width / 2 - mc.fontRendererObj.getStringWidth(this.category.name()) / 2F, this.posY + this.height / 2 - mc.fontRendererObj.FONT_HEIGHT / 2F, 0xFFFFFFFF);
         if (isSelected) {
-            float offsetY = mc.displayHeight / 4 - (moduleButtons.getFirst().getHeight() + 10) * moduleButtons.size() / 2;
+            float offsetY = this.posY + this.height;
             for (ModuleButton moduleButton : moduleButtons) {
-                moduleButton.setPosX(this.width + 20);
+                moduleButton.setPosX(this.posX);
                 moduleButton.setPosY(offsetY);
-                moduleButton.draw(mouseX, mouseY, partialTicks, font);
-                offsetY += moduleButton.getHeight() + 10;
+                moduleButton.draw(mouseX, mouseY);
+                offsetY += moduleButton.getHeight() + 3;
             }
         }
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY, int mouseButton) {
-        if (!this.isSelected) return;
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
+        if (!this.isSelected) return false;
         for (ModuleButton moduleButton : moduleButtons) {
             if (moduleButton.mouseOver(mouseX, mouseY)) {
-                if (mouseButton == 0) {
-                    moduleButton.getModule().toggle();
-                    return;
-                } else if  (mouseButton == 1) {
+                if  (mouseButton == 1) {
                     for (ModuleButton MB : moduleButtons) {
                         MB.setOpenSettings(MB.equals(moduleButton) && !MB.isOpenSettings());
                     }
-                    return;
+                    return true;
                 }
             }
-            moduleButton.mousePressed(mouseX, mouseY, mouseButton);
+
+            if (moduleButton.mousePressed(mouseX, mouseY, mouseButton)) return true;
         }
+        return false;
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
-        if (!this.isSelected) return;
+    public boolean mouseReleased(int mouseX, int mouseY, int mouseButton) {
+        if (!this.isSelected) return false;
         for (ModuleButton moduleButton : moduleButtons) {
-            moduleButton.mouseReleased(mouseX, mouseY, mouseButton);
+            if (moduleButton.mouseReleased(mouseX, mouseY, mouseButton)) return true;
         }
+        return false;
     }
 }

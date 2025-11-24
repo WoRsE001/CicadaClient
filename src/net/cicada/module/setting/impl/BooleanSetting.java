@@ -29,16 +29,14 @@ public class BooleanSetting extends Setting {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY, int mouseButton) {
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
             if (GuiUtil.mouseOver(this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posY, this.width, this.height, mouseX, mouseY)) {
                 this.toggle();
+                return true;
             }
         }
-    }
 
-    @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
-
+        return false;
     }
 }

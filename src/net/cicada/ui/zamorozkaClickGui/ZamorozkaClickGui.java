@@ -31,12 +31,18 @@ public class ZamorozkaClickGui extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         RenderUtil.setGlColor(new Color(128, 128, 255, 30));
         RenderUtil.render2DRect(0, 0, mc.displayWidth, mc.displayHeight);
-        float offsetY = mc.displayHeight / 4F - (panels.getFirst().getHeight() + 10) * panels.size() / 2;
+        float offsetY = mc.displayHeight / 4F - (panels.getFirst().getHeight() + 5) * panels.size() / 2;
         for (Panel panel : panels) {
-            panel.setPosX(10);
-            panel.setPosY(offsetY);
-            panel.draw(mouseX, mouseY, partialTicks, font);
-            offsetY += panel.getHeight() + 10;
+            if (!panel.isSelected()) {
+                panel.setPosX(10);
+                panel.setPosY(offsetY);
+                panel.draw(mouseX, mouseY);
+                offsetY += panel.getHeight() + 5;
+            } else {
+                panel.setPosX(panel.width + 20);
+                panel.setPosY(mc.displayHeight / 4F - (panels.getFirst().getHeight() + 5) * panels.size() / 2);
+                panel.draw(mouseX, mouseY);
+            }
         }
     }
 
@@ -49,14 +55,14 @@ public class ZamorozkaClickGui extends GuiScreen {
                 }
                 return;
             }
-            panel.mousePressed(mouseX, mouseY, mouseButton);
+            if (panel.mousePressed(mouseX, mouseY, mouseButton)) return;
         }
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         for (Panel panel : panels) {
-            panel.mouseReleased(mouseX, mouseY, state);
+            if (panel.mouseReleased(mouseX, mouseY, state)) return;
         }
     }
 }

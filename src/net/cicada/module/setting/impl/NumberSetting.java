@@ -45,16 +45,20 @@ public class NumberSetting extends Setting {
     }
 
     @Override
-    public void mousePressed(int mouseX, int mouseY, int mouseButton) {
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
             if (GuiUtil.mouseOver(this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posY + 2, this.width, this.height - 2, mouseX, mouseY)) {
                 this.dragging = true;
+                return true;
             }
         }
+
+        return false;
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY, int mouseButton) {
+    public boolean mouseReleased(int mouseX, int mouseY, int mouseButton) {
         this.dragging = false;
+        return false;
     }
 }
