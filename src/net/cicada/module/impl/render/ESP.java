@@ -18,10 +18,8 @@ public class ESP extends Module {
         if (event instanceof Render3DEvent e && e.getPriority() == Event.Priority.High) {
             for (Entity entity : mc.theWorld.getLoadedEntityList()) {
                 if (entity == mc.thePlayer || !(entity instanceof EntityPlayer)) continue;
-                RenderUtil.start3D();
                 RenderUtil.setGlColor(new Color(0, 0, 0, 128));
                 RenderUtil.render3DEntityBox(entity);
-                RenderUtil.stop3D();
             }
         }
     }

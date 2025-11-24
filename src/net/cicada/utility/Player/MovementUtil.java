@@ -1,7 +1,8 @@
-package net.cicada.utility;
+package net.cicada.utility.Player;
 
 import lombok.experimental.UtilityClass;
 import net.cicada.event.impl.MovementEvent;
+import net.cicada.utility.Access;
 import net.minecraft.util.MathHelper;
 
 @UtilityClass
@@ -57,14 +58,53 @@ public class MovementUtil implements Access {
         return rotationYaw;
     }
 
+    public double direction(float rotationYaw, final double moveForward, final double moveStrafing) {
+        if (moveForward < 0F) rotationYaw += 180F;
 
-    public void fixMovement(final MovementEvent event, final float yaw) {
-        float delta_yaw = mc.thePlayer.rotationYaw - yaw;
-        float x = event.getMoveStrafe(), z = event.getMoveForward();
-        float newX = (float) (x * Math.cos(Math.toRadians(delta_yaw)) - z * Math.sin(Math.toRadians(delta_yaw)));
-        float newZ = (float) (z * Math.cos(Math.toRadians(delta_yaw)) + x * Math.sin(Math.toRadians(delta_yaw)));
-        event.setMoveForward(Math.round(newZ));
-        event.setMoveStrafe(Math.round(newX));
+        float forward = 1F;
+
+        if (moveForward < 0F) forward = -0.5F;
+        else if (moveForward > 0F) forward = 0.5F;
+
+        if (moveStrafing > 0F) rotationYaw -= 90F * forward;
+        if (moveStrafing < 0F) rotationYaw += 90F * forward;
+
+        return Math.toRadians(rotationYaw);
+    }
+
+    public void moveFix(MovementEvent e, float targetYaw) {
+        if (e.getMoveForward() == 0f && e.getMoveStrafe() == 0f)
+            return;
+        float closestDiff = Float.MAX_VALUE;
+        for (float forward = -1; forward <= 1f; forward++) {
+            for (float strafe = -1; strafe <= 1f; strafe++) {
+                if (forward == 0f && strafe == 0)
+                    continue;
+
+                float diff = Math.abs(MathHelper.wrapAngleTo180_float(targetYaw - getDirection(RotateUtil.rotation.getX(), forward, strafe)));
+                if (diff < closestDiff) {
+                    closestDiff = diff;
+                    e.setMoveForward(forward);
+                    e.setMoveStrafe(strafe);
+                }
+            }
+        }
+    }
+
+    public float getDirection(float yaw, float forward, float strafe) {
+        if (forward < 0) {
+            yaw += 180;
+        }
+
+        float forwardMult = 1f;
+
+        if (forward < 0) forwardMult = -0.5f;
+        else if (forward > 0) forwardMult = 0.5f;
+
+        if (strafe > 0) yaw -= 90 * forwardMult;
+        if (strafe < 0) yaw += 90 * forwardMult;
+
+        return MathHelper.wrapAngleTo180_float(yaw);
     }
 
     public boolean isMoving() {

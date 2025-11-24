@@ -7,7 +7,7 @@ import net.cicada.event.impl.UpdateEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
-import net.cicada.utility.MovementUtil;
+import net.cicada.utility.Player.MovementUtil;
 
 @ModuleInfo(name = "LongJump", category = Category.Movement)
 public class LongJump extends Module {

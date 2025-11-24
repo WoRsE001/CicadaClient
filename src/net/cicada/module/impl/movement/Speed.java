@@ -12,7 +12,7 @@ import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.cicada.utility.MovementUtil;
+import net.cicada.utility.Player.MovementUtil;
 
 import java.util.List;
 

@@ -1,7 +1,8 @@
-package net.cicada.utility;
+package net.cicada.utility.Player;
 
 import lombok.experimental.UtilityClass;
 import net.cicada.module.api.ModuleManager;
+import net.cicada.utility.Access;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.boss.EntityDragon;
@@ -14,9 +15,33 @@ import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import org.lwjgl.util.vector.Vector2f;
 
 @UtilityClass
 public class PlayerUtil implements Access {
+    public Vec3 getLook(Vector2f rotation) {
+        float f = MathHelper.cos(-rotation.getX() * 0.017453292F - (float) Math.PI);
+        float f1 = MathHelper.sin(-rotation.getX() * 0.017453292F - (float) Math.PI);
+        float f2 = -MathHelper.cos(-rotation.getY() * 0.017453292F);
+        float f3 = MathHelper.sin(-rotation.getY() * 0.017453292F);
+        return new Vec3(f1 * f2, f3,f * f2);
+    }
+
+    public MovingObjectPosition rayTrace(Vector2f rotation, float blockReachDistance, float partialTicks) {
+        Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
+        Vec3 vec31 = getLook(rotation);
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance, vec31.zCoord * blockReachDistance);
+        return mc.thePlayer.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
+    }
+
+    public MovingObjectPosition rayTrace(Vec3 vec32, float partialTicks) {
+        Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
+        return mc.thePlayer.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
+    }
+
     public boolean isMob(Entity entity) {
         return entity instanceof EntityMob
                 || entity instanceof EntityVillager

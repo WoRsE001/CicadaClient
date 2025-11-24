@@ -43,7 +43,6 @@ public class MurderHighlighter extends Module {
 
         if (event instanceof Render3DEvent e && e.getPriority() == Event.Priority.High) {
             for (Entity entity : mc.theWorld.getLoadedEntityList()) {
-                RenderUtil.start3D();
                 if (murders.contains(entity.getName())) {
                     RenderUtil.setGlColor(new Color(255, 0, 0, 255));
                     RenderUtil.render3DEntityBox(entity);
@@ -52,7 +51,6 @@ public class MurderHighlighter extends Module {
                     RenderUtil.setGlColor(new Color(255, 255, 0, 128));
                     RenderUtil.render3DEntityBox(entity);
                 }
-                RenderUtil.stop3D();
             }
         }
 

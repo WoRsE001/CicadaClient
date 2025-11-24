@@ -212,16 +212,16 @@ public class EntityPlayerSP extends AbstractClientPlayer
 
             if (flag2)
             {
-                this.lastReportedPosX = this.posX;
-                this.lastReportedPosY = this.getEntityBoundingBox().minY;
-                this.lastReportedPosZ = this.posZ;
+                this.lastReportedPosX = motionEvent.getPosX();
+                this.lastReportedPosY = motionEvent.getPosY();
+                this.lastReportedPosZ = motionEvent.getPosZ();
                 this.positionUpdateTicks = 0;
             }
 
             if (flag3)
             {
-                this.lastReportedYaw = this.rotationYaw;
-                this.lastReportedPitch = this.rotationPitch;
+                this.lastReportedYaw = motionEvent.getRotationYaw();
+                this.lastReportedPitch =  motionEvent.getRotationPitch();
             }
 
             motionEvent.setPriority(Event.Priority.High);

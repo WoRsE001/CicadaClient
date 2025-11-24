@@ -130,12 +130,10 @@ public class Ping extends Module {
             }
             case Render3DEvent ignored -> {
                 if (!posBuffer.isEmpty()) {
-                    RenderUtil.start3D();
                     Vec3 diff = posBuffer.getFirst().pos.subtract(mc.thePlayer.getPositionVector());
                     AxisAlignedBB pingPlayerBox = mc.thePlayer.getEntityBoundingBox().offset(diff.xCoord, diff.yCoord, diff.zCoord);
                     RenderUtil.setGlColor(new Color(0, 0, 0, 100));
                     RenderUtil.render3DBox(pingPlayerBox);
-                    RenderUtil.stop3D();
                 }
             }
             default -> {

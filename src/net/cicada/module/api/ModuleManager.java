@@ -9,6 +9,7 @@ import net.cicada.module.impl.connect.Blink;
 import net.cicada.module.impl.connect.Ping;
 import net.cicada.module.impl.connect.TimerRange;
 import net.cicada.module.impl.exploit.*;
+import net.cicada.module.impl.fun.Spin;
 import net.cicada.module.impl.misc.*;
 import net.cicada.module.impl.movement.*;
 import net.cicada.module.impl.player.*;
@@ -59,6 +60,7 @@ public class ModuleManager implements EventListener {
     public static MurderHighlighter MURDER_HIGHLIGHTER = new MurderHighlighter();
     public static NoHurtCam NO_HURT_CAM = new NoHurtCam();
     public static PointerEsp POINTER_ESP = new PointerEsp();
+    public static TargetESP TARGETESP = new TargetESP();
     public static WaterMark WATER_MARK = new WaterMark();
     // Player
     public static AutoPotion AUTO_POTION = new AutoPotion();
@@ -86,6 +88,8 @@ public class ModuleManager implements EventListener {
     public static NoPitchLimit NO_PITCH_LIMIT = new NoPitchLimit();
     public static Phase PHASE = new Phase();
     public static SilentMurder SILENT_MURDER = new SilentMurder();
+    // FUN
+    public static Spin SPIN = new Spin();
 
     public ModuleManager() {
         for (Field field : getClass().getDeclaredFields()) {

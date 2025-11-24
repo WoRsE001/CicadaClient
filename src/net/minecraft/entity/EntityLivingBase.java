@@ -54,6 +54,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import org.lwjgl.util.vector.Vector2f;
 
 public abstract class EntityLivingBase extends Entity
 {
@@ -1912,6 +1913,11 @@ public abstract class EntityLivingBase extends Entity
             float f1 = this.prevRotationYawHead + (this.rotationYawHead - this.prevRotationYawHead) * partialTicks;
             return this.getVectorForRotation(f, f1);
         }
+    }
+
+    public Vec3 getLook(Vector2f rotation, float partialTicks)
+    {
+        return this.getVectorForRotation(rotation.getY(), rotation.getY());
     }
 
     public float getSwingProgress(float partialTickTime)

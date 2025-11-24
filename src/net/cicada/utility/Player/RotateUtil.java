@@ -1,7 +1,8 @@
-package net.cicada.utility;
+package net.cicada.utility.Player;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import net.cicada.utility.Access;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -51,14 +52,14 @@ public class RotateUtil implements Access {
         );
     }
 
-    public boolean isLookingAtEntity(Entity target, Vector2f rot, double range) {
+    public static boolean isLookingAtEntity(Entity target, Vector2f rotations, final double range) {
         Vec3 src = mc.thePlayer.getPositionEyes(1.0f);
-        Vec3 rotationVec = mc.thePlayer.getLook(rot.getX(), rot.getY());
+        Vec3 rotationVec = PlayerUtil.getLook(rotations);
         Vec3 dest = src.addVector(rotationVec.xCoord * range, rotationVec.yCoord * range, rotationVec.zCoord * range);
         MovingObjectPosition obj = mc.theWorld.rayTraceBlocks(src, dest, false, false, true);
         if (obj == null) {
             return false;
         }
-        return target.getEntityBoundingBox().calculateIntercept(src, dest) != null;
+        return target.getEntityBoundingBox().expand(target.getCollisionBorderSize(), target.getCollisionBorderSize(), target.getCollisionBorderSize()).calculateIntercept(src, dest) != null;
     }
 }

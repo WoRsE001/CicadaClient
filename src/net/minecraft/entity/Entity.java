@@ -51,6 +51,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import org.lwjgl.util.vector.Vector2f;
+
+import static net.cicada.utility.Access.mc;
 
 public abstract class Entity implements ICommandSender
 {
@@ -1262,20 +1265,6 @@ public abstract class Entity implements ICommandSender
         Vec3 vec3 = this.getPositionEyes(partialTicks);
         Vec3 vec31 = this.getLook(partialTicks);
         Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance, vec31.zCoord * blockReachDistance);
-        return this.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
-    }
-
-    public MovingObjectPosition rayTrace(double blockReachDistance, float partialTicks, float yaw, float pitch)
-    {
-        Vec3 vec3 = this.getPositionEyes(partialTicks);
-        Vec3 vec31 = this.getVectorForRotation(pitch, yaw);
-        Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance, vec31.zCoord * blockReachDistance);
-        return this.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
-    }
-
-    public MovingObjectPosition rayTrace(float partialTicks, Vec3 vec32)
-    {
-        Vec3 vec3 = this.getPositionEyes(partialTicks);
         return this.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
     }
 

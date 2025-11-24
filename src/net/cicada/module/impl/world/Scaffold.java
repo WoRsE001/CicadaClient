@@ -3,15 +3,18 @@ package net.cicada.module.impl.world;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.PlayerUtil;
+import net.cicada.utility.Player.RotateUtil;
 import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.block.BlockAir;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.*;
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.*;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
-import net.cicada.utility.*;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -38,13 +41,15 @@ public class Scaffold extends Module {
     BooleanSetting jumpFix = new BooleanSetting("JumpFix", true, () -> true, this);
     BooleanSetting autoJump = new BooleanSetting("AutoJump", true, () -> true, this);
     BooleanSetting sameY = new BooleanSetting("SameY", false, () -> true, this);
+    // MISC
+    ListSetting pickBlock = new ListSetting("PickBlock", "Legit", List.of("None", "Legit"), () -> true, this);
     // VISUAL
     BooleanSetting autoF5 = new BooleanSetting("AutoF5", true, () -> true, this);
     BooleanSetting showTargetBlock = new BooleanSetting("ShowTargetBlock", true, () -> true, this);
 
     BlockPos targetBlock;
+    int groundTick, lastSlot;
     boolean onGround;
-    int groundTick;
 
     @Override
     protected void onEnable() {
@@ -57,6 +62,10 @@ public class Scaffold extends Module {
     protected void onDisable() {
         this.targetBlock = null;
         if (this.autoF5.isValue()) mc.gameSettings.thirdPersonView = 0;
+        if (!this.pickBlock.is("None") && lastSlot != -1) {
+            mc.thePlayer.inventory.currentItem = lastSlot;
+            lastSlot = -1;
+        }
         super.onDisable();
     }
 
@@ -73,14 +82,27 @@ public class Scaffold extends Module {
             if (!mc.thePlayer.onGround && this.onGround) this.onGround = false;
             this.targetBlock = getBlockPos();
             if (this.targetBlock != null) {
+                if (!this.pickBlock.is("None")) {
+                    int bestSlot = this.findBlock();
+                    if (bestSlot != -1) {
+                        if (lastSlot == -1) lastSlot = mc.thePlayer.inventory.currentItem;
+                        mc.thePlayer.inventory.currentItem = bestSlot;
+                    } else if (lastSlot != -1) {
+                        mc.thePlayer.inventory.currentItem = lastSlot;
+                        lastSlot = -1;
+                    }
+                }
                 Vector2f rot = this.getBestRotation();
                 RotateUtil.rotateTo(this.getVectorForRotation(rot.getX(), rot.getY()), (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
+            } else if (!this.pickBlock.is("None") && lastSlot != -1) {
+                mc.thePlayer.inventory.currentItem = lastSlot;
+                lastSlot = -1;
             }
         }
 
         if (event instanceof LegitClickTimingEvent) {
-            MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(4.5, 1, RotateUtil.rotation.getX(), RotateUtil.rotation.getY());
-            if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && ((rayTrace.sideHit != EnumFacing.UP && rayTrace.sideHit != EnumFacing.DOWN) || !this.sameY.isValue()) && rayTrace.getBlockPos().equals(this.targetBlock)) {
+            MovingObjectPosition rayTrace = PlayerUtil.rayTrace(RotateUtil.rotation, 4.5F, 1);
+            if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && ((rayTrace.sideHit != EnumFacing.UP && rayTrace.sideHit != EnumFacing.DOWN) || !this.sameY.isValue() || mc.gameSettings.keyBindUseItem.isKeyDown()) && rayTrace.getBlockPos().equals(this.targetBlock)) {
                 mc.rightClickMouse();
             }
         }
@@ -91,9 +113,7 @@ public class Scaffold extends Module {
         }
 
         if (this.showTargetBlock.isValue() && event instanceof Render3DEvent e && e.getPriority() == Event.Priority.High) {
-            RenderUtil.start3D();
             if (this.targetBlock != null) RenderUtil.render3DBox(new AxisAlignedBB(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ(), targetBlock.getX() + 1, targetBlock.getY() + 1, targetBlock.getZ() + 1));
-            RenderUtil.stop3D();
         }
 
         if (event instanceof LookEvent e) {
@@ -101,15 +121,12 @@ public class Scaffold extends Module {
             e.setRotationPitch(RotateUtil.rotation.getY());
         }
 
-        if (event instanceof MotionEvent e) {
-            if (e.getPriority() == Event.Priority.Low) {
-                e.setRotationYaw(RotateUtil.rotation.getX());
-                e.setRotationPitch(RotateUtil.rotation.getY());
-            } else if (e.getPriority() == Event.Priority.High) {
-                mc.thePlayer.rotationYawHead = RotateUtil.rotation.getX();
-                mc.thePlayer.rotationPitchHead = RotateUtil.rotation.getY();
-                mc.thePlayer.renderYawOffset = RotateUtil.rotation.getX();
-            }
+        if (event instanceof MotionEvent e && e.getPriority() == Event.Priority.Low) {
+            e.setRotationYaw(RotateUtil.rotation.getX());
+            e.setRotationPitch(RotateUtil.rotation.getY());
+            mc.thePlayer.rotationYawHead = RotateUtil.rotation.getX();
+            mc.thePlayer.rotationPitchHead = RotateUtil.rotation.getY();
+            mc.thePlayer.renderYawOffset = RotateUtil.rotation.getX();
         }
 
         if (event instanceof JumpEvent e && this.jumpFix.isValue()) {
@@ -122,7 +139,7 @@ public class Scaffold extends Module {
             }
 
             if (event instanceof MovementEvent e) {
-                MovementUtil.fixMovement(e, RotateUtil.rotation.getX());
+                MovementUtil.moveFix(e, MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
             }
         }
     }
@@ -144,7 +161,7 @@ public class Scaffold extends Module {
     }
 
     private float getYaw() {
-        float yaw = (float) MovementUtil.getDirs() - 180;
+        float yaw = MovementUtil.getDirs() - 180;
         float roundYaw = MathHelper.round(yaw, 45);
         if (this.snapYaw.isValue()) yaw = roundYaw;
         if (this.telly.isValue()) {
@@ -161,13 +178,13 @@ public class Scaffold extends Module {
     private float getPitch(float yaw) {
         List<Float> pitches = new ArrayList<>();
         for (int i = -90; i < 91; i++) {
-            MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(4.5, 1, yaw, i);
+            MovingObjectPosition rayTrace = PlayerUtil.rayTrace(new Vector2f(yaw, i), 4.5F, 1);
             if (rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || rayTrace.sideHit == EnumFacing.UP || !rayTrace.getBlockPos().equals(this.targetBlock))
                 continue;
             pitches.add((float) i);
         }
         if (this.staticPitch.isValue()) return (float) this.pitch.getValue();
-        if (pitches.isEmpty()) return intave.isValue() && !telly.isValue() ? 75 : RotateUtil.rotation.getY();
+        if (pitches.isEmpty()) return intave.isValue() ? 75 : RotateUtil.rotation.getY();
         if (this.sortPitches.is("Nearest")) {
             pitches.sort(Comparator.comparingDouble(pitch -> Math.abs(RotateUtil.rotation.getY() - pitch)));
             return pitches.getFirst();
@@ -188,7 +205,7 @@ public class Scaffold extends Module {
             if (!((mc.thePlayer.onGround && this.groundTick >= this.groundTicksToJump.getValue()) || mc.thePlayer.jumpTicks > this.jumpTicksToRotate.getValue()) && this.intave.isValue()) {
                 List<Float> yaws = new ArrayList<>();
                 for (int i = -180; i < 181; i++) {
-                    MovingObjectPosition rayTrace = mc.thePlayer.rayTrace(4.5, 1, i, pitch);
+                    MovingObjectPosition rayTrace = PlayerUtil.rayTrace(new Vector2f(i, pitch), 4.5F, 1);
                     if (rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || rayTrace.sideHit == EnumFacing.UP || !rayTrace.getBlockPos().equals(this.targetBlock))
                         continue;
                     yaws.add((float) i);
@@ -210,5 +227,13 @@ public class Scaffold extends Module {
         float f2 = -MathHelper.cos(-pitch * 0.017453292F);
         float f3 = MathHelper.sin(-pitch * 0.017453292F);
         return mc.thePlayer.getPositionEyes(1).add(new Vec3(f1 * f2, f3, f * f2));
+    }
+
+    private int findBlock() {
+        for (int i = 0; i < 9; i++) {
+            if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock) return i;
+        }
+
+        return -1;
     }
 }

@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard;
 public class Bind extends Command {
     @Override
     public void execute(String[] args) {
-        if (args.length != 3 && args.length != 2) {
+        if (args.length != 3 && args.length != 2 && args.length != 4) {
             this.sendUsage();
             return;
         }
@@ -20,11 +20,10 @@ public class Bind extends Command {
             if (args[1].equals("list")) {
                 LoggerUtil.display("--Bind list--");
                 for (Module module : ModuleManager.MODULES) {
-                    if (module.getKey() != 0) LoggerUtil.display(module.getName() + ": " + Keyboard.getKeyName(module.getKey()).toUpperCase());
+                    if (module.getKey() != 0) LoggerUtil.display(module.getName() + ": " + module.getKey());
                 }
             }
-        }
-        if (args.length == 3) {
+        } else if (args.length == 3) {
             Module module = ModuleManager.getModule(args[1]);
 
             if (module == null) {

@@ -3,11 +3,17 @@ package net.cicada.utility.Render;
 import lombok.experimental.UtilityClass;
 import net.cicada.utility.Access;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+
+import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX_COLOR;
 
 @UtilityClass
 public class RenderUtil implements Access {
@@ -58,6 +64,22 @@ public class RenderUtil implements Access {
         stop2D();
     }
 
+    public static void drawImage(ResourceLocation resource, float x, float y, float x2, float y2, int c, int c2, int c3, int c4) {
+        mc.getTextureManager().bindTexture(resource);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+        worldRenderer.begin(9, DefaultVertexFormats.POSITION_TEX_COLOR);
+        worldRenderer.pos(x, y2, 0).tex(0.0, 1.0).color(c >> 16 & 0xFF, c >> 8 & 0xFF, c & 0xFF, c >> 24 & 0xFF).endVertex();
+        worldRenderer.pos(x2, y2, 0).tex(1.0, 1.0).color(c2 >> 16 & 0xFF, c2 >> 8 & 0xFF, c2 & 0xFF, c2 >> 24 & 0xFF).endVertex();
+        worldRenderer.pos(x2, y, 0).tex(1.0, 0.0).color(c3 >> 16 & 0xFF, c3 >> 8 & 0xFF, c3 & 0xFF, c3 >> 24 & 0xFF).endVertex();
+        worldRenderer.pos(x, y, 0).tex(0.0, 0.0).color(c4 >> 16 & 0xFF, c4 >> 8 & 0xFF, c4 & 0xFF, c4 >> 24 & 0xFF).endVertex();
+        GL11.glShadeModel(7425);
+        GL11.glDepthMask(false);
+        tessellator.draw();
+        GL11.glDepthMask(true);
+        GL11.glShadeModel(7424);
+    }
+
     public void start3D() {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -78,46 +100,46 @@ public class RenderUtil implements Access {
     }
 
     public void render3DBox(AxisAlignedBB box) {
-        int typeRender = GL11.GL_QUADS;
+        start3D();
 
         GL11.glPushMatrix();
 
-        GL11.glBegin(typeRender);
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex3d(box.minX, box.minY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.minY, box.minZ);
         GL11.glVertex3d(box.minX, box.minY, box.minZ);
         GL11.glEnd();
 
-        GL11.glBegin(typeRender);
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
         GL11.glVertex3d(box.minX, box.maxY, box.minZ);
         GL11.glEnd();
 
-        GL11.glBegin(typeRender);
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex3d(box.minX, box.minY, box.minZ);
         GL11.glVertex3d(box.minX, box.minY, box.maxZ);
         GL11.glVertex3d(box.minX, box.maxY, box.maxZ);
         GL11.glVertex3d(box.minX, box.maxY, box.minZ);
         GL11.glEnd();
 
-        GL11.glBegin(typeRender);
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex3d(box.maxX, box.minY, box.minZ);
         GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
         GL11.glEnd();
 
-        GL11.glBegin(typeRender);
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex3d(box.minX, box.minY, box.minZ);
         GL11.glVertex3d(box.maxX, box.minY, box.minZ);
         GL11.glVertex3d(box.maxX, box.maxY, box.minZ);
         GL11.glVertex3d(box.minX, box.maxY, box.minZ);
         GL11.glEnd();
 
-        GL11.glBegin(typeRender);
+        GL11.glBegin(GL11.GL_QUADS);
         GL11.glVertex3d(box.minX, box.minY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.minY, box.maxZ);
         GL11.glVertex3d(box.maxX, box.maxY, box.maxZ);
@@ -126,6 +148,8 @@ public class RenderUtil implements Access {
 
         GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glPopMatrix();
+
+        stop3D();
     }
 
     public void render3DEntityBox(Entity entity) {

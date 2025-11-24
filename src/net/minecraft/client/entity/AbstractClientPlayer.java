@@ -215,9 +215,4 @@ public abstract class AbstractClientPlayer extends EntityPlayer
         LookEvent lookEvent = new LookEvent(this.rotationYaw, this.rotationPitch).call();
         return this.getVectorForRotation(lookEvent.getRotationPitch(), lookEvent.getRotationYaw());
     }
-
-    public Vec3 getLook(float rotationYaw, float rotationPitch)
-    {
-        return this.getVectorForRotation(rotationPitch, rotationYaw);
-    }
 }

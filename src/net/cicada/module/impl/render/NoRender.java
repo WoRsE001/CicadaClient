@@ -5,7 +5,7 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.BooleanSetting;
 
-@ModuleInfo(name = "AntiBlind", category = Category.Render)
+@ModuleInfo(name = "NoRender", category = Category.Render)
 public class NoRender extends Module {
     public BooleanSetting achievements = new BooleanSetting("Achievements", true, () -> true, this);
     public BooleanSetting blockOverlay = new BooleanSetting("BlockOverlay", true, () -> true, this);

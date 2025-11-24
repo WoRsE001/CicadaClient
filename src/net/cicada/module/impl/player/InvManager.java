@@ -46,7 +46,6 @@ public class InvManager extends Module {
                 if (mc.thePlayer.inventory.getStackInSlot(j) == null) continue;
                 ItemStack currentItemStack = mc.thePlayer.inventory.getStackInSlot(j);
                 if (category.is(currentItemStack) && i != j) {
-                    LoggerUtil.display("MOVE!" + i);
                     InvUtil.moveItem(j, i - 36);
                     return true;
                 }

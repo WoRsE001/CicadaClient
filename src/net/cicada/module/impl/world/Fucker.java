@@ -1,8 +1,8 @@
 package net.cicada.module.impl.world;
 
 import net.cicada.event.impl.*;
-import net.cicada.utility.MovementUtil;
-import net.cicada.utility.RotateUtil;
+import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.RotateUtil;
 import net.minecraft.block.BlockBed;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.util.BlockPos;
@@ -12,7 +12,6 @@ import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.minecraft.util.Vec3;
-import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "Fucker", category = Category.World)
 public class Fucker extends Module {
@@ -74,7 +73,7 @@ public class Fucker extends Module {
             }
 
             if (event instanceof MovementEvent e) {
-                MovementUtil.fixMovement(e, RotateUtil.rotation.getX());
+                MovementUtil.moveFix(e, MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
             }
         }
     }

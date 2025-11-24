@@ -1,12 +1,9 @@
-package net.cicada.utility;
+package net.cicada.utility.Player;
 
 import lombok.experimental.UtilityClass;
-import net.cicada.module.api.ModuleManager;
+import net.cicada.utility.Access;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import org.lwjgl.util.vector.Vector2f;
