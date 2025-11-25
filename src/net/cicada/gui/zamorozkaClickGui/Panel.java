@@ -1,13 +1,12 @@
-package net.cicada.ui.zamorozkaClickGui;
+package net.cicada.gui.zamorozkaClickGui;
 
 import lombok.Getter;
 import lombok.Setter;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleManager;
-import net.cicada.ui.ComponentGui;
+import net.cicada.gui.ComponentGui;
 import net.cicada.utility.Render.RenderUtil;
-import net.cicada.utility.Render.font.FontRenderer;
 
 import java.awt.*;
 import java.util.ArrayList;

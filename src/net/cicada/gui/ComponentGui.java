@@ -1,4 +1,4 @@
-package net.cicada.ui;
+package net.cicada.gui;
 
 import lombok.Getter;
 import lombok.Setter;

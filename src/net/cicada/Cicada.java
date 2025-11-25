@@ -1,8 +1,8 @@
 package net.cicada;
 
 import de.florianmichael.viamcp.ViaMCP;
-import net.cicada.ui.altmanager.AltManager;
-import net.cicada.ui.zamorozkaClickGui.ZamorozkaClickGui;
+import net.cicada.gui.altmanager.AltManager;
+import net.cicada.gui.zamorozkaClickGui.ZamorozkaClickGui;
 import net.minecraft.client.Minecraft;
 import net.cicada.command.api.CommandManager;
 import net.cicada.config.api.ConfigManager;
@@ -14,7 +14,7 @@ import java.io.File;
 
 public class Cicada {
     public static final String name = "Cicada";
-    public static final String version = "1.1.4";
+    public static final String version = "1.1.5";
 
     public static Cicada INSTANCE = new Cicada();
     public static File MAIN_DIR = new File(Minecraft.getMinecraft().mcDataDir, name);
@@ -28,6 +28,7 @@ public class Cicada {
         Display.setTitle(name + " " + version);
 
         MAIN_DIR.mkdirs();
+        CONFIG_DIR.mkdirs();
 
         ViaMCP.create();
         ViaMCP.INSTANCE.initAsyncSlider();

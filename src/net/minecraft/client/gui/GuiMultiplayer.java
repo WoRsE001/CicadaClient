@@ -7,7 +7,6 @@ import java.util.List;
 
 import de.florianmichael.viamcp.ViaMCP;
 import net.cicada.Cicada;
-import net.cicada.ui.altmanager.AltManager;
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;

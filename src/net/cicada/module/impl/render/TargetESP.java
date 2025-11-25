@@ -1,7 +1,6 @@
 package net.cicada.module.impl.render;
 
 import net.cicada.event.api.Event;
-import net.cicada.event.impl.Render2DEvent;
 import net.cicada.event.impl.Render3DEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;

@@ -1,4 +1,4 @@
-package net.cicada.ui.altmanager;
+package net.cicada.gui.altmanager;
 
 import net.cicada.Cicada;
 import net.cicada.utility.Account;
@@ -20,10 +20,10 @@ public class AddAccount extends GuiScreen {
     @Override
     public void initGui() {
         this.buttonList.clear();
-        this.username = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 50, this.height / 2 - 40, 100, 20);
+        this.username = new GuiTextField(0, mc.fontRendererObj, this.width / 2 - 90, this.height / 2 - 35, 180, 20);
         this.username.setFocused(true);
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 50, this.height / 2 - 10, 100, 20, "Add"));
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 50, this.height / 2 + 20, 100, 20, "Back"));
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 90, this.height / 2 - 10, 180, 20, this.isDirect ? "Login" : "Add"));
+        this.buttonList.add(new GuiButton(1, this.width / 2 - 90, this.height / 2 + 15, 180, 20, "Back"));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package net.cicada.ui.altmanager;
+package net.cicada.gui.altmanager;
 
 import com.google.gson.*;
 import net.cicada.Cicada;
@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.Session;
+import org.lwjgl.opengl.Display;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class AltManager extends GuiScreen {
         this.buttonList.add(new GuiButton(1, this.width - 105, 30, 100, 20, "Login"));
         this.buttonList.add(new GuiButton(2, this.width - 105, 55, 100, 20, "Direct Login"));
         this.buttonList.add(new GuiButton(3, this.width - 105, 80, 100, 20, "Delete"));
-        this.buttonList.add(new GuiButton(4, this.width - 105, 105, 100, 20, "Back"));
+        this.buttonList.add(new GuiButton(4, this.width - 105, (int) (this.height - 25), 100, 20, "Back"));
     }
 
     @Override

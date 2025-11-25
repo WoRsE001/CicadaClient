@@ -2,7 +2,7 @@ package net.cicada.utility;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.cicada.ui.ComponentGui;
+import net.cicada.gui.ComponentGui;
 import net.cicada.utility.Render.RenderUtil;
 
 import java.awt.*;
@@ -16,8 +16,8 @@ public class Account extends ComponentGui {
     private boolean isSelected;
 
     public Account(String username) {
-        this.width = 150;
-        this.height = 25;
+        this.width = 210;
+        this.height = 45;
         this.username = username;
         this.uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + this.username).getBytes()).toString().replace("-", "");
         this.accessToken = "0";

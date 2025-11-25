@@ -3,7 +3,7 @@ package net.cicada.module.setting;
 import lombok.Getter;
 import lombok.Setter;
 import net.cicada.module.api.Module;
-import net.cicada.ui.ComponentGui;
+import net.cicada.gui.ComponentGui;
 import net.cicada.utility.Access;
 
 import java.util.function.BooleanSupplier;

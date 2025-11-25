@@ -7,6 +7,7 @@ import net.cicada.event.impl.KeyEvent;
 import net.cicada.module.impl.combat.*;
 import net.cicada.module.impl.connect.Blink;
 import net.cicada.module.impl.connect.Ping;
+import net.cicada.module.impl.connect.PulseBlink;
 import net.cicada.module.impl.connect.TimerRange;
 import net.cicada.module.impl.exploit.*;
 import net.cicada.module.impl.fun.Spin;
@@ -34,6 +35,7 @@ public class ModuleManager implements EventListener {
     // CONNECT
     public static Blink BLINK = new Blink();
     public static Ping PING = new Ping();
+    public static PulseBlink PULSE_BLINK = new PulseBlink();
     public static TimerRange TIMER_RANGE = new TimerRange();
     // Movement
     public static AirStuck AIT_STUCK = new AirStuck();

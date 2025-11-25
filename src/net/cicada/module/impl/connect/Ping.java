@@ -5,165 +5,97 @@ import net.cicada.event.impl.*;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
+import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.MultiBooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import net.cicada.utility.Doubles;
 import net.cicada.utility.Render.RenderUtil;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C02PacketUseEntity;
-import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
+import net.minecraft.network.play.client.*;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
 import java.awt.*;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @ModuleInfo(name = "Ping", category = Category.Connect)
 public class Ping extends Module {
 
-    private final NumberSetting maxDelay = new NumberSetting("MaxDelay", 100, 50, 1000, 1, () -> true, this);
-
-    private final NumberSetting delayBeforeNextLagAfterReset = new NumberSetting("DelayBeforeNextLagAfterReset", 0, 0, 1000, 1, () -> true, this);
-    private final MultiBooleanSetting actions = new MultiBooleanSetting("ActionsToReset", () -> true, this)
+    NumberSetting delay = new NumberSetting("Delay", 550, 0, 1000, 1, () -> true, this);
+    MultiBooleanSetting blinkAction = new MultiBooleanSetting("BlinkAction", () -> true, this)
             .add("Attack", true)
-            .add("Damage", true)
-            .add("Velocity", true)
-            .add("Flag", true)
-            .add("UsingItem", true)
-            .add("PlaceBlock", true)
-            .add("OpenedGui", true);
+            .add("BlockPlace", true)
+            .add("InGUI", true)
+            .add("UseItem", false);
+    BooleanSetting showServerPos = new BooleanSetting("ShowServerPos", false, () -> true, this);
+    BooleanSetting onlyOnF5 = new BooleanSetting("onlyOnF5", true, () -> this.showServerPos.isValue(), this);
 
-    private long lastResetTime;
-    private int delayBeforeNextLag;
-    private final ConcurrentLinkedQueue<PacketWithTime> buffer = new ConcurrentLinkedQueue<>();
-    private final List<VecWithTime> posBuffer = new CopyOnWriteArrayList<>();
-
-    Vec3 lastPos, currentPos;
+    List<Doubles<Packet<?>, Long>> packetQueue = new CopyOnWriteArrayList<>();
+    List<Doubles<Vec3, Long>> posQueue = new CopyOnWriteArrayList<>();
 
     @Override
-    public void onDisable() {
-        resetAllPackets();
+    protected void onDisable() {
+        this.blink();
+        super.onDisable();
     }
 
     @Override
     public void listen(Event event) {
-        if (mc.thePlayer == null || mc.theWorld == null) return;
-        if (mc.isIntegratedServerRunning()) return;
-        long currentTime = System.currentTimeMillis();
-        if ((mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiChest) && actions.is("OpenedGui"))
-            reset();
-        switch (event) {
-            case PacketEvent e -> {
-                if (currentTime - lastResetTime < delayBeforeNextLag) {
-                    resetAllPackets();
-                    break;
-                }
+        if (event instanceof AttackEvent && this.blinkAction.is("Attack")) {
+            this.blink();
+        }
 
-                if (actions.is("Damage") && mc.thePlayer.hurtTime != 0) {
-                    reset();
-                    break;
-                }
+        if (event instanceof GameLoopEvent) {
+            handlePacket();
+        }
 
-                if (actions.is("UsingItem") && mc.thePlayer.isUsingItem()) {
-                    reset();
-                    break;
-                }
+        if (event instanceof PacketEvent p && p.getType() == PacketEvent.Type.Send) {
+            if (p.getPacket() instanceof C01PacketChatMessage) return;
 
-                Packet packet = e.getPacket();
-
-                switch (packet) {
-                    case C02PacketUseEntity handlingPacket -> {
-                        if (actions.is("Attack") && handlingPacket.getAction() == C02PacketUseEntity.Action.ATTACK) {
-                            reset();
-                            return;
-                        }
-                    }
-
-                    case S12PacketEntityVelocity handlingPacket -> {
-                        if (actions.is("Velocity") && handlingPacket.getEntityID() == mc.thePlayer.getEntityId()) {
-                            reset();
-                            return;
-                        }
-                    }
-
-                    case S08PacketPlayerPosLook ignored -> {
-                        if (actions.is("Flag")) {
-                            reset();
-                            return;
-                        }
-                    }
-
-                    case C08PacketPlayerBlockPlacement ignored -> {
-                        if (actions.is("PlaceBlock")) {
-                            reset();
-                            return;
-                        }
-                    }
-
-                    default -> {
-                    }
-                }
-
-                e.cancel();
-                buffer.add(new PacketWithTime(packet, currentTime));
-                if (packet instanceof C03PacketPlayer c03) {
-                    if (c03.isMoving()) {
-                        posBuffer.add(new VecWithTime(new Vec3(c03.getPositionX(), c03.getPositionY(), c03.getPositionZ()), currentTime));
-                    }
-                }
+            if (p.getPacket() instanceof C08PacketPlayerBlockPlacement && this.blinkAction.is("BlockPlace")) {
+                this.blink();
+                return;
             }
-            case GameLoopEvent ignored -> handlePackets();
-            case MotionEvent ignored -> {
-                while (posBuffer.size() > (maxDelay.getValue() / 50)) {
-                    posBuffer.removeFirst();
-                }
+
+            event.cancel();
+            packetQueue.add(new Doubles<Packet<?>, Long>(p.getPacket(), System.currentTimeMillis()));
+            if (p.getPacket() instanceof C03PacketPlayer c03 && c03.isMoving()) {
+                posQueue.add(new Doubles<>(new Vec3(c03.getPositionX(), c03.getPositionY(), c03.getPositionZ()), System.currentTimeMillis()));
             }
-            case TickEvent ignored -> {
-                lastPos = currentPos;
-                if (!posBuffer.isEmpty()) currentPos = posBuffer.getFirst().pos;
+        }
+
+        if (event instanceof Render3DEvent r && r.getPriority() == Event.Priority.High && this.showServerPos.isValue() && (!this.onlyOnF5.isValue() || mc.gameSettings.thirdPersonView > 0)) {
+            if (!posQueue.isEmpty()) {
+                RenderUtil.setGlColor(new Color(0, 255, 0, 255));
+                float width = (float) (mc.thePlayer.getEntityBoundingBox().minX - mc.thePlayer.getEntityBoundingBox().maxX);
+                float height = (float) (mc.thePlayer.getEntityBoundingBox().minY - mc.thePlayer.getEntityBoundingBox().maxY);
+                float length = (float) (mc.thePlayer.getEntityBoundingBox().minZ - mc.thePlayer.getEntityBoundingBox().maxZ);
+                RenderUtil.render3DHitBox(new AxisAlignedBB(-width / 2, 0, -length / 2, width / 2, -height, length / 2).offset(posQueue.getFirst().getT().xCoord, posQueue.getFirst().getT().yCoord, posQueue.getFirst().getT().zCoord), 4);
             }
-            case Render3DEvent ignored -> {
-                if (!posBuffer.isEmpty()) {
-                    Vec3 diff = posBuffer.getFirst().pos.subtract(mc.thePlayer.getPositionVector());
-                    AxisAlignedBB pingPlayerBox = mc.thePlayer.getEntityBoundingBox().offset(diff.xCoord, diff.yCoord, diff.zCoord);
-                    RenderUtil.setGlColor(new Color(0, 0, 0, 100));
-                    RenderUtil.render3DBox(pingPlayerBox);
-                }
-            }
-            default -> {
-            }
+        }
+
+        if (event instanceof TickEvent) {
+            if (mc.currentScreen != null && this.blinkAction.is("InGUI")) this.blink();
         }
     }
 
-    private void handlePackets() {
-        buffer.removeIf(packetWithTime -> {
-            if (System.currentTimeMillis() - packetWithTime.time() >= maxDelay.getValue()) {
-                mc.getNetHandler().getNetworkManager().sendInvisiblePacket(packetWithTime.packet());
+    private void blink() {
+        packetQueue.removeIf(packetLongDoubles -> {
+            mc.getNetHandler().getNetworkManager().sendInvisiblePacket(packetLongDoubles.getT());
+            return true;
+        });
+        posQueue.removeIf(vec3LongDoubles -> true);
+    }
+
+    private void handlePacket() {
+        packetQueue.removeIf(packetLongDoubles -> {
+            if (System.currentTimeMillis() - packetLongDoubles.getE() >= this.delay.getValue()) {
+                mc.getNetHandler().getNetworkManager().sendInvisiblePacket(packetLongDoubles.getT());
                 return true;
             }
             return false;
         });
-        posBuffer.removeIf(pos -> System.currentTimeMillis() - pos.time() >= maxDelay.getValue());
+        posQueue.removeIf(vec3LongDoubles -> System.currentTimeMillis() - vec3LongDoubles.getE() >= this.delay.getValue());
     }
-
-    private void resetAllPackets() {
-        buffer.forEach(packetWithTime -> mc.getNetHandler().getNetworkManager().sendInvisiblePacket(packetWithTime.packet()));
-        buffer.clear();
-        posBuffer.clear();
-    }
-
-    private void reset() {
-        resetAllPackets();
-        lastResetTime = System.currentTimeMillis();
-        delayBeforeNextLag = (int) this.delayBeforeNextLagAfterReset.getValue();
-    }
-
-    private record PacketWithTime(Packet packet, long time) {}
-    private record VecWithTime(Vec3 pos, long time) {}
 }
