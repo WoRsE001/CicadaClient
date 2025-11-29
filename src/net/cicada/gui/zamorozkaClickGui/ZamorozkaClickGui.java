@@ -46,6 +46,15 @@ public class ZamorozkaClickGui extends GuiScreen {
     }
 
     @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        for (Panel panel : panels) {
+            if (panel.keyPressed(typedChar, keyCode)) return;
+        }
+
+        super.keyTyped(typedChar, keyCode);
+    }
+
+    @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         for (Panel panel : panels) {
             if (mouseButton == 0 && panel.mouseOver(mouseX, mouseY)) {

@@ -10,8 +10,10 @@ import net.cicada.module.setting.impl.MultiBooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import net.cicada.utility.Doubles;
 import net.cicada.utility.Render.RenderUtil;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
@@ -21,13 +23,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @ModuleInfo(name = "Ping", category = Category.Connect)
 public class Ping extends Module {
-
     NumberSetting delay = new NumberSetting("Delay", 550, 0, 1000, 1, () -> true, this);
     MultiBooleanSetting blinkAction = new MultiBooleanSetting("BlinkAction", () -> true, this)
             .add("Attack", true)
             .add("BlockPlace", true)
             .add("InGUI", true)
-            .add("UseItem", false);
+            .add("HurtTime", true)
+            .add("UseItem", true);
+    NumberSetting hurtTime = new NumberSetting("HurtTime", 5, 0, 10, 1, () -> this.blinkAction.is("HurtTime"), this);
     BooleanSetting showServerPos = new BooleanSetting("ShowServerPos", false, () -> true, this);
     BooleanSetting onlyOnF5 = new BooleanSetting("onlyOnF5", true, () -> this.showServerPos.isValue(), this);
 
@@ -42,7 +45,7 @@ public class Ping extends Module {
 
     @Override
     public void listen(Event event) {
-        if (event instanceof AttackEvent && this.blinkAction.is("Attack")) {
+        if (event instanceof AttackEvent a && (!(a.getTargetEntity() instanceof EntityLivingBase e) || e.hurtTime == 0) && this.blinkAction.is("Attack")) {
             this.blink();
         }
 
@@ -50,7 +53,7 @@ public class Ping extends Module {
             handlePacket();
         }
 
-        if (event instanceof PacketEvent p && p.getType() == PacketEvent.Type.Send) {
+        if (event instanceof PacketEvent p) {
             if (p.getPacket() instanceof C01PacketChatMessage) return;
 
             if (p.getPacket() instanceof C08PacketPlayerBlockPlacement && this.blinkAction.is("BlockPlace")) {
@@ -58,10 +61,12 @@ public class Ping extends Module {
                 return;
             }
 
-            event.cancel();
-            packetQueue.add(new Doubles<Packet<?>, Long>(p.getPacket(), System.currentTimeMillis()));
-            if (p.getPacket() instanceof C03PacketPlayer c03 && c03.isMoving()) {
-                posQueue.add(new Doubles<>(new Vec3(c03.getPositionX(), c03.getPositionY(), c03.getPositionZ()), System.currentTimeMillis()));
+            if (p.getType() == PacketEvent.Type.Send) {
+                event.cancel();
+                packetQueue.add(new Doubles<Packet<?>, Long>(p.getPacket(), System.currentTimeMillis()));
+                if (p.getPacket() instanceof C03PacketPlayer c03 && c03.isMoving()) {
+                    posQueue.add(new Doubles<>(new Vec3(c03.getPositionX(), c03.getPositionY(), c03.getPositionZ()), System.currentTimeMillis()));
+                }
             }
         }
 
@@ -77,6 +82,8 @@ public class Ping extends Module {
 
         if (event instanceof TickEvent) {
             if (mc.currentScreen != null && this.blinkAction.is("InGUI")) this.blink();
+            if (mc.thePlayer.isUsingItem() && this.blinkAction.is("UseItem")) this.blink();
+            if (mc.thePlayer.hurtTime == this.hurtTime.getValue() && this.blinkAction.is("HurtTime")) this.blink();
         }
     }
 

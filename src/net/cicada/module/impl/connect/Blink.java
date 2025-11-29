@@ -6,14 +6,13 @@ import net.cicada.event.impl.PacketEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @ModuleInfo(name = "Blink", category = Category.Connect)
 public class Blink extends Module {
-    List<Packet> sendQueue = new ArrayList<>();
+    List<Packet<?>> sendQueue = new ArrayList<>();
 
     @Override
     protected void onDisable() {

@@ -1,96 +1,139 @@
 package net.cicada.module.impl.movement;
 
+import net.cicada.event.impl.*;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.cicada.event.api.Event;
-import net.cicada.event.impl.PacketEvent;
-import net.cicada.event.impl.UpdateEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.utility.Player.MovementUtil;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C00PacketKeepAlive;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @ModuleInfo(name = "LongJump", category = Category.Movement)
 public class LongJump extends Module {
     ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "MatrixFlag", "MatrixLong"), () -> true, this);
-    NumberSetting timerSpeed = new NumberSetting("TimerSpeed", 1, 0.1, 1, 0.01, () -> this.mode.is("MatrixLong"), this);
-    NumberSetting lagSpeed = new NumberSetting("LagSpeed", 1.4, -2.4, 2.4, 0.01, () -> this.mode.is("MatrixLong"), this);
-    NumberSetting ticks = new NumberSetting("Ticks", 5, 1, 12, 1, () -> this.mode.is("MatrixLong"), this);
-    NumberSetting boostSpeed = new NumberSetting("BoostSpeed", 8.3, 0, 10, 0.01, () -> this.mode.is("MatrixLong"), this);
+    NumberSetting speed = new NumberSetting("Speed", 1.4, 0, 10, 0.01, () -> this.mode.is("MatrixLong"), this);
+    NumberSetting tick = new NumberSetting("Ticks", 80, 20, 80, 1, () -> this.mode.is("MatrixLong"), this);
+    NumberSetting timerSpeed = new NumberSetting("TimerSpeed", 1, 1, 10, 0.01, () -> this.mode.is("MatrixLong"), this);
 
-    int offGroundTicks;
-    boolean flag1, flag2, flag3, flag4, flag5, flag6;
+    List<Packet<?>> packets = new CopyOnWriteArrayList<>();
+    private boolean canBoost;
+    private boolean flag;
+    private boolean sent;
+    private boolean noBlink = true;
+    private double x;
+    private double z;
+    private double y;
+    private double firstDir;
+    private int ticks;
 
-    @Override
-    protected void onDisable() {
-        this.offGroundTicks = 0;
-        this.flag1 = this.flag2 = this.flag3 = this.flag4 = this.flag5 = this.flag6 = false;
+    public void onEnable() {
+        this.canBoost = false;
+        this.flag = false;
+        this.sent = false;
+        this.ticks = 0;
+        this.x = mc.thePlayer.posX;
+        this.z = mc.thePlayer.posZ;
+        this.y = mc.thePlayer.posY;
+        this.firstDir = mc.thePlayer.rotationYaw;
+    }
+
+    public void onDisable() {
+        this.blink();
+        this.noBlink = true;
         mc.timer.setTimer(1);
-        super.onDisable();
     }
 
     @Override
     public void listen(Event event) {
-        if (event instanceof PacketEvent e) {
-            if (this.mode.is("MatrixLong")) {
-                if (e.getType() == PacketEvent.Type.Receive) {
-                    if (e.getPacket() instanceof S08PacketPlayerPosLook) {
-                        if (!this.flag4) {
-                            this.flag3 = true;
-                        } else if (this.flag2) {
-                            this.flag3 = true;
-                        }
-                    }
-                }
+        if (event instanceof MovementEvent m){
+            if (!this.canBoost) {
+                m.setMoveForward(0);
+                m.setMoveStrafe(0);
             }
         }
 
-        if (event instanceof UpdateEvent) {
-            if (mc.thePlayer.onGround) {
-                this.offGroundTicks++;
-                if (this.flag6) {
-                    this.offGroundTicks = 0;
-                    this.flag6 = false;
-                }
-            } else if (!this.flag6) {
-                this.flag6 = true;
+
+        if (event instanceof PacketEvent p && p.getType() == PacketEvent.Type.Send) {
+            if (p.getPacket() instanceof C0FPacketConfirmTransaction) {
+                event.cancel();
+                return;
             }
 
-            if (!this.flag4) {
-                if (this.flag1 && this.offGroundTicks >= this.ticks.getValue()) {
-                    this.flag4 = true;
-                }
+            if (p.getPacket() instanceof C00PacketKeepAlive) return;
 
-                if (mc.thePlayer.fallDistance > 0.5F && !this.flag1) {
-                    this.flag5 = true;
-                }
+            if (!this.noBlink) {
+                //this.packets.add(p.getPacket());
+                //event.cancel();
+            }
+        }
 
-                if (this.flag5 && !this.flag3) {
-                    MovementUtil.strafe(this.lagSpeed.getValue(), 1);
-                    mc.thePlayer.motionY = 0.42;
-                }
+        if (event instanceof LookEvent l){
+            if (!this.sent) {
+                l.setRotationYaw((float) this.firstDir);
+                l.setRotationPitch(1);
+            }
 
-                if (this.flag3 && this.flag5) {
-                    MovementUtil.strafe(this.lagSpeed.getValue(), 1);
-                    mc.thePlayer.motionY = 0.42;
-                    this.offGroundTicks = 0;
-                    this.flag1 = true;
-                    this.flag3 = false;
-                    this.flag5 = false;
-                    mc.thePlayer.fallDistance = 0.0F;
-                    mc.timer.setTimer((float) this.timerSpeed.getValue());
+        }
+
+        if (event instanceof MotionEvent m) {
+            m.setOnGround(false);
+            if (!this.sent) {
+                m.setPosX(this.x);
+                m.setPosY(this.y);
+                m.setPosZ(this.z);
+                if (m.getPriority() == Event.Priority.High) {
+                    this.x += -Math.sin(Math.toRadians(this.firstDir)) * (0.2496 - (this.ticks % 3 == 0 ? 0.0806 : (double) 0.0F));
+                    this.z += Math.cos(Math.toRadians(this.firstDir)) * (0.2496 - (this.ticks % 3 == 0 ? 0.0806 : (double) 0.0F));
                 }
             }
 
-            if (this.flag4) {
-                MovementUtil.strafe(this.boostSpeed.getValue(), 1);
+        }
+
+        if (event instanceof UpdateEvent){
+            if (!this.sent) {
+                mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+                mc.timer.timerSpeed = ((Double) this.timerSpeed.getValue()).floatValue();
+                this.noBlink = false;
+                if ((double) this.ticks > (Double) this.tick.getValue()) {
+                    this.blink();
+                    this.noBlink = true;
+                    this.sent = true;
+                    this.ticks = 0;
+                    this.canBoost = true;
+                    mc.timer.timerSpeed = 1.0F;
+                }
+            }
+
+            if (this.canBoost) {
+                MovementUtil.strafe(this.speed.getValue(), 1);
                 mc.thePlayer.motionY = 0.42;
-                this.flag2 = true;
-                if (this.flag3) this.toggle();
+                if (this.flag) {
+                    this.toggle();
+                }
+            }
+
+            ++this.ticks;
+        }
+
+        if (event instanceof PacketEvent p && p.getType() == PacketEvent.Type.Receive){
+            if (p.getPacket() instanceof S08PacketPlayerPosLook && this.canBoost) {
+                this.flag = true;
             }
         }
+    }
+
+    private void blink() {
+        for (Packet<?> packet : this.packets) {
+            mc.thePlayer.sendQueue.addToSendQueue(packet);
+        }
+        this.packets.clear();
     }
 }

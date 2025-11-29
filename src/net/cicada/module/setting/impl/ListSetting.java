@@ -17,7 +17,7 @@ public class ListSetting extends Setting {
     public ListSetting(String name, String value, List<String> list, BooleanSupplier visible, Module module) {
         super(name, visible, module);
         this.width = mc.fontRendererObj.getStringWidth(this.name + ": ");
-        this.value = list.contains(value) ? value : list.get(0);
+        this.value = list.contains(value) ? value : list.getFirst();
         this.list = list;
         for (String s : this.list) {
             this.width +=  mc.fontRendererObj.getStringWidth(s + " ");

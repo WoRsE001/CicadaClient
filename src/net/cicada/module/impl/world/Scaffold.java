@@ -39,7 +39,7 @@ public class Scaffold extends Module {
     // Movement
     BooleanSetting moveFix = new BooleanSetting("moveFix", true, () -> true, this);
     BooleanSetting jumpFix = new BooleanSetting("JumpFix", true, () -> true, this);
-    BooleanSetting autoJump = new BooleanSetting("AutoJump", true, () -> true, this);
+    BooleanSetting autoJump = new BooleanSetting("AutoJump", false, () -> true, this);
     BooleanSetting sameY = new BooleanSetting("SameY", false, () -> true, this);
     // MISC
     ListSetting pickBlock = new ListSetting("PickBlock", "Legit", List.of("None", "Legit"), () -> true, this);

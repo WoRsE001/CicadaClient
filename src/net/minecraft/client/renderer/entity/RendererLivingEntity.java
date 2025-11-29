@@ -3,6 +3,8 @@ package net.minecraft.client.renderer.entity;
 import com.google.common.collect.Lists;
 import java.nio.FloatBuffer;
 import java.util.List;
+
+import net.cicada.module.api.ModuleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -100,6 +102,11 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
 
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
+        if (ModuleManager.ESP.isState() && ModuleManager.ESP.mode.is("Chams") && entity instanceof EntityPlayer) {
+            GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+            GL11.glPolygonOffset(1f, -1000000F);
+        }
+
         if (!Reflector.RenderLivingEvent_Pre_Constructor.exists() || !Reflector.postForgeBusEvent(Reflector.RenderLivingEvent_Pre_Constructor, new Object[] {entity, this, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z)}))
         {
             if (animateModelLiving)
@@ -276,6 +283,11 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
             {
                 Reflector.postForgeBusEvent(Reflector.RenderLivingEvent_Post_Constructor, new Object[] {entity, this, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z)});
             }
+        }
+
+        if (ModuleManager.ESP.isState() && ModuleManager.ESP.mode.is("Chams") && entity instanceof EntityPlayer) {
+            GL11.glPolygonOffset(1f, 1000000F);
+            GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
         }
     }
 

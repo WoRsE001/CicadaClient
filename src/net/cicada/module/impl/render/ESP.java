@@ -15,8 +15,9 @@ import java.awt.*;
 
 @ModuleInfo(name = "Esp", category = Category.Render)
 public class ESP extends Module {
-    MultiBooleanSetting mode = new MultiBooleanSetting("Mode", () -> true, this)
+    public MultiBooleanSetting mode = new MultiBooleanSetting("Mode", () -> true, this)
             .add("Box", false)
+            .add("Chams", false)
             .add("Glow", false)
             .add("HitBox", true);
     NumberSetting expandBox = new NumberSetting("expandBox", 0.1, 0, 1, 0.01, () -> mode.is("Box"), this);

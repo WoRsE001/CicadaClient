@@ -2,7 +2,9 @@ package net.cicada.utility.Render;
 
 import lombok.experimental.UtilityClass;
 import net.cicada.utility.Access;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -13,7 +15,9 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
+import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
 import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX_COLOR;
+import static org.lwjgl.opengl.GL11.*;
 
 @UtilityClass
 public class RenderUtil implements Access {
@@ -64,20 +68,27 @@ public class RenderUtil implements Access {
         stop2D();
     }
 
-    public static void drawImage(ResourceLocation resource, float x, float y, float x2, float y2, int c, int c2, int c3, int c4) {
-        mc.getTextureManager().bindTexture(resource);
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-        worldRenderer.begin(9, DefaultVertexFormats.POSITION_TEX_COLOR);
-        worldRenderer.pos(x, y2, 0).tex(0.0, 1.0).color(c >> 16 & 0xFF, c >> 8 & 0xFF, c & 0xFF, c >> 24 & 0xFF).endVertex();
-        worldRenderer.pos(x2, y2, 0).tex(1.0, 1.0).color(c2 >> 16 & 0xFF, c2 >> 8 & 0xFF, c2 & 0xFF, c2 >> 24 & 0xFF).endVertex();
-        worldRenderer.pos(x2, y, 0).tex(1.0, 0.0).color(c3 >> 16 & 0xFF, c3 >> 8 & 0xFF, c3 & 0xFF, c3 >> 24 & 0xFF).endVertex();
-        worldRenderer.pos(x, y, 0).tex(0.0, 0.0).color(c4 >> 16 & 0xFF, c4 >> 8 & 0xFF, c4 & 0xFF, c4 >> 24 & 0xFF).endVertex();
-        GL11.glShadeModel(7425);
-        GL11.glDepthMask(false);
-        tessellator.draw();
-        GL11.glDepthMask(true);
-        GL11.glShadeModel(7424);
+    public void render2DRoundRect(float x, float y, float width, float height, float radius) {
+        render2DCircle(x + radius, y + radius, radius);
+        render2DCircle(x + width - radius, y + radius, radius);
+        render2DCircle(x + width - radius, y + height - radius, radius);
+        render2DCircle(x + radius, y + height - radius, radius);
+        render2DRect(x + radius, y, width - radius * 2, height);
+        render2DRect(x, y + radius, width, height - radius * 2);
+    }
+
+    public static void drawImage(ResourceLocation image, float x, float y, int width, int height) {
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glDepthMask(false);
+        OpenGlHelper.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.getTextureManager().bindTexture(image);
+        drawModalRectWithCustomSizedTexture((int) x, (int) y, 0, 0, width, height, width, height);
+        GlStateManager.disableBlend();
+        glDepthMask(true);
+        glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void start3D() {
@@ -221,5 +232,59 @@ public class RenderUtil implements Access {
         GL11.glTranslated(smoothOffsetX, smoothOffsetY, smoothOffsetZ);
         render3DHitBox(entityBox, lineWidth);
         GL11.glTranslated(-smoothOffsetX, -smoothOffsetY, -smoothOffsetZ);
+    }
+
+    // Измените сигнатуру, чтобы принять угол вращения
+    public static void drawTexture3D(ResourceLocation location, double x, double y, double z, float width, float height, float rotationAngle) {
+        mc.getTextureManager().bindTexture(location);
+
+        // Получаем смещение рендера игрока
+        double renderPosX = mc.getRenderManager().viewerPosX;
+        double renderPosY = mc.getRenderManager().viewerPosY;
+        double renderPosZ = mc.getRenderManager().viewerPosZ;
+
+        GL11.glPushMatrix();
+
+        // 1. Перемещаем в 3D позицию (со смещением рендера)
+        GL11.glTranslated(x - renderPosX, y - renderPosY, z - renderPosZ);
+
+        // 2. Поворачиваем, чтобы плоскость была обращена к камере
+        GL11.glRotatef(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(mc.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+
+        // 3. ПРИМЕНЯЕМ ВРАЩЕНИЕ ВОКРУГ ОСИ Z (Ось, перпендикулярная плоскости)
+        GL11.glRotatef(rotationAngle, 0.0F, 0.0F, 1.0F); // <-- НОВОЕ ВРАЩЕНИЕ
+
+        // Начинаем рендеринг
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+
+        // Смещаем, чтобы иконка была отцентрована
+        float halfWidth = width / 2.0F;
+        float halfHeight = height / 2.0F;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+
+        worldrenderer.begin(GL11.GL_QUADS, POSITION_TEX_COLOR);
+
+        // Нижний левый угол
+        worldrenderer.pos(-halfWidth, -halfHeight, 0.0D).tex(0.0D, 1.0D).color(255, 255, 255, 255).endVertex();
+        // Нижний правый угол
+        worldrenderer.pos(halfWidth, -halfHeight, 0.0D).tex(1.0D, 1.0D).color(255, 255, 255, 255).endVertex();
+        // Верхний правый угол
+        worldrenderer.pos(halfWidth, halfHeight, 0.0D).tex(1.0D, 0.0D).color(255, 255, 255, 255).endVertex();
+        // Верхний левый угол
+        worldrenderer.pos(-halfWidth, halfHeight, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
+
+        tessellator.draw();
+
+        // Возвращаем настройки OpenGL
+        GlStateManager.enableDepth();
+        GlStateManager.disableBlend();
+        GL11.glPopMatrix();
     }
 }

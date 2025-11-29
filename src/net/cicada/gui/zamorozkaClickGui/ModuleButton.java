@@ -13,6 +13,7 @@ import java.awt.*;
 public class ModuleButton extends ComponentGui {
     private Module module;
     private boolean isOpenSettings;
+    private boolean isListen;
 
     public ModuleButton(Module module) {
         this.width = mc.fontRendererObj.getStringWidth("MurderHighlighter  ");
@@ -28,7 +29,7 @@ public class ModuleButton extends ComponentGui {
             float w = 400;
             float h = mc.displayHeight / 2F - 50;
             RenderUtil.setGlColor(new Color(40, 40, 40, 255));
-            RenderUtil.render2DRect(mc.displayWidth / 4F - w / 2F, mc.displayHeight / 4F - h / 2, w, h);
+            RenderUtil.render2DRoundRect(mc.displayWidth / 4F - w / 2F, mc.displayHeight / 4F - h / 2, w, h, 5);
             float offsetY = mc.displayHeight / 4F - h / 2;
             for (Setting setting : this.module.getSettings()) {
                 if (setting.getVisible().getAsBoolean()) {
@@ -42,10 +43,26 @@ public class ModuleButton extends ComponentGui {
     }
 
     @Override
-    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
-        if (mouseButton == 0 && this.mouseOver(mouseX, mouseY)) {
-            this.module.toggle();
+    public boolean keyPressed(char typedChar, int keyCode) {
+        if (this.isListen) {
+            this.module.setKey(keyCode);
+            this.isListen = false;
             return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
+        if (this.mouseOver(mouseX, mouseY)) {
+            if (mouseButton == 0) {
+                this.module.toggle();
+                return true;
+            } else if (mouseButton == 2) {
+                this.isListen = !this.isListen;
+                return true;
+            }
         }
 
         if (this.isOpenSettings) {

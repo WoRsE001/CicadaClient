@@ -15,4 +15,5 @@ public class ComponentGui implements Access {
     public void draw(int mouseX, int mouseY) {}
     public boolean mousePressed(int mouseX, int mouseY, int mouseButton) { return false; }
     public boolean mouseReleased(int mouseX, int mouseY,int mouseButton) { return false; }
+    public boolean keyPressed(char typedChar, int keyCode) { return false; }
 }

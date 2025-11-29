@@ -44,8 +44,6 @@ public class AttackAura extends Module {
     // CLICKS
     NumberSetting cps = new NumberSetting("CPS", 20, 0, 20, 1, () -> true, this);
     NumberSetting hitRange = new NumberSetting("HitRange", 8, 0, 15, 0.1, () -> true, this);
-    NumberSetting hitFovYaw = new NumberSetting("HitFovYaw", 180, 0,180, 1, () -> true, this);
-    NumberSetting hitFovPitch = new NumberSetting("HitFovPitch", 180, 0, 180, 1, () -> true, this);
     // AUTOBLOCK
     public ListSetting autoBlock = new ListSetting("AutoBlock", "None", List.of("None", "Constant", "PreAttack"), () -> true, this);
     // MOVEMENT
@@ -99,8 +97,10 @@ public class AttackAura extends Module {
         if (event instanceof LegitClickTimingEvent) {
             if (this.target != null) {
                 if (Math.random() < this.cps.getValue() / 20) {
-                    if ((mc.thePlayer.canEntityBeSeen(this.target) || this.rotation.isValue()) && mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.attackRange.getValue()) {
+                    if (mc.thePlayer.canEntityBeSeen(this.target) && mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.attackRange.getValue()) {
                         AttackOrder.sendFixedAttack(mc.thePlayer, this.target);
+                    } else if (mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.hitRange.getValue()) {
+                        mc.clickMouse();
                     }
                 }
             }

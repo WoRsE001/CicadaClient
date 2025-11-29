@@ -10,6 +10,7 @@ import net.cicada.module.impl.connect.Ping;
 import net.cicada.module.impl.connect.PulseBlink;
 import net.cicada.module.impl.connect.TimerRange;
 import net.cicada.module.impl.exploit.*;
+import net.cicada.module.impl.fun.ForceOP;
 import net.cicada.module.impl.fun.Spin;
 import net.cicada.module.impl.misc.*;
 import net.cicada.module.impl.movement.*;
@@ -58,6 +59,7 @@ public class ModuleManager implements EventListener {
     public static ESP ESP = new ESP();
     public static FullBright FULL_BRIGHT = new FullBright();
     public static HandRender HAND_RENDER = new HandRender();
+    public static ModuleList MODULE_LIST = new ModuleList();
     public static MurderHighlighter MURDER_HIGHLIGHTER = new MurderHighlighter();
     public static NoHurtCam NO_HURT_CAM = new NoHurtCam();
     public static NoRender NO_RENDER = new NoRender();
@@ -71,6 +73,7 @@ public class ModuleManager implements EventListener {
     public static InvManager INV_MANAGER = new InvManager();
     public static NoFall NO_FALL = new NoFall();
     public static Regen REGEN = new Regen();
+    public static Timer TIMER = new Timer();
     // World
     public static BridgeAssist BRIDGE_ASSIST = new BridgeAssist();
     public static FastBreak FAST_BREAK = new FastBreak();
@@ -91,6 +94,7 @@ public class ModuleManager implements EventListener {
     public static Phase PHASE = new Phase();
     public static SilentMurder SILENT_MURDER = new SilentMurder();
     // FUN
+    public static ForceOP FORCE_OP = new ForceOP();
     public static Spin SPIN = new Spin();
 
     public ModuleManager() {
