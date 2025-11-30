@@ -2,12 +2,8 @@ package net.cicada.utility.Render;
 
 import lombok.experimental.UtilityClass;
 import net.cicada.utility.Access;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +12,6 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
-import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.POSITION_TEX_COLOR;
 import static org.lwjgl.opengl.GL11.*;
 
 @UtilityClass
@@ -60,21 +55,30 @@ public class RenderUtil implements Access {
         start2D();
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);
         for (int i = 0; i < 360; i++) {
-            float cos = (float) (Math.cos(Math.toRadians(i))) * radius;
-            float sin = (float) (Math.sin(Math.toRadians(i))) * radius;
-            GL11.glVertex2f(x + cos, y + sin);
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x), (float) (Math.cos(Math.toRadians(i)) * radius + y));
         }
         GL11.glEnd();
         stop2D();
     }
 
     public void render2DRoundRect(float x, float y, float width, float height, float radius) {
-        render2DCircle(x + radius, y + radius, radius);
-        render2DCircle(x + width - radius, y + radius, radius);
-        render2DCircle(x + width - radius, y + height - radius, radius);
-        render2DCircle(x + radius, y + height - radius, radius);
-        render2DRect(x + radius, y, width - radius * 2, height);
-        render2DRect(x, y + radius, width, height - radius * 2);
+        start2D();
+        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+        int i;
+        for (i = 0; i <= 90; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + width - radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + radius));
+        }
+        for (i = 90; i <= 180; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + width - radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + height - radius));
+        }
+        for (i = 180; i <= 270; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + height - radius));
+        }
+        for (i = 270; i <= 360; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + radius));
+        }
+        GL11.glEnd();
+        stop2D();
     }
 
     public static void drawImage(ResourceLocation image, float x, float y, int width, int height) {
@@ -232,59 +236,5 @@ public class RenderUtil implements Access {
         GL11.glTranslated(smoothOffsetX, smoothOffsetY, smoothOffsetZ);
         render3DHitBox(entityBox, lineWidth);
         GL11.glTranslated(-smoothOffsetX, -smoothOffsetY, -smoothOffsetZ);
-    }
-
-    // Измените сигнатуру, чтобы принять угол вращения
-    public static void drawTexture3D(ResourceLocation location, double x, double y, double z, float width, float height, float rotationAngle) {
-        mc.getTextureManager().bindTexture(location);
-
-        // Получаем смещение рендера игрока
-        double renderPosX = mc.getRenderManager().viewerPosX;
-        double renderPosY = mc.getRenderManager().viewerPosY;
-        double renderPosZ = mc.getRenderManager().viewerPosZ;
-
-        GL11.glPushMatrix();
-
-        // 1. Перемещаем в 3D позицию (со смещением рендера)
-        GL11.glTranslated(x - renderPosX, y - renderPosY, z - renderPosZ);
-
-        // 2. Поворачиваем, чтобы плоскость была обращена к камере
-        GL11.glRotatef(-mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(mc.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
-
-        // 3. ПРИМЕНЯЕМ ВРАЩЕНИЕ ВОКРУГ ОСИ Z (Ось, перпендикулярная плоскости)
-        GL11.glRotatef(rotationAngle, 0.0F, 0.0F, 1.0F); // <-- НОВОЕ ВРАЩЕНИЕ
-
-        // Начинаем рендеринг
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepth();
-
-        // Смещаем, чтобы иконка была отцентрована
-        float halfWidth = width / 2.0F;
-        float halfHeight = height / 2.0F;
-
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-
-        worldrenderer.begin(GL11.GL_QUADS, POSITION_TEX_COLOR);
-
-        // Нижний левый угол
-        worldrenderer.pos(-halfWidth, -halfHeight, 0.0D).tex(0.0D, 1.0D).color(255, 255, 255, 255).endVertex();
-        // Нижний правый угол
-        worldrenderer.pos(halfWidth, -halfHeight, 0.0D).tex(1.0D, 1.0D).color(255, 255, 255, 255).endVertex();
-        // Верхний правый угол
-        worldrenderer.pos(halfWidth, halfHeight, 0.0D).tex(1.0D, 0.0D).color(255, 255, 255, 255).endVertex();
-        // Верхний левый угол
-        worldrenderer.pos(-halfWidth, halfHeight, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
-
-        tessellator.draw();
-
-        // Возвращаем настройки OpenGL
-        GlStateManager.enableDepth();
-        GlStateManager.disableBlend();
-        GL11.glPopMatrix();
     }
 }

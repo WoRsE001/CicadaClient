@@ -128,9 +128,9 @@ public class PlayerUtil implements Access {
     }
 
     public boolean isBot(Entity entity) {
-        if (entity.getEntityId() >= 1000000000 || entity.getEntityId() <= 0) return true;
-        if (mc.getNetHandler().getPlayerInfo(entity.getUniqueID()) == null) return true;
-        return mc.getNetHandler().getPlayerInfo(entity.getUniqueID()).getResponseTime() <= 0;
+        if (entity.getEntityId() >= 1000000000 || entity.getEntityId() <= 0 && ModuleManager.TARGETS.antiBot.is("EntityID")) return true;
+        if (mc.getNetHandler().getPlayerInfo(entity.getUniqueID()) == null) return ModuleManager.TARGETS.antiBot.is("PlayerInfo");
+        else return mc.getNetHandler().getPlayerInfo(entity.getUniqueID()).getResponseTime() <= 0 && ModuleManager.TARGETS.antiBot.is("ResponseTime");
     }
 
     public boolean isValid(Entity entity) {
@@ -139,7 +139,7 @@ public class PlayerUtil implements Access {
         }
         if (entity instanceof EntityLivingBase && entity.isEntityAlive() && entity != mc.thePlayer) {
             if (ModuleManager.TARGETS.typeTargets.is("Players") && entity instanceof EntityPlayer) {
-                return !ModuleManager.TARGETS.antiBot.isValue() || !isBot(entity);
+                return !isBot(entity);
             }
             return (ModuleManager.TARGETS.typeTargets.is("Mobs") && isMob(entity)) || (ModuleManager.TARGETS.typeTargets.is("Animals")  && isAnimal(entity));
         }

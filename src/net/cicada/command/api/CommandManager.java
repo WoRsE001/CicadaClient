@@ -1,13 +1,9 @@
 package net.cicada.command.api;
 
-import net.cicada.command.impl.Bind;
-import net.cicada.command.impl.Config;
-import net.cicada.command.impl.Help;
-import net.cicada.command.impl.Toggle;
+import net.cicada.command.impl.*;
 import net.cicada.event.api.Event;
 import net.cicada.event.api.EventListener;
 import net.cicada.event.impl.PacketEvent;
-import net.cicada.module.api.Module;
 import net.minecraft.network.play.client.C01PacketChatMessage;
 
 import java.lang.reflect.Field;
@@ -20,6 +16,7 @@ public class CommandManager implements EventListener {
     public static Bind BIND = new Bind();
     public static Config CONFIG = new Config();
     public static Help HELP = new Help();
+    public static Teleport TELEPORT = new Teleport();
     public static Toggle TOGGLE = new Toggle();
 
     public CommandManager() {

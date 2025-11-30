@@ -65,7 +65,7 @@ public class ModuleManager implements EventListener {
     public static NoRender NO_RENDER = new NoRender();
     public static PointerEsp POINTER_ESP = new PointerEsp();
     public static TargetESP TARGETESP = new TargetESP();
-    public static WaterMark WATER_MARK = new WaterMark();
+    public static Watermark WATERMARK = new Watermark();
     // Player
     public static AutoPotion AUTO_POTION = new AutoPotion();
     public static AutoTool AUTO_TOOL = new AutoTool();

@@ -3,11 +3,14 @@ package net.cicada.module.impl.world;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import net.cicada.utility.LoggerUtil;
 import net.cicada.utility.Player.MovementUtil;
 import net.cicada.utility.Player.PlayerUtil;
 import net.cicada.utility.Player.RotateUtil;
 import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.block.BlockAir;
+import net.minecraft.block.BlockWeb;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.*;
 import net.cicada.event.api.Event;
@@ -231,7 +234,7 @@ public class Scaffold extends Module {
 
     private int findBlock() {
         for (int i = 0; i < 9; i++) {
-            if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock) return i;
+            if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock && ((ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem()).getBlock().isFullBlock()) return i;
         }
 
         return -1;
