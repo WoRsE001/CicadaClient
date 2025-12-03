@@ -27,7 +27,7 @@ public class Fucker extends Module {
     @Override
     public void listen(Event event) {
         if (event instanceof TickEvent) {
-            if (this.bedPos != null) RotateUtil.rotateTo(new Vec3(this.bedPos.getX() + 0.5, this.bedPos.getY() + 0.5, this.bedPos.getZ() + 0.5), 180, 180);
+            if (this.bedPos != null) RotateUtil.rotateWithGCD(RotateUtil.calcDeltaRotate(new Vec3(this.bedPos.getX() + 0.5, this.bedPos.getY() + 0.5, this.bedPos.getZ() + 0.5), 180, 180));
         }
 
         if (event instanceof UpdateEvent) {

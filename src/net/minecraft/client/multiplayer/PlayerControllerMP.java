@@ -2,6 +2,7 @@ package net.minecraft.client.multiplayer;
 
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.AttackEvent;
+import net.cicada.utility.LoggerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

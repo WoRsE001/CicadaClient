@@ -1,5 +1,6 @@
 package net.cicada.module.impl.connect;
 
+import net.cicada.event.impl.GameLoopEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.Vec3;
 import net.cicada.event.api.Event;
@@ -23,6 +24,9 @@ public class TimerRange extends Module {
 
     @Override
     public void listen(Event event) {
+        if (event instanceof GameLoopEvent && teleport) {
+            mc.timer.renderPartialTicks = 0;
+        }
         if (teleport) return;
         if (event instanceof TickEvent e && ModuleManager.ATTACK_AURA.isState()) {
             target = ModuleManager.ATTACK_AURA.target;

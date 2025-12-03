@@ -30,16 +30,13 @@ public class RotateUtil implements Access {
         float deltaPitch = (float) ((-Math.toDegrees(Math.atan2(diff.yCoord, Math.hypot(diff.xCoord, diff.zCoord)))) - rotation.getY());
         deltaYaw = MathHelper.clamp_float(deltaYaw, -yawSpeed, yawSpeed);
         deltaPitch = MathHelper.clamp_float(deltaPitch, -pitchSpeed, pitchSpeed);
-        float gcdFix = (float) ((Math.pow(mc.gameSettings.mouseSensitivity * 0.6 + 0.2, 3.0)) * 1.2);
-        deltaYaw = MathHelper.round(deltaYaw, gcdFix);
-        deltaPitch = MathHelper.round(deltaPitch, gcdFix);
         return new Vector2f(deltaYaw, deltaPitch);
     }
 
-    public void rotateTo(Vec3 point, float yawSpeed, float pitchSpeed) {
+    public void rotateWithGCD(Vector2f deltaRotation) {
         lastRotation = rotation;
-        Vector2f deltaRotation = calcDeltaRotate(point,  yawSpeed, pitchSpeed);
-        rotation.translate(deltaRotation.getX(), deltaRotation.getY());
+        float gcdFix = (float) ((Math.pow(mc.gameSettings.mouseSensitivity * 0.6 + 0.2, 3.0)) * 1.2);
+        rotation.translate(MathHelper.round(deltaRotation.getX(), gcdFix), MathHelper.round(deltaRotation.getY(), gcdFix));
         rotation.setY(MathHelper.clamp_float(rotation.getY(), -90, 90));
     }
 

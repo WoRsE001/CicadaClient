@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.cicada.event.impl.UpdateEvent;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import net.cicada.utility.LoggerUtil;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
@@ -41,7 +42,6 @@ public class InvManager extends Module {
                     if (!this.searchAndSort() && !this.autoArmor()) this.drop();
                     this.timer = (byte) this.delay.getValue();
                 }
-                //if (drop()) return;}
             } else {
                 this.timer = (byte) this.delay.getValue();
             }
@@ -50,84 +50,56 @@ public class InvManager extends Module {
 
     private boolean searchAndSort() {
         List<String> items = List.of(this.slot1.getValue(), this.slot2.getValue(), this.slot3.getValue(), this.slot4.getValue(), this.slot5.getValue(), this.slot6.getValue(), this.slot7.getValue(), this.slot8.getValue(), this.slot9.getValue());
-        for (int i = 36; i < 45; i++) {
-            ItemCategory category = ItemCategory.get(items.get(i - 36));
-            ItemStack curItemStack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
-            for (Slot slot : mc.thePlayer.inventoryContainer.inventorySlots) {
-                if (slot.getStack() == null) continue;
-                if (category.is(slot.getStack()) && i != slot.slotNumber && (!(slot.getStack().getItem() instanceof ItemBlock) || ((ItemBlock) slot.getStack().getItem()).getBlock().isFullBlock())) {
-                    if (curItemStack == null || ItemCategory.get(curItemStack.getItem()) != ItemCategory.get(slot.getStack().getItem()) || (slot.getStack().getItem() instanceof ItemSword && InvUtil.getSwordDamage(curItemStack) < InvUtil.getSwordDamage(slot.getStack())) || (slot.getStack().getItem() instanceof ItemBlock && curItemStack.stackSize < slot.getStack().stackSize)) {
-                        InvUtil.moveItem(slot.slotNumber, i - 36);
-                        return true;
-                    }
+        for (int iterHotBar = 0; iterHotBar < 9; iterHotBar++) {
+            ItemCategory hotBarCategory = ItemCategory.get(items.get(iterHotBar));
+            if (hotBarCategory == ItemCategory.EMPTY) continue;
+            int bestSlot = -1;
+            if (mc.thePlayer.inventory.getStackInSlot(iterHotBar) != null && ItemCategory.get(mc.thePlayer.inventory.getStackInSlot(iterHotBar).getItem()) == hotBarCategory) bestSlot = iterHotBar;
+            for (int iterInventory = 0; iterInventory < mc.thePlayer.inventory.getSizeInventory() - 4; iterInventory++) {
+                ItemStack inventoryItemStack = mc.thePlayer.inventory.getStackInSlot(iterInventory);
+                if (inventoryItemStack == null) continue;
+                ItemCategory inventoryCategory = ItemCategory.get(inventoryItemStack.getItem());
+                if (inventoryCategory != hotBarCategory) continue;
+                if (bestSlot == -1 || mc.thePlayer.inventory.getStackInSlot(bestSlot) == null) bestSlot = iterInventory;
+                else if (inventoryItemStack.getItem() instanceof ItemSword) {
+                    if (InvUtil.getSwordDamage(inventoryItemStack) > InvUtil.getSwordDamage(mc.thePlayer.inventory.getStackInSlot(bestSlot))) bestSlot = iterInventory;
+                } else if (inventoryItemStack.getItem() instanceof ItemFood food) {
+                    if (food.getSaturationModifier(inventoryItemStack) > ((ItemFood) mc.thePlayer.inventory.getStackInSlot(bestSlot).getItem()).getSaturationModifier(mc.thePlayer.inventory.getStackInSlot(bestSlot))) bestSlot = iterInventory;
+                } else if (inventoryItemStack.getItem() instanceof ItemBlock) {
+                    if (inventoryItemStack.stackSize > mc.thePlayer.inventory.getStackInSlot(bestSlot).stackSize) bestSlot = iterInventory;
+                } else if (inventoryItemStack.getItem() instanceof ItemPickaxe || inventoryItemStack.getItem() instanceof ItemAxe || inventoryItemStack.getItem() instanceof ItemSpade) {
+                    if (InvUtil.getMineSpeed(inventoryItemStack) > InvUtil.getMineSpeed(mc.thePlayer.inventory.getStackInSlot(bestSlot))) bestSlot = iterInventory;
                 }
+            }
+            if (bestSlot != -1 && bestSlot != iterHotBar) {
+                mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, bestSlot, iterHotBar, 2, mc.thePlayer);
+                return true;
             }
         }
         return false;
     }
 
     private boolean autoArmor() {
-        for (Slot slot : mc.thePlayer.inventoryContainer.inventorySlots) {
-            ItemStack slotItemStack = slot.getStack();
-            if (slotItemStack == null) continue;
-            if (slotItemStack.getItem() instanceof ItemArmor armor) {
-                ItemStack armorItemStack = mc.thePlayer.inventoryContainer.getSlot(armor.armorType + 5).getStack();
-                if (armorItemStack == null) {
-                    InvUtil.stealItem(slot.slotNumber);
-                    return true;
-                }
+        for (int iterArmorBar = 36; iterArmorBar < 40; iterArmorBar++) {
+            int bestSlot = -1;
+            if (mc.thePlayer.inventory.getStackInSlot(iterArmorBar) != null) bestSlot = iterArmorBar;
+            for (int iterInventory = 0; iterInventory < mc.thePlayer.inventory.getSizeInventory() - 4; iterInventory++) {
+                ItemStack inventoryItemStack = mc.thePlayer.inventory.getStackInSlot(iterInventory);
+                if (inventoryItemStack == null || !(inventoryItemStack.getItem() instanceof ItemArmor armor) || armor.armorType != 3 - (iterArmorBar - 36)) continue;
+                if (bestSlot == -1 || mc.thePlayer.inventory.getStackInSlot(bestSlot) == null) bestSlot = iterInventory;
+                else if (InvUtil.getDamageReduceAmount(inventoryItemStack) > InvUtil.getDamageReduceAmount(mc.thePlayer.inventory.getStackInSlot(bestSlot))) bestSlot = iterInventory;
+            }
+
+            if (bestSlot != -1 && bestSlot != iterArmorBar) {
+                if (mc.thePlayer.inventory.getStackInSlot(iterArmorBar) == null) mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, bestSlot, 0, 1, mc.thePlayer);
+                else mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, 8 - (iterArmorBar - 36), 0, 1, mc.thePlayer);
+                return true;
             }
         }
         return false;
     }
 
     private void drop() {
-        for (Slot slot : mc.thePlayer.inventoryContainer.inventorySlots) {
-            ItemStack slotItemStack = slot.getStack();
-            if (slotItemStack == null) continue;
-            if (slotItemStack.getItem() instanceof ItemSword) {
-                for (Slot scanSlot : mc.thePlayer.inventoryContainer.inventorySlots) {
-                    if (slot.equals(scanSlot)) continue;
-                    ItemStack scanItemStack = scanSlot.getStack();
-                    if (scanItemStack != null && scanItemStack.getItem() instanceof ItemSword && InvUtil.getSwordDamage(scanItemStack) <= InvUtil.getSwordDamage(slotItemStack)) {
-                        InvUtil.dropItem(scanSlot.slotNumber);
-                        return;
-                    }
-                }
-            } else if (slotItemStack.getItem() instanceof ItemBlock block) {
-                if (!block.getBlock().isFullBlock()) {
-                    InvUtil.dropItem(slot.slotNumber);
-                    return;
-                }
-            } else if (slotItemStack.getItem() instanceof ItemFishingRod) {
-                for (Slot scanSlot : mc.thePlayer.inventoryContainer.inventorySlots) {
-                    if (slot.equals(scanSlot)) continue;
-                    ItemStack scanItemStack = scanSlot.getStack();
-                    if (scanItemStack != null && scanItemStack.getItem() instanceof ItemFishingRod) {
-                        InvUtil.dropItem(scanSlot.slotNumber);
-                        return;
-                    }
-                }
-            } else if (slotItemStack.getItem() instanceof ItemBow) {
-                for (Slot scanSlot : mc.thePlayer.inventoryContainer.inventorySlots) {
-                    if (slot.equals(scanSlot)) continue;
-                    ItemStack scanItemStack = scanSlot.getStack();
-                    if (scanItemStack != null && scanItemStack.getItem() instanceof ItemBow) {
-                        InvUtil.dropItem(scanSlot.slotNumber);
-                        return;
-                    }
-                }
-            } else if (slotItemStack.getItem() instanceof ItemArmor armor) {
-                for (Slot scanSlot : mc.thePlayer.inventoryContainer.inventorySlots) {
-                    if (slot.equals(scanSlot)) continue;
-                    ItemStack scanItemStack = scanSlot.getStack();
-                    if (scanItemStack != null && scanItemStack.getItem() instanceof ItemArmor scanArmor && armor.armorType == scanArmor.armorType && InvUtil.getDamageReduceAmount(slotItemStack) >= InvUtil.getDamageReduceAmount(scanItemStack)) {
-                        InvUtil.dropItem(scanSlot.slotNumber);
-                        return;
-                    }
-                }
-            }
-        }
     }
 
     @Getter

@@ -2,6 +2,8 @@ package net.cicada.module.impl.combat;
 
 import de.florianmichael.viamcp.fixes.AttackOrder;
 import net.cicada.module.api.ModuleManager;
+import net.cicada.module.setting.impl.MultiBooleanSetting;
+import net.cicada.utility.MathUtil;
 import net.cicada.utility.Player.CombatManager;
 import net.cicada.utility.Player.MovementUtil;
 import net.cicada.utility.Player.PlayerUtil;
@@ -20,6 +22,7 @@ import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector2f;
 
 import java.util.List;
 
@@ -30,7 +33,6 @@ public class AttackAura extends Module {
     // RANGE
     NumberSetting aimRange = new NumberSetting("aimRange", 15, 0, 15, 0.1, () -> true, this);
     NumberSetting attackRange = new NumberSetting("AttackRange", 3, 0, 6, 0.1, () -> true, this);
-    NumberSetting attackThroughWallsRange = new NumberSetting("AttackThroughWallsRange", 0, 0, 6, 0.1, () -> true, this);
     // POINT SELECTION
     ListSetting selectionMode = new ListSetting("SelectionMode", "Best", List.of("Center", "Best", "Nearest"), () -> true, this);
     BooleanSetting smartSelection = new BooleanSetting("SmartSelection", true, () -> true, this);
@@ -38,11 +40,16 @@ public class AttackAura extends Module {
     BooleanSetting rotation = new BooleanSetting("Rotation", true, () -> true, this);
     NumberSetting yawSpeed = new  NumberSetting("yawSpeed", 180, 0, 180, 1, () -> this.rotation.isValue(), this);
     NumberSetting pitchSpeed = new  NumberSetting("pitchSpeed", 180, 0, 180, 1, () -> this.rotation.isValue(), this);
-    ListSetting randomize = new ListSetting("Randomize", "None", List.of("None", "Basic"), () -> this.rotation.isValue(), this);
-    NumberSetting randomStrength = new NumberSetting("RandomStrength", 0.4, 0, 2, 0.1, () -> this.rotation.isValue() && randomize.is("Basic"), this);
+    MultiBooleanSetting randomize = new MultiBooleanSetting("Randomize", () -> this.rotation.isValue(), this)
+            .add("Basic", false)
+            .add("Smooth", false);
+    NumberSetting minRandomStrength = new NumberSetting("MinRandomStrength", -2, -15, 15, 0.1, () -> this.rotation.isValue() && randomize.is("Basic"), this);
+    NumberSetting maxRandomStrength = new NumberSetting("MaxRandomStrength", 2, -15, 15, 0.1, () -> this.rotation.isValue() && randomize.is("Basic"), this);
+    NumberSetting smoothFactor = new NumberSetting("SmoothFactor", 1.7, 1, 10, 0.01, () -> this.rotation.isValue() && randomize.is("Smooth"), this);
     BooleanSetting silentRotation = new BooleanSetting("SilentRotation", true, () -> this.rotation.isValue(), this);
     // CLICKS
-    NumberSetting cps = new NumberSetting("CPS", 20, 0, 20, 1, () -> true, this);
+    NumberSetting minCPS = new NumberSetting("MinCPS", 20, 0, 20, 1, () -> true, this);
+    NumberSetting maxCPS = new NumberSetting("MaxCPS", 20, 0, 20, 1, () -> true, this);
     NumberSetting hitRange = new NumberSetting("HitRange", 8, 0, 15, 0.1, () -> true, this);
     // AUTOBLOCK
     public ListSetting autoBlock = new ListSetting("AutoBlock", "None", List.of("None", "Constant", "PreAttack"), () -> true, this);
@@ -76,6 +83,13 @@ public class AttackAura extends Module {
             if (e.getPriority() == Event.Priority.High) this.block();
         }
 
+        if (event instanceof Render2DEvent) {
+            if (this.target != null && this.rotation.isValue() && !silentRotation.isValue()) {
+                mc.thePlayer.rotationYaw = RotateUtil.lastRotation.getX() - (RotateUtil.rotation.getX() - RotateUtil.lastRotation.getX()) * mc.timer.renderPartialTicks;
+                mc.thePlayer.rotationPitch = RotateUtil.lastRotation.getY() - (RotateUtil.rotation.getY() - RotateUtil.lastRotation.getY()) * mc.timer.renderPartialTicks;
+            }
+        }
+
         if (event instanceof TickEvent) {
             if (mc.currentScreen != null) return;
             CombatManager.updateTarget(sortMode.getValue());
@@ -83,10 +97,6 @@ public class AttackAura extends Module {
             if (this.target != null) {
                 if (this.rotation.isValue()) {
                     this.aimPoint = this.updateRotation(this.target);
-                    if (!silentRotation.isValue()) {
-                        mc.thePlayer.rotationYaw = RotateUtil.rotation.getX();
-                        mc.thePlayer.rotationPitch = RotateUtil.rotation.getY();
-                    }
                 }
                 if (!ModuleManager.ATTACK_AURA.autoBlock.is("None") && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) this.block();
             } else {
@@ -96,8 +106,9 @@ public class AttackAura extends Module {
 
         if (event instanceof LegitClickTimingEvent) {
             if (this.target != null) {
-                if (Math.random() < this.cps.getValue() / 20) {
-                    if (mc.thePlayer.canEntityBeSeen(this.target) && mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.attackRange.getValue()) {
+                if (Math.random() < MathUtil.random(this.minCPS.getValue(), this.maxCPS.getValue()) / 20) {
+                    MovingObjectPosition rayTrace = PlayerUtil.rayTrace(RotateUtil.rotation, (float) this.attackRange.getValue(), 1);
+                    if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && rayTrace.entityHit == this.target && mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.attackRange.getValue()) {
                         AttackOrder.sendFixedAttack(mc.thePlayer, this.target);
                     } else if (mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.hitRange.getValue()) {
                         mc.clickMouse();
@@ -168,9 +179,10 @@ public class AttackAura extends Module {
             if (candidatePoint != null) aimPoint = candidatePoint;
         }
 
-        if (this.randomize.is("Basic")) aimPoint = aimPoint.add(new Vec3((Math.random() * 2 - 1) * this.randomStrength.getValue(), (Math.random() * 2 - 1) * this.randomStrength.getValue(), (Math.random() * 2 - 1) * this.randomStrength.getValue()));
-
-        RotateUtil.rotateTo(aimPoint, (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
+        Vector2f delta = RotateUtil.calcDeltaRotate(aimPoint, (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
+        if (this.randomize.is("Basic")) delta.translate((float) MathUtil.random(this.minRandomStrength.getValue(), this.maxRandomStrength.getValue()), (float) MathUtil.random(this.minRandomStrength.getValue(), this.maxRandomStrength.getValue()));
+        if (this.randomize.is("Smooth")) delta.set((float) (delta.getX() / this.smoothFactor.getValue()), (float) (delta.getY() / this.smoothFactor.getValue()));
+        RotateUtil.rotateWithGCD(delta);
         return aimPoint;
     }
 

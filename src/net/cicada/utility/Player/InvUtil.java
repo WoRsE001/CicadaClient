@@ -4,9 +4,7 @@ import lombok.experimental.UtilityClass;
 import net.cicada.utility.Access;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.*;
 
 @UtilityClass
 public class InvUtil implements Access {
@@ -42,5 +40,36 @@ public class InvUtil implements Access {
             }
         }
         return damageReduceAmount;
+    }
+
+    public float getMineSpeed(ItemStack stack) {
+        Item item = stack.getItem();
+        int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, stack);
+        switch (level) {
+            case 1: level = 30; break;
+            case 2: level = 69; break;
+            case 3: level = 120; break;
+            case 4: level = 186; break;
+            case 5: level = 271; break;
+            default: level = 0; break;
+        }
+
+        if (item instanceof ItemTool) {
+            switch (item) {
+                case ItemPickaxe itemPickaxe -> {
+                    return itemPickaxe.getToolMaterial().getEfficiencyOnProperMaterial() + level;
+                }
+                case ItemSpade itemSpade -> {
+                    return itemSpade.getToolMaterial().getEfficiencyOnProperMaterial() + level;
+                }
+                case ItemAxe itemAxe -> {
+                    return itemAxe.getToolMaterial().getEfficiencyOnProperMaterial() + level;
+                }
+                default -> {
+                }
+            }
+        }
+
+        return 0.0F;
     }
 }

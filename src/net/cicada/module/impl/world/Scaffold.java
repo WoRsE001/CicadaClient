@@ -96,7 +96,7 @@ public class Scaffold extends Module {
                     }
                 }
                 Vector2f rot = this.getBestRotation();
-                RotateUtil.rotateTo(this.getVectorForRotation(rot.getX(), rot.getY()), (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
+                RotateUtil.rotateWithGCD(RotateUtil.calcDeltaRotate(this.getVectorForRotation(rot.getX(), rot.getY()), (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue()));
             } else if (!this.pickBlock.is("None") && lastSlot != -1) {
                 mc.thePlayer.inventory.currentItem = lastSlot;
                 lastSlot = -1;

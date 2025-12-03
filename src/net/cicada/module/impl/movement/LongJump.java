@@ -100,7 +100,7 @@ public class LongJump extends Module {
         if (event instanceof UpdateEvent){
             if (!this.sent) {
                 mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
-                mc.timer.timerSpeed = ((Double) this.timerSpeed.getValue()).floatValue();
+                mc.timer.setTimer((float) this.timerSpeed.getValue());
                 this.noBlink = false;
                 if ((double) this.ticks > (Double) this.tick.getValue()) {
                     this.blink();
@@ -108,7 +108,7 @@ public class LongJump extends Module {
                     this.sent = true;
                     this.ticks = 0;
                     this.canBoost = true;
-                    mc.timer.timerSpeed = 1.0F;
+                    mc.timer.setTimer(1);
                 }
             }
 
