@@ -2,6 +2,7 @@ package net.cicada.module.impl.player;
 
 import lombok.Getter;
 import net.cicada.event.impl.UpdateEvent;
+import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import net.cicada.utility.LoggerUtil;
@@ -30,6 +31,7 @@ public class InvManager extends Module {
     ListSetting slot8 = new ListSetting("Slot8", "Egg", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
     ListSetting slot9 = new ListSetting("Slot9", "Block", List.of("None", "Sword", "FishingRod", "Bow", "WaterBucket", "Food", "Gapple", "EnderPearl", "Egg", "Block", "Pickaxe", "Axe", "Shovel"), () -> true, this);
     NumberSetting delay = new NumberSetting("Delay", 1, 0, 20, 1, () -> true, this);
+    BooleanSetting autoClose = new BooleanSetting("AutoClose", true, () -> true, this);
 
     byte timer;
 
@@ -39,7 +41,7 @@ public class InvManager extends Module {
             if (mc.currentScreen instanceof GuiInventory) {
                 if (this.timer > 0) this.timer--;
                 if (this.timer <= 0) {
-                    if (!this.searchAndSort() && !this.autoArmor()) this.drop();
+                    if (!this.searchAndSort() && !this.autoArmor() && !this.drop());
                     this.timer = (byte) this.delay.getValue();
                 }
             } else {
@@ -53,26 +55,26 @@ public class InvManager extends Module {
         for (int iterHotBar = 0; iterHotBar < 9; iterHotBar++) {
             ItemCategory hotBarCategory = ItemCategory.get(items.get(iterHotBar));
             if (hotBarCategory == ItemCategory.EMPTY) continue;
-            int bestSlot = -1;
-            if (mc.thePlayer.inventory.getStackInSlot(iterHotBar) != null && ItemCategory.get(mc.thePlayer.inventory.getStackInSlot(iterHotBar).getItem()) == hotBarCategory) bestSlot = iterHotBar;
-            for (int iterInventory = 0; iterInventory < mc.thePlayer.inventory.getSizeInventory() - 4; iterInventory++) {
-                ItemStack inventoryItemStack = mc.thePlayer.inventory.getStackInSlot(iterInventory);
+            Slot bestSlot = null;
+            if (mc.thePlayer.inventory.getStackInSlot(iterHotBar) != null && ItemCategory.get(mc.thePlayer.inventory.getStackInSlot(iterHotBar).getItem()) == hotBarCategory) bestSlot = mc.thePlayer.inventoryContainer.getSlot(iterHotBar + 36);
+            for (Slot iterSlot : mc.thePlayer.inventoryContainer.inventorySlots) {
+                ItemStack inventoryItemStack = iterSlot.getStack();
                 if (inventoryItemStack == null) continue;
                 ItemCategory inventoryCategory = ItemCategory.get(inventoryItemStack.getItem());
                 if (inventoryCategory != hotBarCategory) continue;
-                if (bestSlot == -1 || mc.thePlayer.inventory.getStackInSlot(bestSlot) == null) bestSlot = iterInventory;
+                if (bestSlot == null) bestSlot = iterSlot;
                 else if (inventoryItemStack.getItem() instanceof ItemSword) {
-                    if (InvUtil.getSwordDamage(inventoryItemStack) > InvUtil.getSwordDamage(mc.thePlayer.inventory.getStackInSlot(bestSlot))) bestSlot = iterInventory;
+                    if (InvUtil.getSwordDamage(inventoryItemStack) > InvUtil.getSwordDamage(bestSlot.getStack())) bestSlot = iterSlot;
                 } else if (inventoryItemStack.getItem() instanceof ItemFood food) {
-                    if (food.getSaturationModifier(inventoryItemStack) > ((ItemFood) mc.thePlayer.inventory.getStackInSlot(bestSlot).getItem()).getSaturationModifier(mc.thePlayer.inventory.getStackInSlot(bestSlot))) bestSlot = iterInventory;
+                    if (food.getSaturationModifier(inventoryItemStack) > ((ItemFood) bestSlot.getStack().getItem()).getSaturationModifier(bestSlot.getStack())) bestSlot = iterSlot;
                 } else if (inventoryItemStack.getItem() instanceof ItemBlock) {
-                    if (inventoryItemStack.stackSize > mc.thePlayer.inventory.getStackInSlot(bestSlot).stackSize) bestSlot = iterInventory;
+                    if (inventoryItemStack.stackSize > bestSlot.getStack().stackSize) bestSlot = iterSlot;
                 } else if (inventoryItemStack.getItem() instanceof ItemPickaxe || inventoryItemStack.getItem() instanceof ItemAxe || inventoryItemStack.getItem() instanceof ItemSpade) {
-                    if (InvUtil.getMineSpeed(inventoryItemStack) > InvUtil.getMineSpeed(mc.thePlayer.inventory.getStackInSlot(bestSlot))) bestSlot = iterInventory;
+                    if (InvUtil.getMineSpeed(inventoryItemStack) > InvUtil.getMineSpeed(bestSlot.getStack())) bestSlot = iterSlot;
                 }
             }
-            if (bestSlot != -1 && bestSlot != iterHotBar) {
-                mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, bestSlot, iterHotBar, 2, mc.thePlayer);
+            if (bestSlot != null && bestSlot.slotNumber != iterHotBar + 36) {
+                mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, bestSlot.slotNumber, iterHotBar, 2, mc.thePlayer);
                 return true;
             }
         }
@@ -92,14 +94,18 @@ public class InvManager extends Module {
 
             if (bestSlot != -1 && bestSlot != iterArmorBar) {
                 if (mc.thePlayer.inventory.getStackInSlot(iterArmorBar) == null) mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, bestSlot, 0, 1, mc.thePlayer);
-                else mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, 8 - (iterArmorBar - 36), 0, 1, mc.thePlayer);
+                else {
+                    if (InvUtil.isFull()) return false;
+                    mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, 8 - (iterArmorBar - 36), 0, 1, mc.thePlayer);
+                }
                 return true;
             }
         }
         return false;
     }
 
-    private void drop() {
+    private boolean drop() {
+        return false;
     }
 
     @Getter

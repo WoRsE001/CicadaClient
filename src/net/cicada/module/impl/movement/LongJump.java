@@ -20,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class LongJump extends Module {
     ListSetting mode = new ListSetting("Mode", "Motion", List.of("Motion", "MatrixFlag", "MatrixLong"), () -> true, this);
     NumberSetting speed = new NumberSetting("Speed", 1.4, 0, 10, 0.01, () -> this.mode.is("MatrixLong"), this);
-    NumberSetting tick = new NumberSetting("Ticks", 80, 20, 80, 1, () -> this.mode.is("MatrixLong"), this);
+    NumberSetting tick = new NumberSetting("Ticks", 0, 0, 50, 1, () -> this.mode.is("MatrixLong"), this);
     NumberSetting timerSpeed = new NumberSetting("TimerSpeed", 1, 1, 10, 0.01, () -> this.mode.is("MatrixLong"), this);
 
     List<Packet<?>> packets = new CopyOnWriteArrayList<>();

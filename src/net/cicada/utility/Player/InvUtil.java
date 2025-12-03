@@ -20,6 +20,13 @@ public class InvUtil implements Access {
         mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, slot, 1, 4, mc.thePlayer);
     }
 
+    public boolean isFull() {
+        for (int i = 0; i < mc.thePlayer.inventory.getSizeInventory() - 4; i++) {
+            if (mc.thePlayer.inventory.getStackInSlot(i) != null) return false;
+        }
+        return true;
+    }
+
     public float getSwordDamage(ItemStack stack) {
         int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.sharpness.effectId, stack);
         return (float) (((ItemSword) stack.getItem()).getDamageVsEntity() + level * 1.25);
