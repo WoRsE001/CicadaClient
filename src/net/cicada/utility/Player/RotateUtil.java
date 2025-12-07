@@ -40,6 +40,15 @@ public class RotateUtil implements Access {
         rotation.setY(MathHelper.clamp_float(rotation.getY(), -90, 90));
     }
 
+    public void setRotateWithGCD(Vector2f newRotation, float yawSpeed, float pitchSpeed) {
+        lastRotation = rotation;
+        Vector2f deltaRotation = new Vector2f(MathHelper.wrapAngleTo180_float(newRotation.getX() - rotation.getX()), MathHelper.wrapAngleTo180_float(newRotation.getY() - rotation.getY()));
+        deltaRotation.set(MathHelper.clamp_float(deltaRotation.getX(), -yawSpeed, yawSpeed), MathHelper.clamp_float(deltaRotation.getY(), -pitchSpeed, pitchSpeed));
+        float gcdFix = (float) ((Math.pow(mc.gameSettings.mouseSensitivity * 0.6 + 0.2, 3.0)) * 1.2);
+        rotation.translate(MathHelper.round(deltaRotation.getX(), gcdFix), MathHelper.round(deltaRotation.getY(), gcdFix));
+        rotation.setY(MathHelper.clamp_float(rotation.getY(), -90, 90));
+    }
+
     public Vec3 bestHitVec(AxisAlignedBB box) {
         Vec3 playerPositionEyes = mc.thePlayer.getPositionEyes(1);
         return new Vec3(

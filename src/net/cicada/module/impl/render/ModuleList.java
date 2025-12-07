@@ -43,7 +43,7 @@ public class ModuleList extends Module {
                 RenderUtil.setGlColor(new Color(0, 0, 0));
                 float posX = (float) (this.xOrient.is("Left") ? mc.displayWidth / 2F * this.posX.getValue() : mc.displayWidth / 2F * this.posX.getValue() - mc.fontRendererObj.getStringWidth(module.getName()) - this.width.getValue() * 2);
                 float posY = (float) (this.yOrient.is("Top") ? mc.displayHeight / 2F * this.posY.getValue() + offsetY : mc.displayHeight / 2F * this.posY.getValue() + offsetY - (mc.fontRendererObj.FONT_HEIGHT + (float) this.gaps.getValue()) * this.modules.size());
-                RenderUtil.render2DRect(posX, posY, mc.fontRendererObj.getStringWidth(module.getName()) + this.width.getValue() * 2, mc.fontRendererObj.FONT_HEIGHT + (float) this.gaps.getValue());
+                RenderUtil.drawRect(posX, posY, mc.fontRendererObj.getStringWidth(module.getName()) + this.width.getValue() * 2, mc.fontRendererObj.FONT_HEIGHT + (float) this.gaps.getValue());
                 mc.fontRendererObj.drawString(module.getName(), posX + (float) this.width.getValue(), posY + (float) this.gaps.getValue() / 2, -1);
                 offsetY += mc.fontRendererObj.FONT_HEIGHT + (float) this.gaps.getValue();
             }

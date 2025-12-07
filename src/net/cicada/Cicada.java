@@ -1,6 +1,10 @@
 package net.cicada;
 
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import de.florianmichael.vialoadingbase.ViaLoadingBase;
 import de.florianmichael.viamcp.ViaMCP;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.UtilityClass;
 import net.cicada.gui.altmanager.AltManager;
 import net.cicada.gui.zamorozkaClickGui.ZamorozkaClickGui;
 import net.minecraft.client.Minecraft;
@@ -12,19 +16,19 @@ import org.lwjgl.opengl.Display;
 
 import java.io.File;
 
+@UtilityClass @FieldDefaults(makeFinal = true)
 public class Cicada {
-    public static final String name = "Cicada";
-    public static final String version = "1.1.6";
+    public String name = "Cicada";
+    public String version = "1.1.6";
 
-    public static Cicada INSTANCE = new Cicada();
-    public static File MAIN_DIR = new File(Minecraft.getMinecraft().mcDataDir, name);
-    public static File CONFIG_DIR = new File(MAIN_DIR, "configs");
-    public static final ModuleManager MODULE_MANAGER = new ModuleManager();
-    public static final CommandManager COMMAND_MANAGER = new CommandManager();
-    public static final ConfigManager CONFIG_MANAGER = new ConfigManager();
-    public static final AltManager ALT_MANAGER = new AltManager();
+    public File MAIN_DIR = new File(Minecraft.getMinecraft().mcDataDir, name);
+    public File CONFIG_DIR = new File(MAIN_DIR, "configs");
+    public ModuleManager MODULE_MANAGER = new ModuleManager();
+    public CommandManager COMMAND_MANAGER = new CommandManager();
+    public ConfigManager CONFIG_MANAGER = new ConfigManager();
+    public AltManager ALT_MANAGER = new AltManager();
 
-    public static void init() {
+    public void init() {
         Display.setTitle(name + " " + version);
 
         MAIN_DIR.mkdirs();
@@ -32,6 +36,7 @@ public class Cicada {
 
         ViaMCP.create();
         ViaMCP.INSTANCE.initAsyncSlider();
+        ViaLoadingBase.getInstance().reload(ViaLoadingBase.PROTOCOLS.getFirst());
 
         EventCaller.register(MODULE_MANAGER);
         EventCaller.register(COMMAND_MANAGER);

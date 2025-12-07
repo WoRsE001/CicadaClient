@@ -25,6 +25,7 @@ public class Blink extends Module {
 
     @Override
     public void listen(Event event) {
+        if (mc.isIntegratedServerRunning()) return;
         if (event instanceof PacketEvent e && e.getType() == PacketEvent.Type.Send) {
             sendQueue.add(e.getPacket());
             e.cancel();

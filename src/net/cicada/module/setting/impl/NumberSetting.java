@@ -39,7 +39,7 @@ public class NumberSetting extends Setting {
 
         mc.fontRendererObj.drawStringWithShadow(this.getName() + ":", this.posX, this.posY + 2, 0xFFFFFFFF);
         RenderUtil.setGlColor(new Color(255, 255, 255, 255));
-        RenderUtil.render2DRect(this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posY + 2,
+        RenderUtil.drawRect(this.posX + mc.fontRendererObj.getStringWidth(this.name + ": "), this.posY + 2,
                 MathHelper.map(this.value, this.minValue, this.maxValue,  0, this.width - mc.fontRendererObj.getStringWidth(this.name + ": ")), this.height - 2);
         mc.fontRendererObj.drawStringWithShadow(String.valueOf(this.value), this.posX + mc.fontRendererObj.getStringWidth(this.name + ": ") + 50, this.posY + 2, 0xFFFFFFFF);
     }

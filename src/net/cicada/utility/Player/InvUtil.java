@@ -22,7 +22,7 @@ public class InvUtil implements Access {
 
     public boolean isFull() {
         for (int i = 0; i < mc.thePlayer.inventory.getSizeInventory() - 4; i++) {
-            if (mc.thePlayer.inventory.getStackInSlot(i) != null) return false;
+            if (mc.thePlayer.inventory.getStackInSlot(i) == null) return false;
         }
         return true;
     }

@@ -6,7 +6,7 @@ import net.cicada.utility.Access;
 import net.minecraft.util.MathHelper;
 
 @UtilityClass
-public class MovementUtil implements Access {
+public class MoveUtil implements Access {
     public void strafe(double speed, double strength) {
         if (!isMoving()) {
             mc.thePlayer.motionX = 0;
@@ -60,15 +60,11 @@ public class MovementUtil implements Access {
 
     public double direction(float rotationYaw, final double moveForward, final double moveStrafing) {
         if (moveForward < 0F) rotationYaw += 180F;
-
         float forward = 1F;
-
         if (moveForward < 0F) forward = -0.5F;
         else if (moveForward > 0F) forward = 0.5F;
-
         if (moveStrafing > 0F) rotationYaw -= 90F * forward;
         if (moveStrafing < 0F) rotationYaw += 90F * forward;
-
         return Math.toRadians(rotationYaw);
     }
 

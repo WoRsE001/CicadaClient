@@ -12,7 +12,7 @@ import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.MoveUtil;
 
 import java.util.List;
 
@@ -38,13 +38,13 @@ public class Speed extends Module {
     public void listen(Event event) {
         if (event instanceof TickEvent) {
             if (mode.getValue().equals("Motion")) {
-                MovementUtil.strafe(speed.getValue(), 1);
+                MoveUtil.strafe(speed.getValue(), 1);
             }
         }
 
         if (event instanceof UpdateEvent) {
             if (mode.getValue().equals("Intave 1.13+")) {
-                if (!MovementUtil.isMoving() || mc.thePlayer.onGround || mc.thePlayer.hurtTime != 0) return;
+                if (!MoveUtil.isMoving() || mc.thePlayer.onGround || mc.thePlayer.hurtTime != 0) return;
                 if (mc.theWorld.getBlockState(mc.thePlayer.getPosition().add(0, -1, 0)).getBlock() instanceof BlockAir) {
                     mc.thePlayer.sendQueue.addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));
                     mc.thePlayer.motionX *= 1.043;
@@ -78,7 +78,7 @@ public class Speed extends Module {
         }
 
         if (event instanceof MovementInputEvent e) {
-            if (MovementUtil.isMoving() && autoJump.isValue()) e.setJump(true);
+            if (MoveUtil.isMoving() && autoJump.isValue()) e.setJump(true);
         }
     }
 }

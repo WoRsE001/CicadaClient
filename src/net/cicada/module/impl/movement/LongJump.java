@@ -7,7 +7,7 @@ import net.cicada.event.api.Event;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
-import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.MoveUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
@@ -113,7 +113,7 @@ public class LongJump extends Module {
             }
 
             if (this.canBoost) {
-                MovementUtil.strafe(this.speed.getValue(), 1);
+                MoveUtil.strafe(this.speed.getValue(), 1);
                 mc.thePlayer.motionY = 0.42;
                 if (this.flag) {
                     this.toggle();

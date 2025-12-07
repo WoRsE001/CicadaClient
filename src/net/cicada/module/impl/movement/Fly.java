@@ -13,7 +13,7 @@ import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.MoveUtil;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class Fly extends Module {
     public void listen(Event event) {
         if (event instanceof TickEvent) {
             if (mode.is("Motion")) {
-                MovementUtil.strafe(motionSpeed.getValue(), 1);
+                MoveUtil.strafe(motionSpeed.getValue(), 1);
                 mc.thePlayer.motionY = spigotBypass.isValue() ? -0.04 : 0;
                 if (mc.gameSettings.keyBindJump.isKeyDown()) mc.thePlayer.motionY = motionSpeed.getValue();
                 if (mc.gameSettings.keyBindSneak.isKeyDown()) mc.thePlayer.motionY = -motionSpeed.getValue();
@@ -78,8 +78,8 @@ public class Fly extends Module {
             if (mode.is("MatrixJump")) {
                 mc.timer.setTimer(0.5F);
                 if (mc.thePlayer.isCollidedVertically) {
-                    if (!MovementUtil.isMoving()) {
-                        MovementUtil.strafe(0.15, 1);
+                    if (!MoveUtil.isMoving()) {
+                        MoveUtil.strafe(0.15, 1);
                     }
 
                     this.active = true;
@@ -103,7 +103,7 @@ public class Fly extends Module {
                 }
 
                 if (this.canBoost) {
-                    MovementUtil.strafe(5.7, 1);
+                    MoveUtil.strafe(5.7, 1);
                     mc.thePlayer.motionY = 0.42;
                 }
 
@@ -114,10 +114,10 @@ public class Fly extends Module {
 
             if (this.mode.is("MatrixBackFlag")) {
                 if (!this.receiveFlag) {
-                    MovementUtil.strafe(-this.backMotionSpeed.getValue(), 1);
+                    MoveUtil.strafe(-this.backMotionSpeed.getValue(), 1);
                 } else {
                     mc.timer.setTimer((float) this.timer.getValue());
-                    MovementUtil.strafe(this.motionSpeed.getValue(), 1);
+                    MoveUtil.strafe(this.motionSpeed.getValue(), 1);
                 }
             }
         }

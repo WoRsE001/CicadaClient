@@ -1,5 +1,8 @@
 package net.minecraft.client.renderer.entity;
 
+import net.cicada.module.api.ModuleManager;
+import net.cicada.utility.Player.PlayerUtil;
+import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -15,11 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.src.Config;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumWorldBlockLayer;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.optifine.entity.model.IEntityRenderer;
 import net.optifine.shaders.Shaders;

@@ -28,15 +28,15 @@ public class ModuleButton extends ComponentGui {
         if (this.isOpenSettings) {
             float w = 400;
             float h = mc.displayHeight / 2F - 50;
-            RenderUtil.setGlColor(new Color(40, 40, 40, 255));
-            RenderUtil.render2DRoundRect(mc.displayWidth / 4F - w / 2F, mc.displayHeight / 4F - h / 2, w, h, 5);
-            float offsetY = mc.displayHeight / 4F - h / 2;
-            for (Setting setting : this.module.getSettings()) {
+            RenderUtil.setGlColor(new Color(40, 40, 40));
+            RenderUtil.drawRoundRect(mc.displayWidth / 4F - w / 2F, mc.displayHeight / 4F - h / 2, w, h, 5);
+            float offsetY = mc.displayHeight / 4F - h / 2 + (this.module.getSettings().isEmpty() ? 0 : this.module.getSettings().size() * this.module.getSettings().getFirst().getHeight());
+            for (Setting setting : this.module.getSettings().reversed()) {
                 if (setting.getVisible().getAsBoolean()) {
                     setting.setPosX(mc.displayWidth / 4F - w / 2F + 2);
                     setting.setPosY(offsetY);
                     setting.draw(mouseX, mouseY);
-                    offsetY += setting.getHeight();
+                    offsetY -= setting.getHeight();
                 }
             }
         }

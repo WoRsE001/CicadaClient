@@ -50,6 +50,7 @@ public class PulseBlink extends Module {
 
     @Override
     public void listen(Event event) {
+        if (mc.isIntegratedServerRunning()) return;
         if (event instanceof AttackEvent && this.blinkAction.is("Attack")) {
             this.blink();
         }

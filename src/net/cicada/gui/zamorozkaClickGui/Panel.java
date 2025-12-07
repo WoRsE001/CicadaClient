@@ -7,7 +7,6 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleManager;
 import net.cicada.gui.ComponentGui;
 import net.cicada.utility.Render.RenderUtil;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,8 +30,8 @@ public class Panel extends ComponentGui {
 
     @Override
     public void draw(int mouseX, int mouseY) {
-        RenderUtil.setGlColor(new Color(40, 40, 40, 255));
-        RenderUtil.render2DRoundRect(this.posX, this.posY, this.width,  this.isSelected ? (this.height + 5) * 8 - 5 : this.height, 5);
+        RenderUtil.setGlColor(new Color(40, 40, 40));
+        RenderUtil.drawRoundRect(this.posX, this.posY, this.width,  this.isSelected ? (this.height + 5) * 8 - 5 : this.height, 5);
         mc.fontRendererObj.drawString(this.category.name(), this.posX + this.width / 2 - mc.fontRendererObj.getStringWidth(this.category.name()) / 2F, this.posY + this.height / 2 - mc.fontRendererObj.FONT_HEIGHT / 2F, 0xFFFFFFFF);
         if (isSelected) {
             float offsetY = this.posY + this.height;

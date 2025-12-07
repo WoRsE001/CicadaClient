@@ -3,6 +3,8 @@ package net.cicada.gui.zamorozkaClickGui;
 import lombok.Getter;
 import lombok.Setter;
 import net.cicada.module.api.Category;
+import net.cicada.module.api.ModuleManager;
+import net.cicada.module.impl.render.ClickGui;
 import net.cicada.utility.Render.RenderUtil;
 import net.cicada.utility.Render.font.FontRenderer;
 import net.cicada.utility.Render.font.Fonts;
@@ -28,8 +30,10 @@ public class ZamorozkaClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        RenderUtil.setGlColor(new Color(128, 128, 255, 30));
-        RenderUtil.render2DRect(0, 0, mc.displayWidth, mc.displayHeight);
+        if (ClickGui.ImagesLoc.get(ModuleManager.CLICK_GUI.image.getValue()) != null)
+            RenderUtil.drawImage(ClickGui.ImagesLoc.get(ModuleManager.CLICK_GUI.image.getValue()), this.width - this.width / 4, this.height - this.height / 5 * 3, this.width / 4, this.height / 5 * 3);
+        RenderUtil.setGlColor(new Color(0, 0, 0, 40));
+        RenderUtil.drawRect(0, 0, mc.displayWidth, mc.displayHeight);
         float offsetY = mc.displayHeight / 4F - (panels.getFirst().getHeight() + 5) * panels.size() / 2;
         for (Panel panel : panels) {
             if (!panel.isSelected()) {

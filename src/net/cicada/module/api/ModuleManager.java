@@ -61,10 +61,12 @@ public class ModuleManager implements EventListener {
     public static HandRender HAND_RENDER = new HandRender();
     public static ModuleList MODULE_LIST = new ModuleList();
     public static MurderHighlighter MURDER_HIGHLIGHTER = new MurderHighlighter();
+    public static NameTag NAME_TAG = new NameTag();
     public static NoHurtCam NO_HURT_CAM = new NoHurtCam();
     public static NoRender NO_RENDER = new NoRender();
     public static PointerEsp POINTER_ESP = new PointerEsp();
     public static TargetESP TARGETESP = new TargetESP();
+    public static TargetHud TARGET_HUD = new TargetHud();
     public static Watermark WATERMARK = new Watermark();
     // Player
     public static AutoPotion AUTO_POTION = new AutoPotion();
@@ -72,6 +74,7 @@ public class ModuleManager implements EventListener {
     public static ChestStealer CHEST_STEALER = new ChestStealer();
     public static InvManager INV_MANAGER = new InvManager();
     public static NoFall NO_FALL = new NoFall();
+    public static PacketMine PACKET_MINE = new PacketMine();
     public static Regen REGEN = new Regen();
     public static Timer TIMER = new Timer();
     // World

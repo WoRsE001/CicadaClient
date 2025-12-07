@@ -5,7 +5,7 @@ import net.cicada.module.api.ModuleManager;
 import net.cicada.module.setting.impl.MultiBooleanSetting;
 import net.cicada.utility.MathUtil;
 import net.cicada.utility.Player.CombatManager;
-import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.MoveUtil;
 import net.cicada.utility.Player.PlayerUtil;
 import net.cicada.utility.Player.RotateUtil;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,15 +38,15 @@ public class AttackAura extends Module {
     BooleanSetting smartSelection = new BooleanSetting("SmartSelection", true, () -> true, this);
     // ROTATIONS
     BooleanSetting rotation = new BooleanSetting("Rotation", true, () -> true, this);
-    NumberSetting yawSpeed = new  NumberSetting("yawSpeed", 180, 0, 180, 1, () -> this.rotation.isValue(), this);
-    NumberSetting pitchSpeed = new  NumberSetting("pitchSpeed", 180, 0, 180, 1, () -> this.rotation.isValue(), this);
-    MultiBooleanSetting randomize = new MultiBooleanSetting("Randomize", () -> this.rotation.isValue(), this)
+    NumberSetting yawSpeed = new  NumberSetting("yawSpeed", 180, 0, 180, 1, () -> rotation.isValue(), this);
+    NumberSetting pitchSpeed = new  NumberSetting("pitchSpeed", 180, 0, 180, 1, () -> rotation.isValue(), this);
+    MultiBooleanSetting randomize = new MultiBooleanSetting("Randomize", () -> rotation.isValue(), this)
             .add("Basic", false)
             .add("Smooth", false);
-    NumberSetting minRandomStrength = new NumberSetting("MinRandomStrength", -2, -15, 15, 0.1, () -> this.rotation.isValue() && randomize.is("Basic"), this);
-    NumberSetting maxRandomStrength = new NumberSetting("MaxRandomStrength", 2, -15, 15, 0.1, () -> this.rotation.isValue() && randomize.is("Basic"), this);
-    NumberSetting smoothFactor = new NumberSetting("SmoothFactor", 1.7, 1, 10, 0.01, () -> this.rotation.isValue() && randomize.is("Smooth"), this);
-    BooleanSetting silentRotation = new BooleanSetting("SilentRotation", true, () -> this.rotation.isValue(), this);
+    NumberSetting minRandomStrength = new NumberSetting("MinRandomStrength", -2, -15, 15, 0.1, () -> rotation.isValue() && randomize.is("Basic"), this);
+    NumberSetting maxRandomStrength = new NumberSetting("MaxRandomStrength", 2, -15, 15, 0.1, () -> rotation.isValue() && randomize.is("Basic"), this);
+    NumberSetting smoothFactor = new NumberSetting("SmoothFactor", 1.7, 1, 10, 0.01, () -> rotation.isValue() && randomize.is("Smooth"), this);
+    BooleanSetting silentRotation = new BooleanSetting("SilentRotation", true, () -> rotation.isValue(), this);
     // CLICKS
     NumberSetting minCPS = new NumberSetting("MinCPS", 20, 0, 20, 1, () -> true, this);
     NumberSetting maxCPS = new NumberSetting("MaxCPS", 20, 0, 20, 1, () -> true, this);
@@ -71,78 +71,91 @@ public class AttackAura extends Module {
 
     @Override
     protected void onDisable() {
-        this.target = null;
-        this.unblock();
+        target = null;
+        unblock();
         super.onDisable();
     }
 
     @Override
     public void listen(Event event) {
-        if (this.autoBlock.is("PreAttack") && event instanceof AttackEvent e && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
-            if (e.getPriority() == Event.Priority.Low) this.unblock();
-            if (e.getPriority() == Event.Priority.High) this.block();
-        }
-
-        if (event instanceof Render2DEvent) {
-            if (this.target != null && this.rotation.isValue() && !silentRotation.isValue()) {
-                mc.thePlayer.rotationYaw = RotateUtil.lastRotation.getX() - (RotateUtil.rotation.getX() - RotateUtil.lastRotation.getX()) * mc.timer.renderPartialTicks;
-                mc.thePlayer.rotationPitch = RotateUtil.lastRotation.getY() - (RotateUtil.rotation.getY() - RotateUtil.lastRotation.getY()) * mc.timer.renderPartialTicks;
-            }
-        }
-
-        if (event instanceof TickEvent) {
-            if (mc.currentScreen != null) return;
-            CombatManager.updateTarget(sortMode.getValue());
-            this.target = CombatManager.target != null && mc.thePlayer.getDistanceToEntity(CombatManager.target) <= this.aimRange.getValue() ? CombatManager.target : null;
-            if (this.target != null) {
-                if (this.rotation.isValue()) {
-                    this.aimPoint = this.updateRotation(this.target);
+        switch (event) {
+            case AttackEvent attackEvent -> {
+                if (autoBlock.is("PreAttack") && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) {
+                    if (attackEvent.getPriority() == Event.Priority.Low) unblock();
+                    if (attackEvent.getPriority() == Event.Priority.High) block();
                 }
-                if (!ModuleManager.ATTACK_AURA.autoBlock.is("None") && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) this.block();
-            } else {
-                this.unblock();
             }
-        }
 
-        if (event instanceof LegitClickTimingEvent) {
-            if (this.target != null) {
-                if (Math.random() < MathUtil.random(this.minCPS.getValue(), this.maxCPS.getValue()) / 20) {
-                    MovingObjectPosition rayTrace = PlayerUtil.rayTrace(RotateUtil.rotation, (float) this.attackRange.getValue(), 1);
-                    if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && rayTrace.entityHit == this.target && mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.attackRange.getValue()) {
-                        AttackOrder.sendFixedAttack(mc.thePlayer, this.target);
-                    } else if (mc.thePlayer.getPositionEyes(1F).distanceTo(this.aimPoint) <= this.hitRange.getValue()) {
-                        mc.clickMouse();
+            case JumpEvent jumpEvent -> {
+                if (jumpFix.isValue() && target != null && silentRotation.isValue() && rotation.isValue()) {
+                    jumpEvent.setRotationYaw(RotateUtil.rotation.getX());
+                }
+            }
+
+            case LegitClickTimingEvent ignored -> {
+                if (target != null) {
+                    if (Math.random() < MathUtil.random(minCPS.getValue(), maxCPS.getValue()) / 20) {
+                        MovingObjectPosition rayTrace = PlayerUtil.rayTrace(RotateUtil.rotation, (float) attackRange.getValue(), 1);
+                        if (rayTrace != null && rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && rayTrace.entityHit == target && mc.thePlayer.getPositionEyes(1F).distanceTo(aimPoint) <= attackRange.getValue()) {
+                            AttackOrder.sendFixedAttack(mc.thePlayer, target);
+                        } else if (mc.thePlayer.getPositionEyes(1F).distanceTo(aimPoint) <= hitRange.getValue()) {
+                            mc.clickMouse();
+                        }
                     }
                 }
             }
-        }
 
-        if (this.target != null && silentRotation.isValue() && this.rotation.isValue()) {
-            if (event instanceof LookEvent e) {
-                e.setRotationYaw(RotateUtil.rotation.getX());
-                e.setRotationPitch(RotateUtil.rotation.getY());
-            }
-
-            if (event instanceof MotionEvent e && e.getPriority() == Event.Priority.Low) {
-                e.setRotationYaw(RotateUtil.rotation.getX());
-                e.setRotationPitch(RotateUtil.rotation.getY());
-                mc.thePlayer.rotationYawHead = RotateUtil.rotation.getX();
-                mc.thePlayer.rotationPitchHead = RotateUtil.rotation.getY();
-                mc.thePlayer.renderYawOffset = RotateUtil.rotation.getX();
-            }
-
-            if (event instanceof JumpEvent e && this.jumpFix.isValue()) {
-                e.setRotationYaw(RotateUtil.rotation.getX());
-            }
-
-            if (this.moveFix.isValue()) {
-                if (event instanceof StrafeEvent e) {
-                    e.setRotationYaw(RotateUtil.rotation.getX());
+            case LookEvent lookEvent -> {
+                if (target != null && silentRotation.isValue() && rotation.isValue()) {
+                    lookEvent.setRotationYaw(RotateUtil.rotation.getX());
+                    lookEvent.setRotationPitch(RotateUtil.rotation.getY());
                 }
+            }
 
-                if (event instanceof MovementEvent e && this.silentMoveFix.isValue()) {
-                    MovementUtil.moveFix(e, RotateUtil.rotation.getX(), MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+            case MotionEvent motionEvent -> {
+                if (motionEvent.getPriority() == Event.Priority.Low && target != null && silentRotation.isValue() && rotation.isValue()) {
+                    motionEvent.setRotationYaw(RotateUtil.rotation.getX());
+                    motionEvent.setRotationPitch(RotateUtil.rotation.getY());
+                    mc.thePlayer.rotationYawHead = RotateUtil.rotation.getX();
+                    mc.thePlayer.rotationPitchHead = RotateUtil.rotation.getY();
+                    mc.thePlayer.renderYawOffset = RotateUtil.rotation.getX();
                 }
+            }
+
+            case MovementEvent movementEvent -> {
+                if (moveFix.isValue() && silentMoveFix.isValue() && target != null && silentRotation.isValue() && rotation.isValue()) {
+                    MoveUtil.moveFix(movementEvent, RotateUtil.rotation.getX(), MoveUtil.getDirection(mc.thePlayer.rotationYaw, movementEvent.getMoveForward(), movementEvent.getMoveStrafe()));
+                }
+            }
+
+            case Render2DEvent ignored -> {
+                if (target != null && rotation.isValue() && !silentRotation.isValue()) {
+                    mc.thePlayer.rotationYaw = (float) MathUtil.interpolate(RotateUtil.lastRotation.getX(), RotateUtil.rotation.getX(), mc.timer.renderPartialTicks);
+                    mc.thePlayer.rotationYaw = (float) MathUtil.interpolate(RotateUtil.lastRotation.getX(), RotateUtil.rotation.getX(), mc.timer.renderPartialTicks);
+                }
+            }
+
+            case StrafeEvent strafeEvent -> {
+                if (moveFix.isValue() && target != null && silentRotation.isValue() && rotation.isValue()) {
+                    strafeEvent.setRotationYaw(RotateUtil.rotation.getX());
+                }
+            }
+
+            case TickEvent ignored -> {
+                if (mc.currentScreen != null) return;
+                CombatManager.updateTarget(sortMode.getValue());
+                target = CombatManager.target != null && mc.thePlayer.getDistanceToEntity(CombatManager.target) <= aimRange.getValue() ? CombatManager.target : null;
+                if (target != null) {
+                    if (rotation.isValue()) {
+                        aimPoint = updateRotation(target);
+                    }
+                    if (!ModuleManager.ATTACK_AURA.autoBlock.is("None") && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) block();
+                } else {
+                    unblock();
+                }
+            }
+
+            default -> {
             }
         }
     }
@@ -156,7 +169,7 @@ public class AttackAura extends Module {
         if (selectionMode.getValue().equals("Center")) aimPoint = targetEyesPos;
         else if (selectionMode.getValue().equals("Best")) aimPoint = RotateUtil.bestHitVec(targetBox);
 
-        if (this.smartSelection.isValue()) {
+        if (smartSelection.isValue()) {
             Vec3 candidatePoint = null;
             for (double x = targetBox.minX; x <= targetBox.maxX; x += 0.05) {
                 for (double z = targetBox.minZ; z <= targetBox.maxZ; z += 0.05) {
@@ -179,24 +192,24 @@ public class AttackAura extends Module {
             if (candidatePoint != null) aimPoint = candidatePoint;
         }
 
-        Vector2f delta = RotateUtil.calcDeltaRotate(aimPoint, (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue());
-        if (this.randomize.is("Basic")) delta.translate((float) MathUtil.random(this.minRandomStrength.getValue(), this.maxRandomStrength.getValue()), (float) MathUtil.random(this.minRandomStrength.getValue(), this.maxRandomStrength.getValue()));
-        if (this.randomize.is("Smooth")) delta.set((float) (delta.getX() / this.smoothFactor.getValue()), (float) (delta.getY() / this.smoothFactor.getValue()));
+        Vector2f delta = RotateUtil.calcDeltaRotate(aimPoint, (float) yawSpeed.getValue(), (float) pitchSpeed.getValue());
+        if (randomize.is("Basic")) delta.translate((float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()), (float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()));
+        if (randomize.is("Smooth")) delta.set((float) (delta.getX() / smoothFactor.getValue()), (float) (delta.getY() / smoothFactor.getValue()));
         RotateUtil.rotateWithGCD(delta);
         return aimPoint;
     }
 
     private void block() {
-        if (!this.isBlocking) {
+        if (!isBlocking) {
             mc.thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
-            this.isBlocking = true;
+            isBlocking = true;
         }
     }
 
     private void unblock() {
-        if (this.isBlocking) {
+        if (isBlocking) {
             mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
-            this.isBlocking = false;
+            isBlocking = false;
         }
     }
 }

@@ -1,7 +1,7 @@
 package net.cicada.module.impl.world;
 
 import net.cicada.event.impl.*;
-import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.MoveUtil;
 import net.cicada.utility.Player.RotateUtil;
 import net.minecraft.block.BlockBed;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
@@ -73,7 +73,7 @@ public class Fucker extends Module {
             }
 
             if (event instanceof MovementEvent e) {
-                MovementUtil.moveFix(e, RotateUtil.rotation.getX(), MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+                MoveUtil.moveFix(e, RotateUtil.rotation.getX(), MoveUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
             }
         }
     }

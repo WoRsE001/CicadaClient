@@ -3,15 +3,10 @@ package net.cicada.module.impl.world;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.cicada.utility.LoggerUtil;
-import net.cicada.utility.Player.MovementUtil;
+import net.cicada.utility.Player.MoveUtil;
 import net.cicada.utility.Player.PlayerUtil;
 import net.cicada.utility.Player.RotateUtil;
 import net.cicada.utility.Render.RenderUtil;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockWeb;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.*;
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.*;
@@ -21,222 +16,179 @@ import net.cicada.module.api.ModuleInfo;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @ModuleInfo(name = "Scaffold", category = Category.World, key = Keyboard.KEY_V)
 public class Scaffold extends Module {
-    // ROTATION
-    NumberSetting yawSpeed = new  NumberSetting("yawSpeed", 180, 0, 180, 1, () -> true, this);
-    NumberSetting pitchSpeed = new  NumberSetting("pitchSpeed", 180, 0, 180, 1, () -> true, this);
-    BooleanSetting snapYaw = new BooleanSetting("SnapYaw", true, () -> true, this);
-    NumberSetting offsetYaw = new  NumberSetting("OffsetYaw", 45, 0, 180, 1, () -> true, this);
-    BooleanSetting telly = new BooleanSetting("Telly", false, () -> true, this);
-    NumberSetting jumpTicksToRotate = new  NumberSetting("JumpTicksToRotate", 7, 0, 10, 1, () -> telly.isValue(), this);
-    NumberSetting groundTicksToJump = new  NumberSetting("GroundTicksToJump", 0, 0, 10, 1, () -> telly.isValue(), this);
-    BooleanSetting staticPitch = new BooleanSetting("StaticPitch", false, () -> true, this);
-    NumberSetting pitch = new  NumberSetting("Pitch", 75, -90, 90, 1, () -> staticPitch.isValue(), this);
-    BooleanSetting intave = new BooleanSetting("Intave", true, () -> true, this);
-    ListSetting sortPitches = new ListSetting("SortPitches", "Nearest", List.of("Nearest", "Highest", "Lowest", "Random"), () -> true, this);
-    // Movement
-    BooleanSetting moveFix = new BooleanSetting("moveFix", true, () -> true, this);
+    NumberSetting yawSpeed = new NumberSetting("YawSpeed", 180, 0, 180, 1, () -> true, this);
+    NumberSetting pitchSpeed = new NumberSetting("PitchSpeed", 180, 0, 180, 1, () -> true, this);
+    NumberSetting yawOffset = new NumberSetting("OffsetYaw", 0, 0, 50, 1, () -> true, this);
+    BooleanSetting yawCorrect = new BooleanSetting("YawCorrect", false, () -> true, this);
+    ListSetting sortPitches = new ListSetting("SortPitches", "Nearest", List.of("Nearest", "Highest", "Lowest"), () -> true, this);
+    BooleanSetting moveFix = new BooleanSetting("MoveFix", true, () -> true, this);
     BooleanSetting jumpFix = new BooleanSetting("JumpFix", true, () -> true, this);
+    BooleanSetting telly = new BooleanSetting("Telly", false, () -> true, this);
+    NumberSetting yawForwardSpeed = new NumberSetting("YawForwardSpeed", 180, 0, 180, 1, () -> telly.isValue(), this);
+    NumberSetting pitchForwardSpeed = new NumberSetting("PitchForwardSpeed", 180, 0, 180, 1, () -> telly.isValue(), this);
+    NumberSetting rotateAfterJumpTicks = new NumberSetting("RotateAfterJumpTicks", 0, 0, 10, 1, () -> telly.isValue(), this);
+    NumberSetting jumpAfterGroundTicks = new NumberSetting("JumpAfterGroundTicks", 0, 0, 10, 1, () -> telly.isValue(), this);
+    BooleanSetting safeY = new BooleanSetting("SafeY", false, () -> true, this);
     BooleanSetting autoJump = new BooleanSetting("AutoJump", false, () -> true, this);
-    BooleanSetting sameY = new BooleanSetting("SameY", false, () -> true, this);
-    // MISC
-    ListSetting pickBlock = new ListSetting("PickBlock", "Legit", List.of("None", "Legit"), () -> true, this);
-    // VISUAL
-    BooleanSetting autoF5 = new BooleanSetting("AutoF5", true, () -> true, this);
-    BooleanSetting showTargetBlock = new BooleanSetting("ShowTargetBlock", true, () -> true, this);
 
     BlockPos targetBlock;
-    int groundTick, lastSlot;
+    int groundTicks;
     boolean onGround;
 
     @Override
     protected void onEnable() {
-        RotateUtil.setRotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch);
-        if (this.autoF5.isValue()) mc.gameSettings.thirdPersonView = 1;
+        targetBlock = null;
         super.onEnable();
     }
 
     @Override
-    protected void onDisable() {
-        this.targetBlock = null;
-        if (this.autoF5.isValue()) mc.gameSettings.thirdPersonView = 0;
-        if (!this.pickBlock.is("None") && lastSlot != -1) {
-            mc.thePlayer.inventory.currentItem = lastSlot;
-            lastSlot = -1;
-        }
-        super.onDisable();
-    }
-
-    @Override
     public void listen(Event event) {
-        if (event instanceof TickEvent) {
-            if (mc.thePlayer.onGround) {
-                this.groundTick++;
-                if (!this.onGround) {
-                    this.onGround = true;
-                    this.groundTick = 0;
+        switch (event) {
+            case JumpEvent jumpEvent -> {
+                if (targetBlock != null && jumpFix.isValue()) {
+                    jumpEvent.setRotationYaw(RotateUtil.rotation.getX());
                 }
             }
-            if (!mc.thePlayer.onGround && this.onGround) this.onGround = false;
-            this.targetBlock = getBlockPos();
-            if (this.targetBlock != null) {
-                if (!this.pickBlock.is("None")) {
-                    int bestSlot = this.findBlock();
-                    if (bestSlot != -1) {
-                        if (lastSlot == -1) lastSlot = mc.thePlayer.inventory.currentItem;
-                        mc.thePlayer.inventory.currentItem = bestSlot;
-                    } else if (lastSlot != -1) {
-                        mc.thePlayer.inventory.currentItem = lastSlot;
-                        lastSlot = -1;
+
+            case LegitClickTimingEvent ignored -> {
+                MovingObjectPosition rayTrace = PlayerUtil.rayTrace(new Vector2f(RotateUtil.rotation.getX(), RotateUtil.rotation.getY()), 4.5F, 1);
+                if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && rayTrace.getBlockPos().equals(targetBlock) && (rayTrace.sideHit != EnumFacing.UP || !(safeY.isValue() && !mc.gameSettings.keyBindUseItem.isKeyDown()))) mc.rightClickMouse();
+            }
+
+            case LookEvent lookEvent -> {
+                if (targetBlock != null) {
+                    lookEvent.setRotationYaw(RotateUtil.rotation.getX());
+                    lookEvent.setRotationPitch(RotateUtil.rotation.getY());
+                }
+            }
+
+            case MotionEvent motionEvent -> {
+                if (targetBlock != null && motionEvent.getPriority() == Event.Priority.Low) {
+                    motionEvent.setRotationYaw(RotateUtil.rotation.getX());
+                    motionEvent.setRotationPitch(RotateUtil.rotation.getY());
+                    mc.thePlayer.rotationYawHead = RotateUtil.rotation.getX();
+                    mc.thePlayer.rotationPitchHead = RotateUtil.rotation.getY();
+                    mc.thePlayer.renderYawOffset = RotateUtil.rotation.getX();
+                }
+            }
+
+            case MovementEvent movementEvent -> {
+                if (targetBlock != null && moveFix.isValue()) {
+                    MoveUtil.moveFix(movementEvent, RotateUtil.rotation.getX(), MoveUtil.getDirection(mc.thePlayer.rotationYaw, movementEvent.getMoveForward(), movementEvent.getMoveStrafe()));
+                }
+            }
+
+            case MovementInputEvent movementInputEvent -> {
+                if (targetBlock != null) {
+                    movementInputEvent.setJump((autoJump.isValue() || mc.gameSettings.keyBindJump.isKeyDown()) && (!telly.isValue() || groundTicks >= jumpAfterGroundTicks.getValue()));
+                }
+            }
+
+            case Render3DEvent render3DEvent -> {
+                if (targetBlock != null && render3DEvent.getPriority() == Event.Priority.High) {
+                    RenderUtil.setGlColor(new Color(0, 0, 0));
+                    RenderUtil.render3DBox(new AxisAlignedBB(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ(), targetBlock.getX() + 1, targetBlock.getY() + 1, targetBlock.getZ() + 1));
+                }
+            }
+
+            case StrafeEvent strafeEvent -> {
+                if (targetBlock != null && moveFix.isValue()) {
+                    strafeEvent.setRotationYaw(RotateUtil.rotation.getX());
+                }
+            }
+
+            case TickEvent ignored -> {
+                if (mc.thePlayer.onGround) {
+                    groundTicks++;
+                    if (!onGround) {
+                        onGround = true;
+                        groundTicks = 0;
                     }
                 }
-                Vector2f rot = this.getBestRotation();
-                RotateUtil.rotateWithGCD(RotateUtil.calcDeltaRotate(this.getVectorForRotation(rot.getX(), rot.getY()), (float) this.yawSpeed.getValue(), (float) this.pitchSpeed.getValue()));
-            } else if (!this.pickBlock.is("None") && lastSlot != -1) {
-                mc.thePlayer.inventory.currentItem = lastSlot;
-                lastSlot = -1;
-            }
-        }
-
-        if (event instanceof LegitClickTimingEvent) {
-            MovingObjectPosition rayTrace = PlayerUtil.rayTrace(RotateUtil.rotation, 4.5F, 1);
-            if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && ((rayTrace.sideHit != EnumFacing.UP && rayTrace.sideHit != EnumFacing.DOWN) || !this.sameY.isValue() || mc.gameSettings.keyBindUseItem.isKeyDown()) && rayTrace.getBlockPos().equals(this.targetBlock)) {
-                mc.rightClickMouse();
-            }
-        }
-
-        if (event instanceof MovementInputEvent e) {
-            if (this.telly.isValue() && MovementUtil.isMoving() && this.groundTick >= this.groundTicksToJump.getValue()) e.setJump(true);
-            if (this.autoJump.isValue()) e.setJump(true);
-        }
-
-        if (this.showTargetBlock.isValue() && event instanceof Render3DEvent e && e.getPriority() == Event.Priority.High) {
-            if (this.targetBlock != null) RenderUtil.render3DBox(new AxisAlignedBB(targetBlock.getX(), targetBlock.getY(), targetBlock.getZ(), targetBlock.getX() + 1, targetBlock.getY() + 1, targetBlock.getZ() + 1));
-        }
-
-        if (event instanceof LookEvent e) {
-            e.setRotationYaw(RotateUtil.rotation.getX());
-            e.setRotationPitch(RotateUtil.rotation.getY());
-        }
-
-        if (event instanceof MotionEvent e && e.getPriority() == Event.Priority.Low) {
-            e.setRotationYaw(RotateUtil.rotation.getX());
-            e.setRotationPitch(RotateUtil.rotation.getY());
-            mc.thePlayer.rotationYawHead = RotateUtil.rotation.getX();
-            mc.thePlayer.rotationPitchHead = RotateUtil.rotation.getY();
-            mc.thePlayer.renderYawOffset = RotateUtil.rotation.getX();
-        }
-
-        if (event instanceof JumpEvent e && this.jumpFix.isValue()) {
-            e.setRotationYaw(RotateUtil.rotation.getX());
-        }
-
-        if (this.moveFix.isValue()) {
-            if (event instanceof StrafeEvent e) {
-                e.setRotationYaw(RotateUtil.rotation.getX());
+                if (!mc.thePlayer.onGround && onGround) onGround = false;
+                targetBlock = getNearestBlock();
+                if (targetBlock != null) {
+                    if (!(telly.isValue() && isTelly())) {
+                        RotateUtil.setRotateWithGCD(getBestRotation(), (float) yawSpeed.getValue(), (float) pitchSpeed.getValue());
+                    } else {
+                        RotateUtil.setRotateWithGCD(getBestRotation(), (float) yawForwardSpeed.getValue(), (float) pitchForwardSpeed.getValue());
+                    }
+                }
             }
 
-            if (event instanceof MovementEvent e) {
-                MovementUtil.moveFix(e, RotateUtil.rotation.getX(), MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+            default -> {
             }
         }
     }
 
-    private BlockPos getBlockPos() {
-        BlockPos playerBlockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
-        Vec3 playerPos = mc.thePlayer.getPositionVector().add(new Vec3(0, -1, 0));
-        BlockPos blockPos = null;
-        for (int x = playerBlockPos.getX() - 4; x <= playerBlockPos.getX() + 4; x++) {
-            for (int y = playerBlockPos.getY() - 4; y <= playerBlockPos.getY() + 4; y++) {
-                for (int z = playerBlockPos.getZ() - 4; z <= playerBlockPos.getZ() + 4; z++) {
-                    if (mc.theWorld.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof BlockAir) continue;
-                    if (blockPos == null) blockPos = new BlockPos(x, y, z);
-                    if (playerPos.distanceTo(new Vec3(x + 0.5, y, z + 0.5)) < playerPos.distanceTo(new Vec3(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5))) blockPos = new BlockPos(x, y, z);
+    private BlockPos getNearestBlock() {
+        BlockPos eyePos = mc.thePlayer.getPosition().add(0, 1, 0);
+        BlockPos targetBlock = null;
+        for (int x = eyePos.getX() - 4; x <= eyePos.getX() + 4; x++) {
+            for (int y = eyePos.getY() - 4; y <= eyePos.getY(); y++) {
+                for (int z = eyePos.getZ() - 4; z <= eyePos.getZ() + 4; z++) {
+                    if (!mc.theWorld.getBlockState(new BlockPos(x, y, z)).getBlock().isFullBlock()) continue;
+                    if (targetBlock == null) targetBlock = new BlockPos(x, y, z);
+                    else if (mc.thePlayer.getDistance(x + 0.5, y + 0.5, z + 0.5) < mc.thePlayer.getDistance(targetBlock.getX() + 0.5, targetBlock.getY() + 0.5, targetBlock.getZ() + 0.5)) targetBlock = new BlockPos(x, y, z);
                 }
             }
         }
-        return blockPos;
+        return targetBlock;
     }
 
     private float getYaw() {
-        float yaw = MovementUtil.getDirs() - 180;
-        float roundYaw = MathHelper.round(yaw, 45);
-        if (this.snapYaw.isValue()) yaw = roundYaw;
-        if (this.telly.isValue()) {
-            if ((mc.thePlayer.onGround && this.groundTick >= this.groundTicksToJump.getValue()) || mc.thePlayer.jumpTicks > this.jumpTicksToRotate.getValue()) {
-                yaw += 180;
-            }
-        } else if (roundYaw % 90 == 0) {
-            if (Math.floor(mc.thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posX) || Math.floor(mc.thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posZ)) yaw += (float) this.offsetYaw.getValue();
-            else yaw -= (float) this.offsetYaw.getValue();
-        }
+        float yaw = MoveUtil.getDirs() - 180;
+        boolean isOnRightSide = Math.floor(mc.thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posX) ||
+                Math.floor(mc.thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posZ);
+        if (telly.isValue() && isTelly()) yaw += 180;
+        else yaw += (float) yawOffset.getValue() * (isOnRightSide ? 1 : -1);
         return yaw;
     }
 
     private float getPitch(float yaw) {
-        List<Float> pitches = new ArrayList<>();
-        for (int i = -90; i < 91; i++) {
+        List<Integer> pitches = new ArrayList<>();
+        for (int i = 0; i <= 90; i++) {
             MovingObjectPosition rayTrace = PlayerUtil.rayTrace(new Vector2f(yaw, i), 4.5F, 1);
-            if (rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || rayTrace.sideHit == EnumFacing.UP || !rayTrace.getBlockPos().equals(this.targetBlock))
-                continue;
-            pitches.add((float) i);
+            if (rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || !rayTrace.getBlockPos().equals(targetBlock) || rayTrace.sideHit == EnumFacing.UP) continue;
+            pitches.add(i);
         }
-        if (this.staticPitch.isValue()) return (float) this.pitch.getValue();
-        if (pitches.isEmpty()) return intave.isValue() ? 75 : RotateUtil.rotation.getY();
-        if (this.sortPitches.is("Nearest")) {
-            pitches.sort(Comparator.comparingDouble(pitch -> Math.abs(RotateUtil.rotation.getY() - pitch)));
-            return pitches.getFirst();
-        } else {
-            pitches.sort(Comparator.comparingDouble(pitch -> 90 - pitch));
-            if (this.sortPitches.is("Highest")) return pitches.getLast();
-            if (this.sortPitches.is("Lowest")) return pitches.getFirst();
-            if (this.sortPitches.is("Random")) return pitches.get((int) Math.ceil(Math.random() * (pitches.size() - 1)));
-        }
-        return 0;
+        if (sortPitches.is("Nearest")) pitches.sort(Comparator.comparingInt(pitch -> (int) Math.abs(pitch - RotateUtil.rotation.getY())));
+        else if (sortPitches.is("Highest")) pitches.sort(Comparator.reverseOrder());
+        else if (sortPitches.is("Lowest")) pitches.sort(Comparator.naturalOrder());
+        return pitches.isEmpty() ? 75 : pitches.getFirst();
     }
 
     private Vector2f getBestRotation() {
-        float yaw = this.getYaw();
-        float pitch = this.getPitch(yaw);
+        List<Vector2f> validRotations = new ArrayList<>();
+        float bestYaw = getYaw();
 
-        if (this.telly.isValue()) {
-            if (!((mc.thePlayer.onGround && this.groundTick >= this.groundTicksToJump.getValue()) || mc.thePlayer.jumpTicks > this.jumpTicksToRotate.getValue()) && this.intave.isValue()) {
-                List<Float> yaws = new ArrayList<>();
-                for (int i = -180; i < 181; i++) {
-                    MovingObjectPosition rayTrace = PlayerUtil.rayTrace(new Vector2f(i, pitch), 4.5F, 1);
-                    if (rayTrace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK || rayTrace.sideHit == EnumFacing.UP || !rayTrace.getBlockPos().equals(this.targetBlock))
-                        continue;
-                    yaws.add((float) i);
-                }
-                if (!yaws.isEmpty()) {
-                    boolean isRight = Math.floor(mc.thePlayer.posX + Math.cos(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posX) || Math.floor(mc.thePlayer.posZ + Math.sin(Math.toRadians(yaw)) * 0.5) != Math.floor(mc.thePlayer.posZ);
-                    yaws.sort(Comparator.comparingDouble(yaw1 -> Math.abs(MovementUtil.getDirs() - 180 + (isRight ? this.offsetYaw.getValue() : -this.offsetYaw.getValue()) - yaw1)));
-                    yaw =  yaws.getFirst();
-                } else yaw = RotateUtil.rotation.getX();
-            }
+        for (int i = 0; i < 360; i++) {
+            float yaw = MathHelper.wrapAngleTo180_float(i);
+            float pitch = getPitch(yaw);
+            MovingObjectPosition rayTrace = PlayerUtil.rayTrace(new Vector2f(yaw, pitch), 4.5F, 1);
+            if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && rayTrace.getBlockPos().equals(targetBlock) && rayTrace.sideHit != EnumFacing.DOWN && rayTrace.hitVec.yCoord < mc.thePlayer.posY) validRotations.add(new Vector2f(yaw, pitch));
         }
 
-        return new Vector2f(yaw, pitch);
+        if (!(telly.isValue() && isTelly())) {
+            validRotations.sort(Comparator.comparingDouble(data -> {
+                float sortYaw = yawCorrect.isValue() ? bestYaw : RotateUtil.rotation.getX();
+                float yaw = MathHelper.wrapAngleTo180_float(sortYaw - data.getX());
+                float pitch = RotateUtil.rotation.getY() - data.getY();
+                return Math.hypot(yaw, pitch);
+            }));
+        } else return new Vector2f(bestYaw, RotateUtil.rotation.getY());
+
+        return validRotations.isEmpty() ? RotateUtil.rotation : validRotations.getFirst();
     }
 
-    private Vec3 getVectorForRotation(float yaw, float pitch) {
-        float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
-        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
-        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
-        float f3 = MathHelper.sin(-pitch * 0.017453292F);
-        return mc.thePlayer.getPositionEyes(1).add(new Vec3(f1 * f2, f3, f * f2));
-    }
-
-    private int findBlock() {
-        for (int i = 0; i < 9; i++) {
-            if (mc.thePlayer.inventory.getStackInSlot(i) != null && mc.thePlayer.inventory.getStackInSlot(i).getItem() instanceof ItemBlock && ((ItemBlock) mc.thePlayer.inventory.getStackInSlot(i).getItem()).getBlock().isFullBlock()) return i;
-        }
-
-        return -1;
+    private boolean isTelly() {
+        return (mc.thePlayer.onGround && groundTicks >= jumpAfterGroundTicks.getValue()) || rotateAfterJumpTicks.getValue() > 10 - mc.thePlayer.jumpTicks;
     }
 }

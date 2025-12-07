@@ -7,8 +7,7 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.cicada.utility.Player.MovementUtil;
-import net.cicada.utility.Player.RotateUtil;
+import net.cicada.utility.Player.MoveUtil;
 
 @ModuleInfo(name = "Spin", category = Category.Fun)
 public class Spin extends Module {
@@ -44,7 +43,7 @@ public class Spin extends Module {
             }
 
             if (event instanceof MovementEvent e && this.silentMoveFix.isValue()) {
-                MovementUtil.moveFix(e, count, MovementUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+                MoveUtil.moveFix(e, count, MoveUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
             }
         }
     }

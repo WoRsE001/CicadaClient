@@ -2,6 +2,8 @@ package net.cicada.utility.Render;
 
 import lombok.experimental.UtilityClass;
 import net.cicada.utility.Access;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
@@ -11,7 +13,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-import static net.minecraft.client.gui.Gui.drawModalRectWithCustomSizedTexture;
 import static org.lwjgl.opengl.GL11.*;
 
 @UtilityClass
@@ -38,7 +39,7 @@ public class RenderUtil implements Access {
         GlStateManager.resetColor();
     }
 
-    public void render2DRect(double x, double y, double width, double height) {
+    public void drawRect(double x, double y, double width, double height) {
         start2D();
         GL11.glPushMatrix();
         GL11.glBegin(GL11.GL_QUADS);
@@ -51,7 +52,7 @@ public class RenderUtil implements Access {
         stop2D();
     }
 
-    public void render2DCircle(float x, float y, float radius) {
+    public void drawCircle(float x, float y, float radius) {
         start2D();
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);
         for (int i = 0; i < 360; i++) {
@@ -61,7 +62,7 @@ public class RenderUtil implements Access {
         stop2D();
     }
 
-    public void render2DRoundRect(float x, float y, float width, float height, float radius) {
+    public void drawRoundRect(float x, float y, float width, float height, float radius) {
         start2D();
         GL11.glBegin(GL11.GL_TRIANGLE_FAN);
         int i;
@@ -88,11 +89,24 @@ public class RenderUtil implements Access {
         OpenGlHelper.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
         glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.getTextureManager().bindTexture(image);
-        drawModalRectWithCustomSizedTexture((int) x, (int) y, 0, 0, width, height, width, height);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        Gui.drawModalRectWithCustomSizedTexture((int) x, (int) y, 0, 0, width, height, width, height);
         GlStateManager.disableBlend();
         glDepthMask(true);
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
+    }
+
+    public static void drawPlayerHead(float x, float y, float headSize, Entity entity) {
+        NetworkPlayerInfo playerInfo = mc.getNetHandler().getPlayerInfo(entity.getUniqueID());
+        ResourceLocation skinLoc = playerInfo != null ? playerInfo.getLocationSkin() : mc.thePlayer.getLocationSkin();
+        mc.getTextureManager().bindTexture(skinLoc);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        Gui.drawScaledCustomSizeModalRect((int) x, (int) y, 4F, 4F, 4, 4, (int) headSize, (int) headSize, 32, 32);
+        GlStateManager.resetColor();
     }
 
     public void start3D() {

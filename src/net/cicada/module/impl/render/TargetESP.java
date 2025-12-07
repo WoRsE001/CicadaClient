@@ -64,6 +64,10 @@ public class TargetESP extends Module {
                     worldrenderer.pos(-1 / 2F, 1 / 2F, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
 
                     tessellator.draw();
+                    GL11.glRotatef((float) -funkAngle, 0.0F, 0.0F, 1.0F);
+                    GL11.glRotatef(-mc.getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(mc.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+                    GL11.glTranslated(-(targetRenderPos.xCoord - renderPosX), -(targetRenderPos.yCoord - renderPosY + this.target.height / 2), -(targetRenderPos.zCoord - renderPosZ));
                     GL11.glPopMatrix();
                     GlStateManager.disableTexture2D();
                     RenderUtil.stop2D();

@@ -3,16 +3,13 @@ package net.cicada.module.impl.movement;
 import net.cicada.event.impl.MotionEvent;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import net.cicada.utility.Player.MovementUtil;
-import net.minecraft.block.BlockAir;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.cicada.utility.Player.MoveUtil;
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.JumpEvent;
 import net.cicada.event.impl.UpdateEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class HighJump extends Module {
     public void onEnable() {
         this.ticksSinceJump = 0;
         this.active = this.falling = false;
-        this.moving = MovementUtil.isMoving();
+        this.moving = MoveUtil.isMoving();
         super.onEnable();
     }
 
@@ -45,7 +42,7 @@ public class HighJump extends Module {
         if (event instanceof UpdateEvent) {
             if (this.mode.is("Matrix")) {
                 if (!this.moving) {
-                    MovementUtil.strafe(0.16, 1);
+                    MoveUtil.strafe(0.16, 1);
                     this.moving = true;
                 }
 

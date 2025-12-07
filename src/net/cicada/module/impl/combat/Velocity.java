@@ -1,11 +1,8 @@
 package net.cicada.module.impl.combat;
 
-import net.cicada.event.impl.MovementInputEvent;
+import net.cicada.event.impl.*;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.cicada.event.api.Event;
-import net.cicada.event.impl.AttackEvent;
-import net.cicada.event.impl.MovementEvent;
-import net.cicada.event.impl.PacketEvent;
 import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
@@ -16,7 +13,7 @@ import java.util.List;
 
 @ModuleInfo(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
-    ListSetting mode = new ListSetting("Mode", "JumpReset", List.of("Motion", "JumpReset", "Reduce"), () -> true, this);
+    ListSetting mode = new ListSetting("Mode", "JumpReset", List.of("Motion", "JumpReset", "Reduce", "Polar"), () -> true, this);
     NumberSetting motionXZ = new NumberSetting("MotionXZ", 0, 0, 1, 0.01, () -> mode.getValue().equals("Motion"), this);
     NumberSetting motionY = new NumberSetting("MotionY", 0, 0, 1, 0.01, () -> mode.getValue().equals("Motion"), this);
     NumberSetting chance = new NumberSetting("Chance", 100, 0, 100, 1, () -> mode.getValue().equals("JumpReset"), this);
@@ -39,6 +36,10 @@ public class Velocity extends Module {
                     v.setMotionY((int) (v.getMotionY() * motionY.getValue()));
                     v.setMotionZ((int) (v.getMotionZ() * motionXZ.getValue()));
                 }
+            } else if (mode.is("Polar")) {
+                if (e.getPacket() instanceof S12PacketEntityVelocity v && mc.thePlayer.getEntityId() == v.getEntityID() && mc.thePlayer.onGround)
+                    mc.thePlayer.motionY = 0;
+                    mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.029, mc.thePlayer.posZ);
             }
         }
 

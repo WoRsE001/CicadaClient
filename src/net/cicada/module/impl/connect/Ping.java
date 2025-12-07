@@ -9,11 +9,11 @@ import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.MultiBooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import net.cicada.utility.Doubles;
+import net.cicada.utility.LoggerUtil;
 import net.cicada.utility.Render.RenderUtil;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
@@ -45,6 +45,8 @@ public class Ping extends Module {
 
     @Override
     public void listen(Event event) {
+        if (mc.isIntegratedServerRunning()) return;
+
         if (event instanceof AttackEvent a && (!(a.getTargetEntity() instanceof EntityLivingBase e) || e.hurtTime == 0) && this.blinkAction.is("Attack")) {
             this.blink();
         }

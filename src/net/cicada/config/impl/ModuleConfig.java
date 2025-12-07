@@ -1,5 +1,6 @@
 package net.cicada.config.impl;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
@@ -10,7 +11,9 @@ import net.cicada.module.api.ModuleManager;
 import net.cicada.module.setting.Setting;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.ListSetting;
+import net.cicada.module.setting.impl.MultiBooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import net.cicada.utility.Doubles;
 import org.lwjgl.input.Keyboard;
 
 import java.io.File;
@@ -54,6 +57,11 @@ public class ModuleConfig {
                             if (setting instanceof ListSetting listSetting) {
                                 listSetting.setValue(configSetting.getAsString());
                             }
+                            if (setting instanceof MultiBooleanSetting multiBooleanSetting) {
+                                for (Doubles<String, Boolean> value : multiBooleanSetting.getValues()) {
+                                    value.setE(configSetting.getAsJsonObject().get(value.getT()).getAsBoolean());
+                                }
+                            }
                         }
                     }
                 }
@@ -80,6 +88,13 @@ public class ModuleConfig {
                 }
                 if (setting instanceof ListSetting listSetting) {
                     settingsObject.addProperty(setting.getName(), listSetting.getValue());
+                }
+                if (setting instanceof MultiBooleanSetting multiBooleanSetting) {
+                    JsonObject obj = new JsonObject();
+                    for (Doubles<String, Boolean> value : multiBooleanSetting.getValues()) {
+                        obj.addProperty(value.getT(), value.getE());
+                    }
+                    settingsObject.add(multiBooleanSetting.getName(), obj);
                 }
             }
 
