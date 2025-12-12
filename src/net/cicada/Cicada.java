@@ -19,7 +19,7 @@ import java.io.File;
 @UtilityClass @FieldDefaults(makeFinal = true)
 public class Cicada {
     public String name = "Cicada";
-    public String version = "1.1.6";
+    public String version = "1.1.7";
 
     public File MAIN_DIR = new File(Minecraft.getMinecraft().mcDataDir, name);
     public File CONFIG_DIR = new File(MAIN_DIR, "configs");
