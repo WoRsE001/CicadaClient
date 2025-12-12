@@ -59,7 +59,7 @@ public class ModuleConfig {
                             }
                             if (setting instanceof MultiBooleanSetting multiBooleanSetting) {
                                 for (Doubles<String, Boolean> value : multiBooleanSetting.getValues()) {
-                                    value.setE(configSetting.getAsJsonObject().get(value.getT()).getAsBoolean());
+                                    if (configSetting.getAsJsonObject().get(value.getT()) != null) value.setE(configSetting.getAsJsonObject().get(value.getT()).getAsBoolean());
                                 }
                             }
                         }

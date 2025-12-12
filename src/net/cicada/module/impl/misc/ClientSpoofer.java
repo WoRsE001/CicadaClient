@@ -12,18 +12,13 @@ public class ClientSpoofer extends Module {
     ListSetting brand = new ListSetting("Brand", "Optifine", List.of("Default", "Forge", "Optifine", "Lunar", "FML", "LabyMod"), () -> true, this);
 
     public String getBrand() {
-        if (brand.getValue().equals("Forge")) {
-            return "forge";
-        } else if (brand.getValue().equals("Optifine")) {
-            return "optifine";
-        } else if (brand.getValue().equals("Lunar")) {
-            return "LunarClient";
-        } else if (brand.getValue().equals("FML")) {
-            return "fml,forge";
-        } else if (brand.getValue().equals("LabyMod")) {
-            return "labymod";
-        } else {
-            return "Vanila";
-        }
+        return switch (brand.getValue()) {
+            case "Forge" -> "forge";
+            case "Optifine" -> "optifine";
+            case "Lunar" -> "LunarClient";
+            case "FML" -> "fml,forge";
+            case "LabyMod" -> "labymod";
+            default -> "Vanila";
+        };
     }
 }

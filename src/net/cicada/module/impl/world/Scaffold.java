@@ -176,10 +176,9 @@ public class Scaffold extends Module {
             if (rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && rayTrace.getBlockPos().equals(targetBlock) && rayTrace.sideHit != EnumFacing.DOWN && rayTrace.hitVec.yCoord < mc.thePlayer.posY) validRotations.add(new Vector2f(yaw, pitch));
         }
 
-        if (!(telly.isValue() && isTelly())) {
+        if (!(telly.isValue() && isTelly()) && yawCorrect.isValue()) {
             validRotations.sort(Comparator.comparingDouble(data -> {
-                float sortYaw = yawCorrect.isValue() ? bestYaw : RotateUtil.rotation.getX();
-                float yaw = MathHelper.wrapAngleTo180_float(sortYaw - data.getX());
+                float yaw = MathHelper.wrapAngleTo180_float(bestYaw - data.getX());
                 float pitch = RotateUtil.rotation.getY() - data.getY();
                 return Math.hypot(yaw, pitch);
             }));

@@ -37,9 +37,10 @@ public class Velocity extends Module {
                     v.setMotionZ((int) (v.getMotionZ() * motionXZ.getValue()));
                 }
             } else if (mode.is("Polar")) {
-                if (e.getPacket() instanceof S12PacketEntityVelocity v && mc.thePlayer.getEntityId() == v.getEntityID() && mc.thePlayer.onGround)
+                if (e.getPacket() instanceof S12PacketEntityVelocity v && mc.thePlayer.getEntityId() == v.getEntityID() && mc.thePlayer.onGround) {
                     mc.thePlayer.motionY = 0;
                     mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 0.029, mc.thePlayer.posZ);
+                }
             }
         }
 

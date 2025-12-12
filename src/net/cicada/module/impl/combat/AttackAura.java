@@ -42,7 +42,8 @@ public class AttackAura extends Module {
     NumberSetting pitchSpeed = new  NumberSetting("pitchSpeed", 180, 0, 180, 1, () -> rotation.isValue(), this);
     MultiBooleanSetting randomize = new MultiBooleanSetting("Randomize", () -> rotation.isValue(), this)
             .add("Basic", false)
-            .add("Smooth", false);
+            .add("Smooth", false)
+            .add("MixDelta", false);
     NumberSetting minRandomStrength = new NumberSetting("MinRandomStrength", -2, -15, 15, 0.1, () -> rotation.isValue() && randomize.is("Basic"), this);
     NumberSetting maxRandomStrength = new NumberSetting("MaxRandomStrength", 2, -15, 15, 0.1, () -> rotation.isValue() && randomize.is("Basic"), this);
     NumberSetting smoothFactor = new NumberSetting("SmoothFactor", 1.7, 1, 10, 0.01, () -> rotation.isValue() && randomize.is("Smooth"), this);
@@ -50,6 +51,8 @@ public class AttackAura extends Module {
     // CLICKS
     NumberSetting minCPS = new NumberSetting("MinCPS", 20, 0, 20, 1, () -> true, this);
     NumberSetting maxCPS = new NumberSetting("MaxCPS", 20, 0, 20, 1, () -> true, this);
+    NumberSetting minRecalculateDelay = new NumberSetting("MinRecalculateDelay", 0, 0, 1000, 1, () -> true, this);
+    NumberSetting maxRecalculateDelay = new NumberSetting("MaxRecalculateDelay", 0, 0, 1000, 1, () -> true, this);
     NumberSetting hitRange = new NumberSetting("HitRange", 8, 0, 15, 0.1, () -> true, this);
     // AUTOBLOCK
     public ListSetting autoBlock = new ListSetting("AutoBlock", "None", List.of("None", "Constant", "PreAttack"), () -> true, this);
@@ -60,12 +63,16 @@ public class AttackAura extends Module {
 
     public EntityLivingBase target;
     Vec3 aimPoint;
+    Vector2f lastDelta;
+    long timer;
+    int CPS;
     public boolean isBlocking;
 
 
     @Override
     protected void onEnable() {
-        RotateUtil.setRotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch);
+        RotateUtil.rotation.set(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch);
+        lastDelta = new Vector2f(0, 0);
         super.onEnable();
     }
 
@@ -86,6 +93,13 @@ public class AttackAura extends Module {
                 }
             }
 
+            case GameLoopEvent ignored -> {
+                if (System.currentTimeMillis() - timer > MathUtil.random(minRecalculateDelay.getValue(), maxRecalculateDelay.getValue())) {
+                    CPS = (int) MathUtil.random(minCPS.getValue(), maxCPS.getValue());
+                    timer = System.currentTimeMillis();
+                }
+            }
+
             case JumpEvent jumpEvent -> {
                 if (jumpFix.isValue() && target != null && silentRotation.isValue() && rotation.isValue()) {
                     jumpEvent.setRotationYaw(RotateUtil.rotation.getX());
@@ -94,7 +108,7 @@ public class AttackAura extends Module {
 
             case LegitClickTimingEvent ignored -> {
                 if (target != null) {
-                    if (Math.random() < MathUtil.random(minCPS.getValue(), maxCPS.getValue()) / 20) {
+                    if (Math.random() * 20 < CPS) {
                         MovingObjectPosition rayTrace = PlayerUtil.rayTrace(RotateUtil.rotation, (float) attackRange.getValue(), 1);
                         if (rayTrace != null && rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && rayTrace.entityHit == target && mc.thePlayer.getPositionEyes(1F).distanceTo(aimPoint) <= attackRange.getValue()) {
                             AttackOrder.sendFixedAttack(mc.thePlayer, target);
@@ -131,7 +145,7 @@ public class AttackAura extends Module {
             case Render2DEvent ignored -> {
                 if (target != null && rotation.isValue() && !silentRotation.isValue()) {
                     mc.thePlayer.rotationYaw = (float) MathUtil.interpolate(RotateUtil.lastRotation.getX(), RotateUtil.rotation.getX(), mc.timer.renderPartialTicks);
-                    mc.thePlayer.rotationYaw = (float) MathUtil.interpolate(RotateUtil.lastRotation.getX(), RotateUtil.rotation.getX(), mc.timer.renderPartialTicks);
+                    mc.thePlayer.rotationPitch = (float) MathUtil.interpolate(RotateUtil.lastRotation.getY(), RotateUtil.rotation.getY(), mc.timer.renderPartialTicks);
                 }
             }
 
@@ -149,8 +163,11 @@ public class AttackAura extends Module {
                     if (rotation.isValue()) {
                         aimPoint = updateRotation(target);
                     }
+
                     if (!ModuleManager.ATTACK_AURA.autoBlock.is("None") && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemSword) block();
                 } else {
+                    RotateUtil.rotation.set(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch);
+                    lastDelta.set(0, 0);
                     unblock();
                 }
             }
@@ -168,6 +185,16 @@ public class AttackAura extends Module {
 
         if (selectionMode.getValue().equals("Center")) aimPoint = targetEyesPos;
         else if (selectionMode.getValue().equals("Best")) aimPoint = RotateUtil.bestHitVec(targetBox);
+        else if (selectionMode.is("Nearest")) {
+            Vector2f nearestDelta = RotateUtil.calcDeltaRotate(targetEyesPos, 180, 180);
+            for (double x = targetBox.minX; x < targetBox.maxX; x += 0.05) {
+                for (double y = targetBox.minY; y < targetBox.maxY; y += 0.05) {
+                    for (double z = targetBox.minZ; z < targetBox.maxZ; z += 0.05) {
+                        if (RotateUtil.calcDeltaRotate(new Vec3(x, y, z), 180, 180).lengthSquared() < nearestDelta.lengthSquared()) aimPoint = new Vec3(x, y, z);
+                    }
+                }
+            }
+        }
 
         if (smartSelection.isValue()) {
             Vec3 candidatePoint = null;
@@ -179,13 +206,8 @@ public class AttackAura extends Module {
                             candidatePoint = new Vec3(x, y, z);
                             continue;
                         }
-                        if (selectionMode.getValue().equals("Center")) {
-                            if (targetEyesPos.distanceTo(new Vec3(x, y, z)) < targetEyesPos.distanceTo(candidatePoint))
-                                candidatePoint = new Vec3(x, y, z);
-                        } else if (selectionMode.getValue().equals("Best")) {
-                            if (RotateUtil.bestHitVec(targetBox).distanceTo(new Vec3(x, y, z)) < RotateUtil.bestHitVec(targetBox).distanceTo(candidatePoint))
-                                candidatePoint = new Vec3(x, y, z);
-                        }
+
+                        if (aimPoint.distanceTo(new Vec3(x, y, z)) < aimPoint.distanceTo(candidatePoint)) candidatePoint = new Vec3(x, y, z);
                     }
                 }
             }
@@ -195,7 +217,9 @@ public class AttackAura extends Module {
         Vector2f delta = RotateUtil.calcDeltaRotate(aimPoint, (float) yawSpeed.getValue(), (float) pitchSpeed.getValue());
         if (randomize.is("Basic")) delta.translate((float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()), (float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()));
         if (randomize.is("Smooth")) delta.set((float) (delta.getX() / smoothFactor.getValue()), (float) (delta.getY() / smoothFactor.getValue()));
+        if (randomize.is("MixDelta")) delta.translate((lastDelta.getX() - delta.getX()) / 1.4F, (lastDelta.getY() - delta.getY()) / 1.4F);
         RotateUtil.rotateWithGCD(delta);
+        lastDelta = delta;
         return aimPoint;
     }
 

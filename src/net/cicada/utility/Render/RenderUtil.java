@@ -2,6 +2,7 @@ package net.cicada.utility.Render;
 
 import lombok.experimental.UtilityClass;
 import net.cicada.utility.Access;
+import net.cicada.utility.FixedColor;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,6 +20,10 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderUtil implements Access {
     public void setGlColor(Color color) {
         GL11.glColor4f(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, color.getAlpha() / 255F);
+    }
+
+    public void setGlColor(FixedColor color) {
+        GL11.glColor4f((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getAlpha());
     }
 
     public void start2D() {
@@ -77,6 +82,82 @@ public class RenderUtil implements Access {
         }
         for (i = 270; i <= 360; i++) {
             GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + radius));
+        }
+        GL11.glEnd();
+        stop2D();
+    }
+
+    public void drawRoundRectOutline(float x, float y, float width, float height, float radius, float lineWidth) {
+        start2D();
+        GL11.glLineWidth(lineWidth);
+        GL11.glBegin(GL_LINE_LOOP);
+        int i;
+        for (i = 0; i <= 90; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + width - radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + radius));
+        }
+        for (i = 90; i <= 180; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + width - radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + height - radius));
+        }
+        for (i = 180; i <= 270; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + height - radius));
+        }
+        for (i = 270; i <= 360; i++) {
+            GL11.glVertex2f((float) (Math.sin(Math.toRadians(i)) * radius + x + radius), (float) (-Math.cos(Math.toRadians(i)) * radius + y + radius));
+        }
+        GL11.glEnd();
+        stop2D();
+    }
+
+    public static void drawLine(float x, float y, float x2, float y2, float width) {
+        start2D();
+        GL11.glLineWidth(width);
+        GL11.glBegin(GL11.GL_LINES);
+        GL11.glVertex2f(x, y);
+        GL11.glVertex2f(x2, y2);
+        GL11.glEnd();
+        GL11.glLineWidth(1.0f);
+        stop2D();
+    }
+
+    public static void drawGradient(float x, float y, float width, float height) {
+        start2D();
+        GL11.glBegin(GL11.GL_QUADS);
+        for (int i = 0; i < width; i++) {
+            setGlColor(new FixedColor(i / width, 1, 1, 1, true));
+            GL11.glVertex2f(x + i, y);
+            GL11.glVertex2f(x + i + 1, y);
+            GL11.glVertex2f(x + i + 1, y + height);
+            GL11.glVertex2f(x + i, y + height);
+        }
+        GL11.glEnd();
+        stop2D();
+    }
+
+    public static void drawGradient1(float x, float y, float width, float height, FixedColor color) {
+        start2D();
+        GL11.glBegin(GL11.GL_QUADS);
+        for (int xI = 0; xI < width; xI++) {
+            for (int yI = 0; yI < height; yI++) {
+                setGlColor(new FixedColor(color.getHue(), xI / width, 1 - yI / height, 1, true));
+                GL11.glVertex2f(x + xI, y + yI);
+                GL11.glVertex2f(x + xI + 1, y + yI);
+                GL11.glVertex2f(x + xI + 1, y + yI + 1);
+                GL11.glVertex2f(x + xI, y + yI + 1);
+            }
+        }
+        GL11.glEnd();
+        stop2D();
+    }
+
+    public static void drawGradient2(float x, float y, float width, float height, FixedColor color) {
+        start2D();
+        GL11.glBegin(GL11.GL_QUADS);
+        for (int i = 0; i < height; i++) {
+            setGlColor(new FixedColor(color.getRed(), color.getGreen(), color.getBlue(), 1 - i / height));
+            GL11.glVertex2f(x, y + i);
+            GL11.glVertex2f(x + width, y + i);
+            GL11.glVertex2f(x + width, y + 1 + i);
+            GL11.glVertex2f(x, y + 1 + i);
         }
         GL11.glEnd();
         stop2D();

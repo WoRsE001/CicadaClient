@@ -1,7 +1,9 @@
 package net.cicada.module.impl.render;
 
+import net.cicada.module.setting.impl.ColorSetting;
 import net.cicada.module.setting.impl.MultiBooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
+import net.cicada.utility.FixedColor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.cicada.event.api.Event;
@@ -23,6 +25,7 @@ public class ESP extends Module {
     NumberSetting expandBox = new NumberSetting("expandBox", 0.1, 0, 1, 0.01, () -> mode.is("Box"), this);
     NumberSetting expandHitBox = new NumberSetting("expandHitBox", 0.1, 0, 1, 0.01, () -> mode.is("HitBox"), this);
     NumberSetting lineWidth = new NumberSetting("LineWidth", 3, 0, 10, 1, () -> mode.is("HitBox"), this);
+    ColorSetting colorHitBox = new ColorSetting("ColorHitBox", new FixedColor(255, 255, 0, 255), () -> mode.is("HitBox"), this);
 
     @Override
     public void listen(Event event) {
@@ -32,7 +35,7 @@ public class ESP extends Module {
                 RenderUtil.setGlColor(new Color(0, 0, 0, 128));
                 if (this.mode.is("Box")) RenderUtil.render3DEntityBox(entity, (float) expandBox.getValue());
                 if (this.mode.is("Glow")) {}
-                RenderUtil.setGlColor(new Color(0, 0, 0, 128));
+                RenderUtil.setGlColor(colorHitBox.getColor());
                 if (this.mode.is("HitBox")) RenderUtil.render3DEntityHitBox(entity, (float) expandHitBox.getValue(), (float) lineWidth.getValue());
             }
         }

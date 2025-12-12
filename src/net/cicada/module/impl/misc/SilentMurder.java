@@ -1,4 +1,4 @@
-package net.cicada.module.impl.exploit;
+package net.cicada.module.impl.misc;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -9,7 +9,7 @@ import net.cicada.module.api.Category;
 import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 
-@ModuleInfo(name = "SilentMurder", category = Category.Exploit)
+@ModuleInfo(name = "SilentMurder", category = Category.Misc)
 public class SilentMurder extends Module {
     int swordSlot, lastSlot;
 

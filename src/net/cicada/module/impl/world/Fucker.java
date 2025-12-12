@@ -17,26 +17,46 @@ import net.minecraft.util.Vec3;
 public class Fucker extends Module {
     BlockPos bedPos = null;
     float breakProgress;
+    int ticksActive = 0;
+    boolean hasJumped = false;
 
     @Override
     protected void onEnable() {
         breakProgress = 0;
+        ticksActive = 0;
+        hasJumped = false;
+        bedPos = null;
         super.onEnable();
     }
 
     @Override
     public void listen(Event event) {
         if (event instanceof TickEvent) {
-            if (this.bedPos != null) RotateUtil.rotateWithGCD(RotateUtil.calcDeltaRotate(new Vec3(this.bedPos.getX() + 0.5, this.bedPos.getY() + 0.5, this.bedPos.getZ() + 0.5), 180, 180));
+            this.bedPos = this.getBedPos();
+            if (this.bedPos != null) {
+                if (mc.playerController.curBlockDamageMP > 0.1) mc.playerController.curBlockDamageMP = 1;
+
+                ticksActive++;
+                if (ticksActive >= 9) {
+                    toggle();
+                    return;
+                }
+
+                if (mc.thePlayer.fallDistance == 0f && !hasJumped && ticksActive >= 2 && mc.thePlayer.onGround) {
+                    mc.thePlayer.jump();
+                    hasJumped = true;
+                }
+
+                RotateUtil.rotateWithGCD(RotateUtil.calcDeltaRotate(new Vec3(this.bedPos.getX() + 0.5, this.bedPos.getY() + 0.5, this.bedPos.getZ() + 0.5), 180, 180));
+            }
         }
 
         if (event instanceof UpdateEvent) {
-            this.bedPos = this.getBedPos();
             if (this.bedPos != null) {
                 if (this.breakProgress == 0) {
                     mc.thePlayer.swingItem();
                     mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, this.bedPos, EnumFacing.UP));
-                } else if (this.breakProgress >= 1) {
+                } else if (this.breakProgress > 0.1) {
                     mc.thePlayer.swingItem();
                     mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, this.bedPos, EnumFacing.UP));
                 } else {

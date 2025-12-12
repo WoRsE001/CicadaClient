@@ -1,4 +1,4 @@
-package net.cicada.module.impl.exploit;
+package net.cicada.module.impl.player;
 
 import net.minecraft.block.BlockAir;
 import net.minecraft.network.play.client.C03PacketPlayer;
@@ -12,11 +12,10 @@ import net.cicada.module.api.Module;
 import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.ListSetting;
 import net.cicada.module.setting.impl.NumberSetting;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-@ModuleInfo(name = "Phase", category = Category.Exploit)
+@ModuleInfo(name = "Phase", category = Category.Player)
 public class Phase extends Module {
     ListSetting mode = new ListSetting("Mode", "NoCollision", List.of("NoCollision", "Intave", "Matrix", "Polar"), () -> true, this);
     NumberSetting packetCount = new NumberSetting("PacketCount", 5, 1, 10, 1, () -> mode.getValue().equals("Intave"), this);

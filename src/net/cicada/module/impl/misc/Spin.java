@@ -1,4 +1,4 @@
-package net.cicada.module.impl.fun;
+package net.cicada.module.impl.misc;
 
 import net.cicada.event.api.Event;
 import net.cicada.event.impl.*;
@@ -9,7 +9,7 @@ import net.cicada.module.setting.impl.BooleanSetting;
 import net.cicada.module.setting.impl.NumberSetting;
 import net.cicada.utility.Player.MoveUtil;
 
-@ModuleInfo(name = "Spin", category = Category.Fun)
+@ModuleInfo(name = "Spin", category = Category.Misc)
 public class Spin extends Module {
     NumberSetting yawSpeed = new NumberSetting("YawSpeed", 90, -180, 180, 1, () -> true, this);
     NumberSetting pitchAngle = new NumberSetting("PitchAngle", 90, -90, 90, 1, () -> true, this);
@@ -33,17 +33,19 @@ public class Spin extends Module {
             count += (int) yawSpeed.getValue();
         }
 
-        if (event instanceof JumpEvent e && this.jumpFix.isValue()) {
-            e.setRotationYaw(count);
-        }
-
-        if (this.moveFix.isValue()) {
-            if (event instanceof StrafeEvent e) {
+        if (serverSide.isValue()) {
+            if (event instanceof JumpEvent e && this.jumpFix.isValue()) {
                 e.setRotationYaw(count);
             }
 
-            if (event instanceof MovementEvent e && this.silentMoveFix.isValue()) {
-                MoveUtil.moveFix(e, count, MoveUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+            if (this.moveFix.isValue()) {
+                if (event instanceof StrafeEvent e) {
+                    e.setRotationYaw(count);
+                }
+
+                if (event instanceof MovementEvent e && this.silentMoveFix.isValue()) {
+                    MoveUtil.moveFix(e, count, MoveUtil.getDirection(mc.thePlayer.rotationYaw, e.getMoveForward(), e.getMoveStrafe()));
+                }
             }
         }
     }

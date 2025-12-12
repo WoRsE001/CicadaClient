@@ -26,10 +26,6 @@ public class MathHelper
     private static final double[] field_181164_e;
     private static final double[] field_181165_f;
 
-    public static double map(double value, double inputMin, double inputMax, double outputMin, double outputMax) {
-        return ((value - inputMin) / (inputMax - inputMin)) * (outputMax - outputMin) + outputMin;
-    }
-
     public static float sin(float p_76126_0_)
     {
         return fastMath ? SIN_TABLE_FAST[(int)(p_76126_0_ * radToIndex) & 4095] : SIN_TABLE[(int)(p_76126_0_ * 10430.378F) & 65535];
@@ -105,13 +101,6 @@ public class MathHelper
         BigDecimal bdStep = BigDecimal.valueOf(step);
         BigDecimal divided = bdNumber.divide(bdStep, 0, RoundingMode.HALF_UP);
         return divided.multiply(bdStep).floatValue();
-    }
-
-    public static double round(double number, double step) {
-        BigDecimal bdNumber = BigDecimal.valueOf(number);
-        BigDecimal bdStep = BigDecimal.valueOf(step);
-        BigDecimal divided = bdNumber.divide(bdStep, 0, RoundingMode.HALF_UP);
-        return divided.multiply(bdStep).doubleValue();
     }
 
     public static int clamp_int(int num, int min, int max)

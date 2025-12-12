@@ -1,4 +1,4 @@
-package net.cicada.module.impl.exploit;
+package net.cicada.module.impl.connect;
 
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.cicada.event.api.Event;
@@ -9,7 +9,7 @@ import net.cicada.module.api.ModuleInfo;
 import net.cicada.module.setting.impl.BooleanSetting;
 import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 
-@ModuleInfo(name = "Disabler", category = Category.Exploit)
+@ModuleInfo(name = "Disabler", category = Category.Connect)
 public class Disabler extends Module {
     BooleanSetting startDestroyBlock = new BooleanSetting("StartDestroyBlock", false, () -> true, this);
     BooleanSetting abortDestroyBlock = new BooleanSetting("AbortDestroyBlock", false, () -> true, this);

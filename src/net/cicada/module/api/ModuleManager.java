@@ -5,13 +5,8 @@ import net.cicada.event.api.EventCaller;
 import net.cicada.event.api.EventListener;
 import net.cicada.event.impl.KeyEvent;
 import net.cicada.module.impl.combat.*;
-import net.cicada.module.impl.connect.Blink;
-import net.cicada.module.impl.connect.Ping;
-import net.cicada.module.impl.connect.PulseBlink;
-import net.cicada.module.impl.connect.TimerRange;
-import net.cicada.module.impl.exploit.*;
-import net.cicada.module.impl.fun.ForceOP;
-import net.cicada.module.impl.fun.Spin;
+import net.cicada.module.impl.connect.*;
+import net.cicada.module.impl.misc.Spin;
 import net.cicada.module.impl.misc.*;
 import net.cicada.module.impl.movement.*;
 import net.cicada.module.impl.player.*;
@@ -35,6 +30,7 @@ public class ModuleManager implements EventListener {
     public static Velocity VELOCITY = new Velocity();
     // CONNECT
     public static Blink BLINK = new Blink();
+    public static Disabler DISABLER = new Disabler();
     public static Ping PING = new Ping();
     public static PulseBlink PULSE_BLINK = new PulseBlink();
     public static TimerRange TIMER_RANGE = new TimerRange();
@@ -75,6 +71,7 @@ public class ModuleManager implements EventListener {
     public static InvManager INV_MANAGER = new InvManager();
     public static NoFall NO_FALL = new NoFall();
     public static PacketMine PACKET_MINE = new PacketMine();
+    public static Phase PHASE = new Phase();
     public static Regen REGEN = new Regen();
     public static Timer TIMER = new Timer();
     // World
@@ -88,17 +85,9 @@ public class ModuleManager implements EventListener {
     public static Fixes FIXES = new Fixes();
     public static FlagDetector FLAG_DETECTOR = new FlagDetector();
     public static PacketLogger PACKET_LOGGER = new PacketLogger();
-    public static Targets TARGETS = new Targets();
-    // EXPLOIT
-    public static Disabler DISABLER = new Disabler();
-    public static FakeGameMode FAKE_GAME_MODE = new FakeGameMode();
-    public static GodMode GOD_MODE = new GodMode();
-    public static NoPitchLimit NO_PITCH_LIMIT = new NoPitchLimit();
-    public static Phase PHASE = new Phase();
     public static SilentMurder SILENT_MURDER = new SilentMurder();
-    // FUN
-    public static ForceOP FORCE_OP = new ForceOP();
     public static Spin SPIN = new Spin();
+    public static Targets TARGETS = new Targets();
 
     public ModuleManager() {
         for (Field field : getClass().getDeclaredFields()) {
@@ -106,9 +95,7 @@ public class ModuleManager implements EventListener {
                 field.setAccessible(true);
                 try {
                     MODULES.add((Module) field.get(this));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                } catch (IllegalAccessException ignored) { }
             }
         }
 

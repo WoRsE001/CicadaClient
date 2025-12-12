@@ -13,9 +13,10 @@ import java.util.function.BooleanSupplier;
 @Getter @Setter
 public class MultiBooleanSetting extends Setting {
     private CopyOnWriteArrayList<Doubles<String, Boolean>> values = new CopyOnWriteArrayList<>();
+    private Doubles<String, Boolean> curValue;
 
     public MultiBooleanSetting(String name, BooleanSupplier visible, Module module) {
-        super(name, visible, module);
+        super(name, 100, 8, visible, module);
         this.width = mc.fontRendererObj.getStringWidth(this.name + ": ");
     }
 
@@ -31,26 +32,35 @@ public class MultiBooleanSetting extends Setting {
         return false;
     }
 
-    @Override
-    public void draw(int mouseX, int mouseY) {
-        mc.fontRendererObj.drawString(this.name + ":", this.posX, this.posY + 2, 0xFFFFFFFF);
-        float offsetX = this.posX + mc.fontRendererObj.getStringWidth(this.name + ": ");
-        for (Doubles<String, Boolean> value : this.values) {
-            mc.fontRendererObj.drawString(value.getT(), offsetX, this.posY + 2, value.getE() ? 0xFFFFFFFF : 0xFF808080);
-            offsetX += mc.fontRendererObj.getStringWidth(value.getT() + " ");
+    public void next() {
+        for (int i = 0; i < values.size(); i++) {
+            if (curValue.equals(values.get(i))) {
+                curValue = values.get((i + 1) % values.size());
+                return;
+            }
         }
     }
 
     @Override
+    public void draw(int mouseX, int mouseY) {
+        if (curValue == null) curValue = values.getFirst();
+        mc.fontRendererObj.drawString(name + ": ", posX, posY, 0xFFFFFFFF);
+        mc.fontRendererObj.drawString(curValue.getT(), posX + mc.fontRendererObj.getStringWidth(name + ": "), posY, curValue.getE() ? 0xFFFFFFFF : 0xFF808080);
+    }
+
+    @Override
     public boolean mousePressed(int mouseX, int mouseY, int mouseButton) {
-        if (mouseButton == 0) {
-            float offsetX = this.posX + mc.fontRendererObj.getStringWidth(this.name + ": ");
-            for (Doubles<String, Boolean> value : this.values) {
-                if (GuiUtil.mouseOver(offsetX, this.posY, mc.fontRendererObj.getStringWidth(value.getT() + " "), this.height, mouseX, mouseY)) {
-                    value.setE(!value.getE());
-                    return true;
+        if (curValue != null && GuiUtil.mouseOver(posX + mc.fontRendererObj.getStringWidth(name + ": "), posY, mc.fontRendererObj.getStringWidth(curValue.getT()), height, mouseX, mouseY)) {
+            if (mouseButton == 0) {
+                next();
+                return true;
+            } else if (mouseButton == 1) {
+                for (Doubles<String, Boolean> value : values) {
+                    if (value.equals(curValue)) {
+                        value.setE(!value.getE());
+                        return true;
+                    }
                 }
-                offsetX += mc.fontRendererObj.getStringWidth(value.getT() + " ");
             }
         }
 

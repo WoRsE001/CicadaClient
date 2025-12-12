@@ -1,7 +1,6 @@
 package net.cicada.module.api;
 
-public enum Category
-{
+public enum Category {
     Combat,
     Connect,
     Movement,
@@ -9,6 +8,4 @@ public enum Category
     Player,
     World,
     Misc,
-    Exploit,
-    Fun,
 }

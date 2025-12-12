@@ -43,6 +43,7 @@ import net.cicada.event.impl.GameLoopEvent;
 import net.cicada.event.impl.LegitClickTimingEvent;
 import net.cicada.event.impl.TickEvent;
 import net.cicada.module.api.ModuleManager;
+import net.cicada.utility.DeltaTracker;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -1603,6 +1604,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     public void runTick() throws IOException
     {
+        DeltaTracker.startFrame();
         TickEvent tickEvent = new TickEvent().call();
         if (tickEvent.isCanceled()) return;
 

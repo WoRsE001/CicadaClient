@@ -17,7 +17,7 @@ import java.util.List;
 
 @Getter @Setter
 public class ZamorozkaClickGui extends GuiScreen {
-    public static ZamorozkaClickGui INSTANCE ;
+    public static ZamorozkaClickGui INSTANCE;
     public static FontRenderer font = Fonts.Minecraft.get(20);
     private static List<Panel> panels = new ArrayList<>();
 
@@ -30,8 +30,6 @@ public class ZamorozkaClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (ClickGui.ImagesLoc.get(ModuleManager.CLICK_GUI.image.getValue()) != null)
-            RenderUtil.drawImage(ClickGui.ImagesLoc.get(ModuleManager.CLICK_GUI.image.getValue()), this.width - this.width / 4, this.height - this.height / 5 * 3, this.width / 4, this.height / 5 * 3);
         RenderUtil.setGlColor(new Color(0, 0, 0, 40));
         RenderUtil.drawRect(0, 0, mc.displayWidth, mc.displayHeight);
         float offsetY = mc.displayHeight / 4F - (panels.getFirst().getHeight() + 5) * panels.size() / 2;

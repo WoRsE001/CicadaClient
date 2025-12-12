@@ -12,11 +12,11 @@ import java.util.function.BooleanSupplier;
 public abstract class Setting extends ComponentGui implements Access {
     protected String name;
     protected BooleanSupplier visible;
-    protected float posX, posY;
-    protected float width = 100, height = 15;
 
-    public Setting(String name, BooleanSupplier visible, Module module) {
+    public Setting(String name, float width, float height, BooleanSupplier visible, Module module) {
         this.name = name;
+        this.width = width;
+        this.height = height;
         this.visible = visible;
         module.getSettings().add(this);
     }

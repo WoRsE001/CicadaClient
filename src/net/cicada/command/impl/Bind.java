@@ -20,7 +20,7 @@ public class Bind extends Command {
             if (args[1].equals("list")) {
                 LoggerUtil.display("--Bind list--");
                 for (Module module : ModuleManager.MODULES) {
-                    if (module.getKey() != 0) LoggerUtil.display(module.getName() + ": " + module.getKey());
+                    if (module.getKey() != 0) LoggerUtil.display(module.getName() + ": " + Keyboard.getKeyName(module.getKey()));
                 }
             }
         } else if (args.length == 3) {
