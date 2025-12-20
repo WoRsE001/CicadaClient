@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.cicada.event.api.Event;
 import net.cicada.event.api.EventListener;
+import net.cicada.module.impl.render.Notifications;
 import net.cicada.module.setting.Setting;
 import net.cicada.utility.Access;
 
@@ -21,9 +22,11 @@ public class Module implements EventListener, Access {
     private List<Setting> settings = new ArrayList<>();
 
     protected void onEnable() {
+        ModuleManager.NOTIFICATIONS.notificationsList.addFirst(new Notifications.Notification(this, "Module has enable"));
     }
 
     protected void onDisable() {
+        ModuleManager.NOTIFICATIONS.notificationsList.addFirst(new Notifications.Notification(this, "Module has disable"));
     }
 
     @Override

@@ -60,12 +60,14 @@ public class ModuleManager implements EventListener {
     public static NameTag NAME_TAG = new NameTag();
     public static NoHurtCam NO_HURT_CAM = new NoHurtCam();
     public static NoRender NO_RENDER = new NoRender();
+    public static Notifications NOTIFICATIONS = new Notifications();
     public static PointerEsp POINTER_ESP = new PointerEsp();
     public static TargetESP TARGETESP = new TargetESP();
     public static TargetHud TARGET_HUD = new TargetHud();
     public static Watermark WATERMARK = new Watermark();
     // Player
     public static AutoPotion AUTO_POTION = new AutoPotion();
+    public static AutoSoup AUTO_SOUP = new AutoSoup();
     public static AutoTool AUTO_TOOL = new AutoTool();
     public static ChestStealer CHEST_STEALER = new ChestStealer();
     public static InvManager INV_MANAGER = new InvManager();
