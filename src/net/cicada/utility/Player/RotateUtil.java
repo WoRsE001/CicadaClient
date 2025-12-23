@@ -49,13 +49,22 @@ public class RotateUtil implements Access {
         rotation.setY(MathHelper.clamp_float(rotation.getY(), -90, 90));
     }
 
+    public Vec3 clampVecInBox(Vec3 vec, AxisAlignedBB box) {
+        return new Vec3(
+                MathHelper.clamp_double(vec.xCoord, box.minX, box.maxX),
+                MathHelper.clamp_double(vec.yCoord, box.minY, box.maxY),
+                MathHelper.clamp_double(vec.zCoord, box.minZ, box.maxZ)
+        );
+    }
+
     public Vec3 bestHitVec(AxisAlignedBB box) {
         Vec3 playerPositionEyes = mc.thePlayer.getPositionEyes(1);
-        return new Vec3(
-                MathHelper.clamp_double(playerPositionEyes.xCoord, box.minX, box.maxX),
-                MathHelper.clamp_double(playerPositionEyes.yCoord, box.minY, box.maxY),
-                MathHelper.clamp_double(playerPositionEyes.zCoord, box.minZ, box.maxZ)
-        );
+        return clampVecInBox(playerPositionEyes, box);
+    }
+
+    public Vec3 nearestHitVec(AxisAlignedBB box) {
+        Vec3 playerLookVec = mc.thePlayer.getPositionEyes(1).add(mc.thePlayer.getLookVec());
+        return clampVecInBox(playerLookVec, box);
     }
 
     public static boolean isLookingAtEntity(Entity target, Vector2f rotations, final double range) {

@@ -185,16 +185,7 @@ public class AttackAura extends Module {
 
         if (selectionMode.getValue().equals("Center")) aimPoint = targetEyesPos;
         else if (selectionMode.getValue().equals("Best")) aimPoint = RotateUtil.bestHitVec(targetBox);
-        else if (selectionMode.is("Nearest")) {
-            Vector2f nearestDelta = RotateUtil.calcDeltaRotate(targetEyesPos, 180, 180);
-            for (double x = targetBox.minX; x < targetBox.maxX; x += 0.05) {
-                for (double y = targetBox.minY; y < targetBox.maxY; y += 0.05) {
-                    for (double z = targetBox.minZ; z < targetBox.maxZ; z += 0.05) {
-                        if (RotateUtil.calcDeltaRotate(new Vec3(x, y, z), 180, 180).lengthSquared() < nearestDelta.lengthSquared()) aimPoint = new Vec3(x, y, z);
-                    }
-                }
-            }
-        }
+        else if (selectionMode.is("Nearest")) aimPoint = RotateUtil.nearestHitVec(targetBox);
 
         if (smartSelection.isValue()) {
             Vec3 candidatePoint = null;

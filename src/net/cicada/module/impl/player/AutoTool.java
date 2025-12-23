@@ -27,11 +27,11 @@ public class AutoTool extends Module {
                     lastSlot.add(mc.thePlayer.inventory.currentItem);
                     mc.thePlayer.inventory.currentItem = bestSlot;
                 } else if (!lastSlot.isEmpty()) {
-                    mc.thePlayer.inventory.currentItem = lastSlot.get(0);
+                    mc.thePlayer.inventory.currentItem = lastSlot.getFirst();
                     lastSlot.clear();
                 }
             } else if (!lastSlot.isEmpty()) {
-                mc.thePlayer.inventory.currentItem = lastSlot.get(0);
+                mc.thePlayer.inventory.currentItem = lastSlot.getFirst();
                 lastSlot.clear();
             }
         }
