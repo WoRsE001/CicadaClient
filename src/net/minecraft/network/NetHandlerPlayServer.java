@@ -388,7 +388,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
                     if (!this.serverController.isFlightAllowed() && !this.playerEntity.capabilities.allowFlying && !worldserver.checkBlockCollision(axisalignedbb))
                     {
-                        if (d12 >= -0.03125D) 
+                        if (d12 >= -0.03125D)
                         {
                             ++this.floatingTickCount;
 
