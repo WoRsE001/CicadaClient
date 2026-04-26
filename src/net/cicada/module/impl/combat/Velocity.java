@@ -18,6 +18,7 @@ public class Velocity extends Module {
     NumberSetting motionY = new NumberSetting("MotionY", 0, 0, 1, 0.01, () -> mode.getValue().equals("Motion"), this);
     NumberSetting chance = new NumberSetting("Chance", 100, 0, 100, 1, () -> mode.getValue().equals("JumpReset"), this);
     NumberSetting reduceOnHit = new NumberSetting("ReduceOnHit", 0.6, 0, 1, 0.01, () -> mode.getValue().equals("Reduce"), this);
+    NumberSetting reduceOnHitSprint = new NumberSetting("ReduceOnHitSprint", 0.6, 0, 1, 0.01, () -> mode.getValue().equals("Reduce"), this);
 
     @Override
     public void listen(Event event) {
@@ -45,10 +46,15 @@ public class Velocity extends Module {
         }
 
         if (event instanceof AttackEvent e && e.getPriority() == Event.Priority.Low) {
-            if (mode.getValue().equals("Reduce") && mc.thePlayer.hurtTime != 0 && mc.thePlayer.isSprinting()) {
-                mc.thePlayer.motionX *= reduceOnHit.getValue();
-                mc.thePlayer.motionZ *= reduceOnHit.getValue();
-                mc.thePlayer.setSprinting(false);
+            if (mode.getValue().equals("Reduce") && mc.thePlayer.hurtTime != 0) {
+                if (mc.thePlayer.isSprinting()) {
+                    mc.thePlayer.motionX *= reduceOnHitSprint.getValue();
+                    mc.thePlayer.motionZ *= reduceOnHitSprint.getValue();
+                    mc.thePlayer.setSprinting(false);
+                } else {
+                    mc.thePlayer.motionX *= reduceOnHit.getValue();
+                    mc.thePlayer.motionZ *= reduceOnHit.getValue();
+                }
             }
         }
     }

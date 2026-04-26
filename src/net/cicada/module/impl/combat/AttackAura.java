@@ -47,6 +47,10 @@ public class AttackAura extends Module {
     NumberSetting minRandomStrength = new NumberSetting("MinRandomStrength", -2, -15, 15, 0.1, () -> rotation.isValue() && randomize.is("Basic"), this);
     NumberSetting maxRandomStrength = new NumberSetting("MaxRandomStrength", 2, -15, 15, 0.1, () -> rotation.isValue() && randomize.is("Basic"), this);
     NumberSetting smoothFactor = new NumberSetting("SmoothFactor", 1.7, 1, 10, 0.01, () -> rotation.isValue() && randomize.is("Smooth"), this);
+    NumberSetting minMixXFactor = new NumberSetting("minMixXFactor", 1, 0, 1, 0.01, () -> rotation.isValue() && randomize.is("MixDelta"), this);
+    NumberSetting minMixYFactor = new NumberSetting("minMixYFactor", 1, 0, 1, 0.01, () -> rotation.isValue() && randomize.is("MixDelta"), this);
+    NumberSetting maxMixXFactor = new NumberSetting("maxMixXFactor", 1, 0, 1, 0.01, () -> rotation.isValue() && randomize.is("MixDelta"), this);
+    NumberSetting maxMixYFactor = new NumberSetting("maxMixYFactor", 1, 0, 1, 0.01, () -> rotation.isValue() && randomize.is("MixDelta"), this);
     BooleanSetting silentRotation = new BooleanSetting("SilentRotation", true, () -> rotation.isValue(), this);
     // CLICKS
     NumberSetting minCPS = new NumberSetting("MinCPS", 20, 0, 20, 1, () -> true, this);
@@ -208,7 +212,9 @@ public class AttackAura extends Module {
         Vector2f delta = RotateUtil.calcDeltaRotate(aimPoint, (float) yawSpeed.getValue(), (float) pitchSpeed.getValue());
         if (randomize.is("Basic")) delta.translate((float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()), (float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()));
         if (randomize.is("Smooth")) delta.set((float) (delta.getX() / smoothFactor.getValue()), (float) (delta.getY() / smoothFactor.getValue()));
-        if (randomize.is("MixDelta")) delta.translate((lastDelta.getX() - delta.getX()) / 1.4F, (lastDelta.getY() - delta.getY()) / 1.4F);
+        float xMixFactor = (float) MathUtil.random(minMixXFactor.getValue(), maxMixXFactor.getValue());
+        float yMixFactor = (float) MathUtil.random(minMixYFactor.getValue(), maxMixYFactor.getValue());
+        if (randomize.is("MixDelta")) delta.translate((1 - xMixFactor) * delta.x + xMixFactor * lastDelta.x, (1 - yMixFactor) * delta.y + yMixFactor * lastDelta.y);
         RotateUtil.rotateWithGCD(delta);
         lastDelta = delta;
         return aimPoint;
