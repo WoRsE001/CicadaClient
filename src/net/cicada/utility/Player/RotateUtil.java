@@ -3,6 +3,7 @@ package net.cicada.utility.Player;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.cicada.utility.Access;
+import net.cicada.utility.SimulatedPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -26,6 +27,15 @@ public class RotateUtil implements Access {
 
     public Vector2f calcDeltaRotate(Vec3 point, float yawSpeed, float pitchSpeed) {
         Vec3 diff = point.subtract(mc.thePlayer.getPositionEyes(1));
+        float deltaYaw = (float) MathHelper.wrapAngleTo180_double(MathHelper.wrapAngleTo180_double(Math.toDegrees(Math.atan2(diff.zCoord, diff.xCoord)) - 90) - rotation.getX());
+        float deltaPitch = (float) ((-Math.toDegrees(Math.atan2(diff.yCoord, Math.hypot(diff.xCoord, diff.zCoord)))) - rotation.getY());
+        deltaYaw = MathHelper.clamp_float(deltaYaw, -yawSpeed, yawSpeed);
+        deltaPitch = MathHelper.clamp_float(deltaPitch, -pitchSpeed, pitchSpeed);
+        return new Vector2f(deltaYaw, deltaPitch);
+    }
+
+    public Vector2f calcDeltaRotate(SimulatedPlayer simulatedPlayer, Vec3 point, float yawSpeed, float pitchSpeed) {
+        Vec3 diff = point.subtract(simulatedPlayer.getPositionEyes(1));
         float deltaYaw = (float) MathHelper.wrapAngleTo180_double(MathHelper.wrapAngleTo180_double(Math.toDegrees(Math.atan2(diff.zCoord, diff.xCoord)) - 90) - rotation.getX());
         float deltaPitch = (float) ((-Math.toDegrees(Math.atan2(diff.yCoord, Math.hypot(diff.xCoord, diff.zCoord)))) - rotation.getY());
         deltaYaw = MathHelper.clamp_float(deltaYaw, -yawSpeed, yawSpeed);

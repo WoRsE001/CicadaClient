@@ -8,6 +8,7 @@ import net.cicada.utility.Player.CombatManager;
 import net.cicada.utility.Player.MoveUtil;
 import net.cicada.utility.Player.PlayerUtil;
 import net.cicada.utility.Player.RotateUtil;
+import net.cicada.utility.SimulatedPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
@@ -52,6 +53,7 @@ public class AttackAura extends Module {
     NumberSetting maxMixXFactor = new NumberSetting("maxMixXFactor", 1, 0, 1, 0.01, () -> rotation.isValue() && randomize.is("MixDelta"), this);
     NumberSetting maxMixYFactor = new NumberSetting("maxMixYFactor", 1, 0, 1, 0.01, () -> rotation.isValue() && randomize.is("MixDelta"), this);
     BooleanSetting silentRotation = new BooleanSetting("SilentRotation", true, () -> rotation.isValue(), this);
+    NumberSetting tickForPredict = new NumberSetting("Tick for predict", 0, 0, 10, 1, () -> rotation.isValue(), this);
     // CLICKS
     NumberSetting minCPS = new NumberSetting("MinCPS", 20, 0, 20, 1, () -> true, this);
     NumberSetting maxCPS = new NumberSetting("MaxCPS", 20, 0, 20, 1, () -> true, this);
@@ -66,12 +68,12 @@ public class AttackAura extends Module {
     BooleanSetting silentMoveFix = new BooleanSetting("SilentMoveFix", true, () -> moveFix.isValue(), this);
 
     public EntityLivingBase target;
+    SimulatedPlayer simulatedPlayer;
     Vec3 aimPoint;
     Vector2f lastDelta;
     long timer;
     int CPS;
     public boolean isBlocking;
-
 
     @Override
     protected void onEnable() {
@@ -164,6 +166,9 @@ public class AttackAura extends Module {
                 CombatManager.updateTarget(sortMode.getValue());
                 target = CombatManager.target != null && mc.thePlayer.getDistanceToEntity(CombatManager.target) <= aimRange.getValue() ? CombatManager.target : null;
                 if (target != null) {
+                    simulatedPlayer = SimulatedPlayer.fromClientPlayer(mc.thePlayer.movementInput, mc.thePlayer.rotationYaw);
+                    simulatedPlayer.tick((int) tickForPredict.getValue());
+
                     if (rotation.isValue()) {
                         aimPoint = updateRotation(target);
                     }
@@ -209,7 +214,7 @@ public class AttackAura extends Module {
             if (candidatePoint != null) aimPoint = candidatePoint;
         }
 
-        Vector2f delta = RotateUtil.calcDeltaRotate(aimPoint, (float) yawSpeed.getValue(), (float) pitchSpeed.getValue());
+        Vector2f delta = RotateUtil.calcDeltaRotate(simulatedPlayer, aimPoint, (float) yawSpeed.getValue(), (float) pitchSpeed.getValue());
         if (randomize.is("Basic")) delta.translate((float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()), (float) MathUtil.random(minRandomStrength.getValue(), maxRandomStrength.getValue()));
         if (randomize.is("Smooth")) delta.set((float) (delta.getX() / smoothFactor.getValue()), (float) (delta.getY() / smoothFactor.getValue()));
         float xMixFactor = (float) MathUtil.random(minMixXFactor.getValue(), maxMixXFactor.getValue());
