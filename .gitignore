@@ -3,3 +3,5 @@ run/
 out/
 .vscode/
 libraries/
+assets/
+CicadaClient.iml
