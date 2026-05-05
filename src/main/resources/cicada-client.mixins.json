@@ -1,0 +1,44 @@
+{
+	"required": true,
+	"package": "cicada.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"MixinConnection",
+		"MixinEntity",
+		"MixinLivingEntity",
+		"MixinPlayer",
+		"accessors.AccessorSoundEvents"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	},
+	"client": [
+		"MixinBlindnessFogEnvironment",
+		"MixinCamera",
+		"MixinClientLevel",
+		"MixinClientPacketListener",
+		"MixinDarknessFogEnvironment",
+		"MixinGameRenderer",
+		"MixinGui",
+		"MixinItemInHandRenderer",
+		"MixinKeyboardHandler",
+		"MixinKeyboardInput",
+		"MixinLavaFogEnvironment",
+		"MixinLevelRenderer",
+		"MixinLocalPlayer",
+		"MixinMinecraft",
+		"MixinMouseHandler",
+		"MixinMultiPlayerGameMode",
+		"MixinProjection",
+		"MixinScreenEffectRenderer",
+		"MixinWaterFogEnvironment",
+		"accessors.AccessorBufferBuilder",
+		"accessors.AccessorGameRenderer",
+		"accessors.AccessorKeyMapping",
+		"accessors.AccessorLocalPlayer",
+		"accessors.AccessorMinecraft"
+	]
+}

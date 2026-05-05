@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "cicada-client",
+	"version": "${version}",
+	"name": "Cicada-client",
+	"description": "Multi server minecraft hack client",
+	"authors": [
+		"SCWGxD",
+		"Dicves"
+	],
+	"contact": {
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/cicada-client/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "cicada.client.CicadaClient",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"cicada-client.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	}
+}
