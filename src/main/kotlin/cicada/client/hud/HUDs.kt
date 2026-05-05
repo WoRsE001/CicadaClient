@@ -3,6 +3,7 @@ package cicada.client.hud
 import cicada.client.gui.HUDEditor
 import cicada.client.hud.impl.HudDebug
 import cicada.client.hud.impl.HudKeystrokes
+import cicada.client.hud.impl.HudModuleList
 import cicada.client.hud.impl.HudTargetInfo
 import cicada.client.utils.mc
 import cicada.client.utils.render.Renderable
@@ -19,6 +20,7 @@ object HUDs : Renderable {
     init {
         HudDebug
         HudKeystrokes
+        HudModuleList
         HudTargetInfo
     }
 
