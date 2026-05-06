@@ -5,11 +5,20 @@ import net.minecraft.util.Mth
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
-import org.joml.*
+import org.joml.Matrix4f
+import org.joml.Vector2i
+import org.joml.Vector3d
+import org.joml.Vector3f
+import org.joml.Vector4f
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.E
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.log
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 lateinit var lastProjectionMatrix: Matrix4f
 lateinit var lastModelViewMatrix: Matrix4f
@@ -99,7 +108,26 @@ fun randomFloat(from: Number, to: Number) = Math.random().toFloat() * (to.toFloa
 fun randomFloat(radius: Number) = randomFloat(-radius.toFloat(), radius.toFloat())
 
 fun ClosedRange<Float>.random() = randomFloat(start, endInclusive)
+
+fun ClosedRange<Float>.gaussianRandom(): Float {
+    val stdDev = endInclusive - start
+    val mean = (endInclusive + start) / 2
+    val u1 = Random.nextDouble(1.0)
+    val u2 = Random.nextDouble(1.0)
+    val z0 = sqrt(-2.0 * log(u1, E)) * cos(2.0 * PI * u2)
+    return (z0 * stdDev + mean).toFloat()
+}
+
 fun ClosedRange<Double>.random() = randomDouble(start, endInclusive)
+
+fun ClosedRange<Double>.gaussianRandom(): Double {
+    val stdDev = endInclusive - start
+    val mean = (endInclusive + start) / 2
+    val u1 = Random.nextDouble(1.0)
+    val u2 = Random.nextDouble(1.0)
+    val z0 = sqrt(-2.0 * log(u1, E)) * cos(2.0 * PI * u2)
+    return z0 * stdDev + mean
+}
 
 fun gazLarpit(factor: Float, start: Float, end: Float) = start + (end - start) * factor
 

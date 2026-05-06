@@ -3,15 +3,18 @@ package cicada.client.module
 import cicada.client.CicadaClient
 import cicada.client.module.impl.combat.ModuleAntiKB
 import cicada.client.module.impl.combat.ModuleAttackAura
+import cicada.client.module.impl.combat.ModuleAutoClicker
 import cicada.client.module.impl.combat.ModuleMaceHelper
 import cicada.client.module.impl.combat.ModulePing
 import cicada.client.module.impl.combat.ModuleSprintReset
+import cicada.client.module.impl.misc.ModuleFixes
 import cicada.client.module.impl.misc.ModuleMurderMysteryHelper
 import cicada.client.module.impl.movement.ModuleFastClimb
 import cicada.client.module.impl.movement.ModuleFlight
 import cicada.client.module.impl.movement.ModuleNoSlowDown
 import cicada.client.module.impl.movement.ModuleSpeed
 import cicada.client.module.impl.movement.ModuleSprint
+import cicada.client.module.impl.player.ModuleAutoSoup
 import cicada.client.module.impl.player.ModuleAutoSwap
 import cicada.client.module.impl.player.ModuleExtraC03
 import cicada.client.module.impl.player.ModuleMultiAction
@@ -34,11 +37,13 @@ object Modules : SaveLoadable {
         // combat
         ModuleAntiKB
         ModuleAttackAura
+        ModuleAutoClicker
         ModuleMaceHelper
         ModulePing
         ModuleSprintReset
 
         // misc
+        ModuleFixes
         ModuleMurderMysteryHelper
 
         // movement
@@ -49,6 +54,7 @@ object Modules : SaveLoadable {
         ModuleSprint
 
         // player
+        ModuleAutoSoup
         ModuleAutoSwap
         ModuleExtraC03
         ModuleMultiAction

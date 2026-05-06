@@ -1,5 +1,7 @@
 package cicada.client.mixin;
 
+import cicada.client.module.impl.misc.ModuleFixes;
+import cicada.client.utils.MinecraftExtensionsKt;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.CicadaClient;
 import cicada.client.event.impl.GameLoopEvent;
@@ -64,7 +66,7 @@ public abstract class MixinMinecraft {
 		FrameInput.INSTANCE.update();
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;continueAttack(Z)V", shift = At.Shift.BEFORE), method = "handleKeybinds")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z", ordinal = 0, shift = At.Shift.BEFORE), method = "handleKeybinds")
 	private void callLegitClickTimingEvent(CallbackInfo ci) {
 		LegitClickTimingEvent.INSTANCE.call();
 	}

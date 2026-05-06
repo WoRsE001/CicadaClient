@@ -18,20 +18,4 @@ public class MixinCamera {
     private float modifyY(float original) {
         return CameraRotation.INSTANCE.getY();
     }
-
-    @ModifyExpressionValue(method = "alignWithEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getViewXRot(F)F"))
-    private float removeDelayX(float original) {
-        if (ModuleFixes.INSTANCE.getToggled() && ModuleFixes.INSTANCE.getRayelCameraRot())
-            return CameraRotation.INSTANCE.getX();
-
-        return original;
-    }
-
-    @ModifyExpressionValue(method = "alignWithEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getViewYRot(F)F"))
-    private float removeDelayY(float original) {
-        if (ModuleFixes.INSTANCE.getToggled() && ModuleFixes.INSTANCE.getRayelCameraRot())
-            return CameraRotation.INSTANCE.getY();
-
-        return original;
-    }
 }
