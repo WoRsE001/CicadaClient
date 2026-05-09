@@ -12,7 +12,7 @@ class MsdfFont private constructor(
     private val metricsData: MetricsData,
     private val glyphs: Map<Int, MsdfGlyph>
 ) {
-    fun applyGlyphs(
+    fun drawGlyphs(
         text: String,
         pose: Matrix3x2fc,
         vertexConsumer: VertexConsumer,
@@ -23,17 +23,17 @@ class MsdfFont private constructor(
     ) {
         var xOffset = 0f
         val baseLine = y + metricsData.ascender * size
-        for (i in 0 until text.length) {
+        for (i in text.indices) {
             val char = text[i].code
             val glyph = glyphs[char] ?: continue
 
-            xOffset += glyph.apply(pose, vertexConsumer, x + xOffset, baseLine, size, color)
+            xOffset += glyph.draw(pose, vertexConsumer, x + xOffset, baseLine, size, color)
         }
     }
 
     fun width(text: String, size: Float): Float {
         var width = 0.0f
-        for (i in 0 until text.length) {
+        for (i in text.indices) {
             val char = text[i].code
             val glyph = this.glyphs[char] ?: continue
 

@@ -17,7 +17,7 @@ class Font(
                 MSDF_PIPELINE,
                 x, y, width(text, size), font.height(size),
                 { consumer ->
-                    font.applyGlyphs(text, graphics.pose(), consumer, x, y, size, color)
+                    font.drawGlyphs(text, graphics.pose(), consumer, x, y, size, color)
                 },
                 graphics.scissorStack.peek(),
                 font.texture

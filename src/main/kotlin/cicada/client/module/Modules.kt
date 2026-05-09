@@ -17,6 +17,7 @@ import cicada.client.module.impl.movement.ModuleSprint
 import cicada.client.module.impl.player.ModuleAutoSoup
 import cicada.client.module.impl.player.ModuleAutoSwap
 import cicada.client.module.impl.player.ModuleExtraC03
+import cicada.client.module.impl.player.ModuleInventoryCleaner
 import cicada.client.module.impl.player.ModuleMultiAction
 import cicada.client.module.impl.visual.*
 import cicada.client.module.impl.world.AutoBridge
@@ -57,6 +58,7 @@ object Modules : SaveLoadable {
         ModuleAutoSoup
         ModuleAutoSwap
         ModuleExtraC03
+        ModuleInventoryCleaner
         ModuleMultiAction
 
         // visual

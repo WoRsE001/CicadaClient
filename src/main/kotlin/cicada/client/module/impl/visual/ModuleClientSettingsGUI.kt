@@ -13,7 +13,6 @@ import org.lwjgl.glfw.GLFW
 object ModuleClientSettingsGUI : Module("ClientSettingsGUI", Category.VISUAL, Keybind(GLFW.GLFW_KEY_RIGHT_SHIFT)) {
     override fun onEnable() {
         mc.setScreen(ClientSettingsScreen)
-        mc.soundManager.play(SimpleSoundInstance.forUI(SoundEvents.AMBIENT_CAVE, 1f))
         toggle()
     }
 }

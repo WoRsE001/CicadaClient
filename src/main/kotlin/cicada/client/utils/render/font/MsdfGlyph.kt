@@ -21,7 +21,7 @@ class MsdfGlyph(
     private val planeTop = data.planeBounds.top
     private val planeBottom = data.planeBounds.bottom
 
-    fun apply(pose: Matrix3x2fc, vertexConsumer: VertexConsumer, x: Float, y: Float, size: Float, color: Int): Float {
+    fun draw(pose: Matrix3x2fc, vertexConsumer: VertexConsumer, x: Float, y: Float, size: Float, color: Int): Float {
         val x0 = x + planeLeft * size
         val x1 = x + planeRight * size
 

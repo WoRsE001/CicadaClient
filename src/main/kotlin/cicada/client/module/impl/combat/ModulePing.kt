@@ -29,13 +29,15 @@ object ModulePing : Module("Ping", Category.COMBAT) {
 
     override fun onEvent(event: Event) {
         if (event is GameLoopEvent.Pre) {
-            packetQueue.removeIf {
-                if (System.currentTimeMillis() - it.second >= delay) {
-                    connection.sendInvisiblePacket(it.first)
-                    return@removeIf true
-                }
+            synchronized(packetQueue) {
+                packetQueue.removeIf {
+                    if (System.currentTimeMillis() - it.second >= delay) {
+                        connection.sendInvisiblePacket(it.first)
+                        return@removeIf true
+                    }
 
-                return@removeIf false
+                    return@removeIf false
+                }
             }
         }
 
@@ -56,8 +58,9 @@ object ModulePing : Module("Ping", Category.COMBAT) {
 
         if (event is PacketEvent.Send) {
             val packet = event.packet
-
-            packetQueue += Pair(packet, System.currentTimeMillis())
+            synchronized(packetQueue) {
+                packetQueue += Pair(packet, System.currentTimeMillis())
+            }
             event.cancel()
 
             if (packet is ServerboundContainerClickPacket) {
@@ -69,10 +72,12 @@ object ModulePing : Module("Ping", Category.COMBAT) {
     }
 
     private fun flush() {
-        for (pair in packetQueue) {
-            connection.sendInvisiblePacket(pair.first)
-        }
+        synchronized(packetQueue) {
+            for (pair in packetQueue) {
+                connection.sendInvisiblePacket(pair.first)
+            }
 
-        packetQueue.clear()
+            packetQueue.clear()
+        }
     }
 }
