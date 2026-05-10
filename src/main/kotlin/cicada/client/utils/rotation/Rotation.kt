@@ -1,5 +1,6 @@
 package cicada.client.utils.rotation
 
+import cicada.client.utils.math.roundTo
 import net.minecraft.util.Mth
 import net.minecraft.world.phys.Vec3
 import kotlin.math.abs
@@ -95,6 +96,15 @@ open class Rotation(var x: Float, var y: Float) {
 
     fun clamped(x: Float, y: Float) = apply {
         clamp(x, y)
+    }
+
+    fun round(x: Float, y: Float) {
+        this.x = this.x.roundTo(x)
+        this.y = this.y.roundTo(y)
+    }
+
+    fun rounded(x: Float, y: Float) = apply {
+        round(x, y)
     }
 
     fun wrap() {

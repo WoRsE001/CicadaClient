@@ -6,6 +6,7 @@ import cicada.client.module.Category
 import cicada.client.module.Module
 import cicada.client.module.impl.combat.attackaura.attack.AttackAuraAttacker
 import cicada.client.module.impl.combat.attackaura.aim.AttackAuraAimer
+import cicada.client.module.impl.combat.attackaura.autoblock.AttackAuraAutoBlock
 import cicada.client.rotation.RotationListener
 import cicada.client.setting.preset.TargetFinder
 import cicada.client.setting.preset.TargetRenderer
@@ -16,8 +17,10 @@ import cicada.client.utils.rotation.rotate
 // SCWGxD regrets everything he did. 04.04.2026 5:37.
 object ModuleAttackAura : Module("AttackAura", Category.COMBAT), RotationListener {
     val targetFinder = tree(TargetFinder())
-    private val rotator = tree(AttackAuraAimer)
+    private val aimer = tree(AttackAuraAimer)
     private val attacker = tree(AttackAuraAttacker)
+    private val movementCorrector = tree(AttackAuraAttacker)
+    private val autoblock = tree(AttackAuraAutoBlock)
     private val targetRenderer = tree(TargetRenderer())
 
     override val rotatePriority = 1
@@ -27,6 +30,7 @@ object ModuleAttackAura : Module("AttackAura", Category.COMBAT), RotationListene
     }
 
     override fun onDisable() {
+        autoblock.unBlock()
         targetFinder.resetTarget()
     }
 
@@ -37,12 +41,13 @@ object ModuleAttackAura : Module("AttackAura", Category.COMBAT), RotationListene
 
         targetFinder.target?.let {
             attacker.onEvent(event, targetFinder.target!!)
+            autoblock.onEvent(event, targetFinder.target!!)
             targetRenderer.render(event, targetFinder.target!!)
         }
     }
 
     override fun rotate() {
-        player.rotate(rotator.delta(targetFinder.target!!))
+        player.rotate(aimer.delta(targetFinder.target!!))
     }
 
     override fun willRotate() = toggled && nullCheck() && targetFinder.target != null

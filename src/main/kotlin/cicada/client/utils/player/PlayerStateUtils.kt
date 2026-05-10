@@ -1,6 +1,7 @@
 package cicada.client.utils.player
 
 import cicada.client.module.impl.misc.ModuleMurderMysteryHelper
+import cicada.client.module.impl.misc.ModuleTeams
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Input
@@ -12,6 +13,9 @@ val Player.isMurder: Boolean
 
 val Player.isDetective: Boolean
     get() = this in ModuleMurderMysteryHelper.detectives
+
+val Player.isTeam: Boolean
+    get() = this in ModuleTeams.teams
 
 var LocalPlayer.velocityX: Double
     get() = deltaMovement.x

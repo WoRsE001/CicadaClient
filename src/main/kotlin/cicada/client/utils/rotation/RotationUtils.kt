@@ -9,8 +9,12 @@ import net.minecraft.util.Mth
 import net.minecraft.world.phys.Vec3
 import kotlin.math.atan2
 
+var lastDelta = Rotation(0f, 0f)
+
 fun LocalPlayer.rotation() = Rotation(xRot, yRot)
 fun LocalPlayer.rotate(delta: Rotation, clampX: Boolean = true) {
+    lastDelta = delta
+
     xRot += delta.x
     yRot += delta.y
 

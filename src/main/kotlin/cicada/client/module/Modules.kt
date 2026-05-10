@@ -1,26 +1,12 @@
 package cicada.client.module
 
 import cicada.client.CicadaClient
-import cicada.client.module.impl.combat.ModuleAntiKB
-import cicada.client.module.impl.combat.ModuleAttackAura
-import cicada.client.module.impl.combat.ModuleAutoClicker
-import cicada.client.module.impl.combat.ModuleMaceHelper
-import cicada.client.module.impl.combat.ModulePing
-import cicada.client.module.impl.combat.ModuleSprintReset
-import cicada.client.module.impl.misc.ModuleFixes
-import cicada.client.module.impl.misc.ModuleMurderMysteryHelper
-import cicada.client.module.impl.movement.ModuleFastClimb
-import cicada.client.module.impl.movement.ModuleFlight
-import cicada.client.module.impl.movement.ModuleNoSlowDown
-import cicada.client.module.impl.movement.ModuleSpeed
-import cicada.client.module.impl.movement.ModuleSprint
-import cicada.client.module.impl.player.ModuleAutoSoup
-import cicada.client.module.impl.player.ModuleAutoSwap
-import cicada.client.module.impl.player.ModuleExtraC03
-import cicada.client.module.impl.player.ModuleInventoryCleaner
-import cicada.client.module.impl.player.ModuleMultiAction
+import cicada.client.module.impl.combat.*
+import cicada.client.module.impl.misc.*
+import cicada.client.module.impl.movement.*
+import cicada.client.module.impl.player.*
 import cicada.client.module.impl.visual.*
-import cicada.client.module.impl.world.AutoBridge
+import cicada.client.module.impl.world.*
 import cicada.client.setting.SaveLoadable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -46,6 +32,7 @@ object Modules : SaveLoadable {
         // misc
         ModuleFixes
         ModuleMurderMysteryHelper
+        ModuleTeams
 
         // movement
         ModuleFastClimb
@@ -72,7 +59,9 @@ object Modules : SaveLoadable {
         ModuleSecret
 
         // world
-        AutoBridge
+        ModuleAutoBridge
+        ModuleBridgeAssist
+        ModuleFastPlace
     }
 
     internal operator fun plusAssign(module: Module) {

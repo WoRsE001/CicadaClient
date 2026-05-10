@@ -28,7 +28,7 @@ import net.minecraft.core.Direction
 import net.minecraft.world.phys.AABB
 
 // SCWGxD regrets everything he did. 01.05.2026 12:19.
-object AutoBridge : Module("AutoBridge", Category.WORLD), RotationListener {
+object ModuleAutoBridge : Module("AutoBridge", Category.WORLD), RotationListener {
     private val blockSearch = group("Block search")
         private val searchRange by blockSearch.float("Search range", 4.5f, 0f..6f)
         private val heightCheck by blockSearch.boolean("Height check", true)
