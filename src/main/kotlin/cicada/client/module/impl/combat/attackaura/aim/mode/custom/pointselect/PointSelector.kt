@@ -1,6 +1,6 @@
 package cicada.client.module.impl.combat.attackaura.aim.mode.custom.pointselect
 
-import cicada.client.setting.Configureable
+import cicada.client.setting.Configurable
 import cicada.client.utils.math.coerceIn
 import cicada.client.utils.math.mul
 import cicada.client.utils.player
@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.phys.Vec3
 
 // SCWGxD regrets everything he did. 28.04.2026 12:03.
-object PointSelector : Configureable("PointSelection") {
+object PointSelector : Configurable("PointSelection") {
     private val mode = choice("Mode")
     private val modeSinglePoint = mode.choice("Single").select()
     private val modeClosestPos = mode.choice("Closest to position")

@@ -1,5 +1,6 @@
 package cicada.client.utils.render
 
+import cicada.client.utils.math.Rect
 import cicada.client.utils.math.normalize
 import cicada.client.utils.mc
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -104,6 +105,12 @@ fun GuiGraphicsExtractor.rect(
     c: Int,
     r: Float
 ) = rect(x, y, w, h, c, c, c, c, r, r, r, r)
+
+fun GuiGraphicsExtractor.rect(
+    rect: Rect,
+    c: Int,
+    r: Float
+) = rect(rect.x, rect.y, rect.w, rect.h, c, r)
 
 fun GuiGraphicsExtractor.rect(
     x: Float, y: Float,

@@ -10,7 +10,7 @@ import cicada.client.utils.rotation.rotationTo
 import net.minecraft.world.entity.LivingEntity
 
 // SCWGxD regrets everything he did. 28.04.2026 11:55.
-object AttackAuraCustomMode : AttackAuraAimMode("Custom") {
+object CustomAimMode : AttackAuraAimMode("Custom") {
     private val pointSelector = tree(PointSelector)
     private val deltaTransform = group("Delta transform")
     private val speedLimiter = deltaTransform.tree(SpeedLimiter)

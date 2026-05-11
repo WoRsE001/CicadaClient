@@ -1,6 +1,6 @@
 package cicada.client.hud
 
-import cicada.client.setting.ToggleableConfigureable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.utils.render.Renderable
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
@@ -12,7 +12,7 @@ abstract class HUD(
     var h: Float,
     name: String,
     defaultToggled: Boolean = true
-) : ToggleableConfigureable(name, defaultToggled), Renderable {
+) : ToggleableConfigurable(name, defaultToggled), Renderable {
     var isDragging = false
 
     init {

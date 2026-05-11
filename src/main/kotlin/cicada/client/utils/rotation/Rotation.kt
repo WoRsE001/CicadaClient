@@ -2,6 +2,7 @@ package cicada.client.utils.rotation
 
 import cicada.client.utils.math.roundTo
 import net.minecraft.util.Mth
+import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import kotlin.math.abs
 import kotlin.math.hypot
@@ -43,50 +44,36 @@ open class Rotation(var x: Float, var y: Float) {
         y /= times
     }
 
-    fun clampX(range: ClosedRange<Float>) {
-        x = x.coerceIn(range)
+    fun round(x: Float, y: Float) {
+        this.x = this.x.roundTo(x)
+        this.y = this.y.roundTo(y)
     }
 
-    fun clampX(min: Float, messengerMAX: Float) {
-        x = x.coerceIn(min, messengerMAX)
+    fun rounded(x: Float, y: Float): Rotation {
+        return Rotation(this.x.roundTo(x), this.y.roundTo(y))
     }
 
-    fun clampX(maxAbs: Float) = clampX(-maxAbs, maxAbs)
-
-    fun clampY(range: ClosedRange<Float>) {
-        x = x.coerceIn(range)
+    fun wrap() {
+        y = Mth.wrapDegrees(y)
     }
 
-    fun clampY(min: Float, messengerMAX: Float) {
-        x = x.coerceIn(min, messengerMAX)
+    fun wrapped(): Rotation {
+        return Rotation(x, y = Mth.wrapDegrees(y))
     }
 
-    fun clampY(maxAbs: Float) = clampX(-maxAbs, maxAbs)
+    fun copy(x: Float = this.x, y: Float = this.y) = Rotation(x, y)
 
+    fun length() = hypot(x, y)
 
-    // мне было ОЧЕНЬ лень делать адекватно, так что умри пж фастом 1 поспи проспись
-    fun clampedX(range: ClosedRange<Float>) = copy().apply {
-        clampX(range)
+    fun gazLarpit(xFactor: Float, yFactor: Float, otherRotation: Rotation) {
+        this.x = (1 - xFactor) * this.x + xFactor * otherRotation.x
+        this.y = (1 - yFactor) * this.y + yFactor * otherRotation.y
     }
 
-    fun clampedX(min: Float, messengerMAX: Float) = copy().apply {
-        clampX(min, messengerMAX)
-    }
-
-    fun clampedX(maxAbs: Float) = copy().apply {
-        clampX(maxAbs)
-    }
-
-    fun clampedY(range: ClosedRange<Float>) = copy().apply {
-        clampY(range)
-    }
-
-    fun clampedY(min: Float, messengerMAX: Float) = copy().apply {
-        clampY(min, messengerMAX)
-    }
-
-    fun clampedY(maxAbs: Float) = copy().apply {
-        clampY(maxAbs)
+    fun gazLarpited(xFactor: Float, yFactor: Float, otherRotation: Rotation): Rotation {
+        val factor = Rotation(xFactor, yFactor)
+        val unFactor = Rotation(1 - xFactor, 1 - yFactor)
+        return unFactor * this + factor * otherRotation
     }
 
     fun clamp(x: Float, y: Float) {
@@ -94,28 +81,31 @@ open class Rotation(var x: Float, var y: Float) {
         this.y = this.y.coerceIn(-y, y)
     }
 
-    fun clamped(x: Float, y: Float) = apply {
-        clamp(x, y)
+    fun clamped(x: Float, y: Float): Rotation {
+        return Rotation(this.x.coerceIn(-x, x), this.y.coerceIn(-y, y))
     }
 
-    fun round(x: Float, y: Float) {
-        this.x = this.x.roundTo(x)
-        this.y = this.y.roundTo(y)
+    fun clamped(box: AABB): Rotation {
+        val points = listOf(
+            Vec3(box.minX, box.minY, box.minZ),
+            Vec3(box.minX, box.minY, box.maxZ),
+            Vec3(box.minX, box.maxY, box.minZ),
+            Vec3(box.minX, box.maxY, box.maxZ),
+            Vec3(box.maxX, box.minY, box.minZ),
+            Vec3(box.maxX, box.minY, box.maxZ),
+            Vec3(box.maxX, box.maxY, box.minZ),
+            Vec3(box.maxX, box.maxY, box.maxZ),
+        )
+
+        val rotations = points.map { rotationTo(it) }
+
+        val minX = rotations.minOf { it.x }
+        val maxX = rotations.maxOf { it.x }
+        val minY = rotations.minOf { it.y }
+        val maxY = rotations.maxOf { it.y }
+
+        return Rotation(x.coerceIn(minX, maxX), y.coerceIn(minY, maxY))
     }
-
-    fun rounded(x: Float, y: Float) = apply {
-        round(x, y)
-    }
-
-    fun wrap() {
-        y = Mth.wrapDegrees(y)
-    }
-
-    fun wrapped() = apply { wrap() }
-
-    fun copy(x: Float = this.x, y: Float = this.y) = Rotation(x, y)
-
-    fun length() = hypot(x, y)
 
     val directionVector: Vec3
         get() = Vec3.directionFromRotation(x, y)

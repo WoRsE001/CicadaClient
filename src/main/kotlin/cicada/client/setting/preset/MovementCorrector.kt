@@ -1,7 +1,6 @@
 package cicada.client.setting.preset
 
-import cicada.client.event.Event
-import cicada.client.setting.Configureable
+import cicada.client.setting.Configurable
 
-class MovementCorrector : Configureable("Movement correct") {
+class MovementCorrector : Configurable("Movement correct") {
 }

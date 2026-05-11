@@ -28,18 +28,8 @@ class BooleanValue(
             }
         }
 
-    override val rect = Rect(0f, 0f, 150f, 9f)
-
     fun toggle() {
         inner = !inner
-    }
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        if (FrameInput.clicked[0] && isCollide(FrameInput.MPos, rect.x, rect.y, 9f, 9f))
-            toggle()
-
-        graphics.rect(rect.x, rect.y, 9f, 9f, if (inner) 0xFF3776FF.toInt() else 0xFF7F7F7F.toInt())
-        //graphics.drawText(name, rect.x + 12f, rect.y + 1, -1)
     }
 }
 
@@ -67,10 +57,6 @@ open class ChoiceValue(
             }
         }
 
-    override val rect = Rect(0f, 0f, 150f, 9f)
-
-    var isShowChoices = false
-
     fun choice(name: String) = Choice(name).apply {
         parent = this@ChoiceValue
         _choices += this
@@ -81,50 +67,10 @@ open class ChoiceValue(
         _choices += this
     }
 
-    override fun render(graphics: GuiGraphicsExtractor) {
-        rect.h = 9f
-
-        val isShowSettingsSuffix = if (isShowChoices) "-" else "+"
-        val isShowSettingsSuffixWidth = mc.font.width(isShowSettingsSuffix).toFloat()
-
-        //graphics.drawText("$name: ${inner?.name ?: ""}", rect.x, rect.y + 1, -1)
-        //graphics.drawText(isShowSettingsSuffix, rect.x + rect.w - mc.font.width(isShowSettingsSuffix), rect.y + 1, -1)
-
-        if (isShowChoices) {
-            for (choice in choices) {
-                choice.rect.x = rect.x + 5
-                choice.rect.y = rect.y + rect.h
-
-                if (
-                    FrameInput.clicked[0] &&
-                    isCollide(FrameInput.MPos, choice.rect.x, choice.rect.y, mc.font.width(choice.name).toFloat(), 10f)
-                ) {
-                    inner?.onDisable()
-                    choice.select()
-                }
-
-                //graphics.drawText(choice.name, choice.rect.x, choice.rect.y, -1)
-
-                rect.h += choice.rect.h
-            }
-
-            graphics.rect(rect.x, rect.y + 9, 2f, rect.h - 9, 0xFF3776FF.toInt())
-        }
-
-        if (FrameInput.clicked[0]) {
-            isShowChoices = if (isCollide(FrameInput.MPos, rect.x + rect.w - isShowSettingsSuffixWidth, rect.y + 1, isShowSettingsSuffixWidth, 9f))
-                !isShowChoices
-            else
-                false
-        }
-    }
-
     open class Choice internal constructor(
         name: String
-    ) : Configureable(name) {
+    ) : Configurable(name) {
         lateinit var parent: ChoiceValue
-
-        override val rect = Rect(0f, 0f, 150f, 9f)
 
         fun select() = apply {
             parent.set(this)
@@ -138,8 +84,6 @@ open class ChoiceValue(
         open fun onEvent(event: Event) {}
 
         open fun onDisable() {}
-
-        override fun render(graphics: GuiGraphicsExtractor) {}
     }
 }
 
@@ -157,17 +101,13 @@ class ColorValue(
                 return
             })
         }
-
-    override val rect = Rect(0f, 0f, 150f, 9f)
-
-    override fun render(graphics: GuiGraphicsExtractor) {}
 }
 
-open class Configureable(
+open class Configurable(
     name: String,
     default: MutableCollection<Value<*>> = mutableListOf()
 ) : Value<MutableCollection<Value<*>>>(name, default) {
-    var owner: Configureable? = null
+    var owner: Configurable? = null
 
     override var json: JsonObject
         get() = buildJsonObject {
@@ -184,52 +124,6 @@ open class Configureable(
             }
         }
 
-    override val rect = Rect(0f, 0f, 150f, 9f)
-    open val rect1 = Rect(0f, 0f, 150f, 9f)
-
-    var isShowSettings = false
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        rect1.x = rect.x
-        rect1.y = rect.y
-
-        rect.h = 9f
-        if (isShowSettings) {
-            rect.h += 2
-            for (setting in inner) {
-                rect.h += setting.rect.h + 2
-            }
-        }
-
-        val suffix = if (isShowSettings) "-" else "+"
-        val suffixWidth = mc.font.width(suffix).toFloat()
-
-        if (FrameInput.clicked[0] && isCollide(
-                FrameInput.MPos,
-                rect.x + rect.w - suffixWidth - 5,
-                rect.y,
-                suffixWidth,
-                9f
-            )
-        )
-            isShowSettings = !isShowSettings
-
-        //graphics.drawText(name, rect.x, rect.y + 1, -1)
-        //graphics.drawText(suffix, rect1.x + rect1.w - suffixWidth - 5, rect1.y, -1)
-
-        if (isShowSettings) {
-            var offsetY = 2f
-            for (setting in inner) {
-                setting.rect.x = rect.x + 5
-                setting.rect.y = rect.y + rect1.h + offsetY
-                setting.render(graphics)
-                offsetY += setting.rect.h + 2
-            }
-
-            graphics.rect(rect.x, rect.y + rect1.h, 2f, rect.h - rect1.h, 0xFF3776FF.toInt())
-        }
-    }
-
     override fun resetToDefault() {
         for (value in inner) {
             value.resetToDefault()
@@ -240,20 +134,20 @@ open class Configureable(
         name: String,
         default: Boolean
     ) = BooleanValue(name, default).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun choice(
         name: String
     ) = ChoiceValue(name).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun color(
         name: String,
         default: Color4f
     ) = ColorValue(name, default).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun float(
@@ -262,7 +156,7 @@ open class Configureable(
         range: ClosedRange<Float>,
         suffix: String = ""
     ) = FloatValue(name, default, range, suffix).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun floatRange(
@@ -271,19 +165,19 @@ open class Configureable(
         range: ClosedRange<Float>,
         suffix: String = ""
     ) = FloatRangeValue(name, default, range, suffix).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun multiChoice(
         name: String
     ) = MultiChoiceValue(name).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun group(
         name: String
-    ) = Configureable(name).apply {
-        this@Configureable.inner += this
+    ) = Configurable(name).apply {
+        this@Configurable.inner += this
     }
 
     fun int(
@@ -292,7 +186,7 @@ open class Configureable(
         range: IntRange,
         suffix: String = ""
     ) = IntValue(name, default, range, suffix).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun intRange(
@@ -301,26 +195,26 @@ open class Configureable(
         range: IntRange,
         suffix: String = ""
     ) = IntRangeValue(name, default, range, suffix).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun string(
         name: String,
         default: String
     ) = StringValue(name, default).apply {
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 
     fun toggleableGroup(
         name: String,
         default: Boolean
-    ) = ToggleableConfigureable(name, defaultToggled = default).apply {
-        this@Configureable.inner += this
+    ) = ToggleableConfigurable(name, defaultToggled = default).apply {
+        this@Configurable.inner += this
     }
 
-    fun <T : Configureable> tree(configurable: T) = configurable.apply {
+    fun <T : Configurable> tree(configurable: T) = configurable.apply {
         this.owner = this
-        this@Configureable.inner += this
+        this@Configurable.inner += this
     }
 }
 
@@ -352,44 +246,6 @@ class FloatRangeValue(
 
             inner = start..end
         }
-
-    override val rect = Rect(0f, 0f, 150f, 14f)
-
-    var isMinDragging = false
-    var isMaxDragging = false
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        val innerCenter = (inner.start + inner.endInclusive) / 2
-        val innerCenterPos = innerCenter.map(range.start, range.endInclusive, rect.x + rect.w - 100, rect.x + rect.w)
-
-        if (
-            FrameInput.clicked[0] &&
-            isCollide(FrameInput.MPos, rect.x + rect.w - 100, rect.y, 100f, rect.h)
-        ) {
-            if (FrameInput.MPos.x < innerCenterPos) isMinDragging = true
-            else isMaxDragging = true
-        } else if (FrameInput.released[0]) {
-            isMinDragging = false
-            isMaxDragging = false
-        }
-
-        if (isMinDragging) {
-            inner = FrameInput.MPos.x.map(rect.x + rect.w - 100, rect.x + rect.w, range.start, range.endInclusive).coerceIn(range.start, inner.endInclusive)..inner.endInclusive
-        }
-
-        if (isMaxDragging) {
-            inner = inner.start..FrameInput.MPos.x.map(rect.x + rect.w - 100, rect.x + rect.w, range.start, range.endInclusive).coerceIn(inner.start, range.endInclusive)
-        }
-
-        //graphics.drawText(name, rect.x, rect.y + 1, -1)
-        val innerStr = "${String.format("%.2f", inner.start)} - ${String.format("%.2f", inner.endInclusive)}"
-        //graphics.drawText(innerStr, rect.x + rect.w - 100 - mc.font.width(innerStr), rect.y + 1, -1)
-        graphics.rect(rect.x + rect.w - 100, rect.y, 100f, rect.h, 0xFF000000.toInt())
-
-        val xPosByInnerStart = rect.x + rect.w - inner.start.map(range.start, range.endInclusive, 100f, 0f)
-        val widthByInnerEnd = rect.x + rect.w - inner.endInclusive.map(range.start, range.endInclusive, 100f, 0f) - xPosByInnerStart
-        graphics.rect(xPosByInnerStart, rect.y, widthByInnerEnd, rect.h, -1)
-    }
 }
 
 /**
@@ -412,31 +268,6 @@ class FloatValue(
                 return
             }
         }
-
-    override val rect = Rect(0f, 0f, 150f, 14f)
-
-    var isDragging = false
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        if (!isDragging && FrameInput.clicked[0] && isCollide(FrameInput.MPos, rect.x, rect.y + 9, rect.w, 5f)) {
-            isDragging = true
-        }
-
-        if (isDragging && FrameInput.released[0]) {
-            isDragging = false
-        }
-
-        if (isDragging) {
-            inner = FrameInput.MPos.x.map(rect.x + 5, rect.x + rect.w, range.start, range.endInclusive).coerceIn(range)
-        }
-
-        //graphics.drawText(name, rect.x, rect.y, -1)
-        val innerStr = String.format("%.2f", inner)
-        //graphics.drawText(innerStr, rect.x + rect.w - mc.font.width(innerStr), rect.y, -1)
-        graphics.rect(rect.x, rect.y + 9, rect.w, 5f, 0xFF7F7F7F.toInt(), 3f)
-        val innerWidth = inner.map(range.start, range.endInclusive, 5f, rect.w)
-        graphics.rect(rect.x, rect.y + 9, innerWidth, 5f, 0xFF3776FF.toInt(), 3f)
-    }
 }
 
 open class MultiChoiceValue(
@@ -458,8 +289,6 @@ open class MultiChoiceValue(
             }*/
         }
 
-    override val rect = Rect(0f, 0f, 150f, 9f)
-
     fun choice(name: String, defaultToggled: Boolean) = Choice(name, defaultToggled).apply {
         parent = this@MultiChoiceValue
         inner += this
@@ -472,54 +301,11 @@ open class MultiChoiceValue(
         inner += this
     }
 
-    protected var isShowChoices = false
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        rect.h = 10f
-
-        val isShowSettingsSuffix = if (isShowChoices) "-" else "+"
-        val isShowSettingsSuffixWidth = mc.font.width(isShowSettingsSuffix).toFloat()
-
-        //graphics.drawText(isShowSettingsSuffix, rect.x + rect.w - isShowSettingsSuffixWidth, rect.y + 1, -1)
-
-        if (isShowChoices) {
-            for (choice in inner) {
-                choice.rect.x = rect.x + 5
-                choice.rect.y = rect.y + rect.h
-
-                if (
-                    FrameInput.clicked[0] &&
-                    isCollide(FrameInput.MPos, choice.rect.x, choice.rect.y, mc.font.width(choice.name).toFloat(), 10f)
-                ) {
-                    choice.toggle()
-                }
-
-                //graphics.drawText(choice.name, choice.rect.x, choice.rect.y, -1)
-
-                rect.h += choice.rect.h
-            }
-        }
-
-        if (FrameInput.clicked[0] && isCollide(
-                FrameInput.MPos,
-                rect.x + rect.w - isShowSettingsSuffixWidth,
-                rect.y + 1,
-                isShowSettingsSuffixWidth,
-                9f
-            )
-        )
-            isShowChoices = !isShowChoices
-    }
-
     open class Choice internal constructor(
         name: String,
         defaultToggled: Boolean,
-    ) : ToggleableConfigureable(name, defaultToggled) {
+    ) : ToggleableConfigurable(name, defaultToggled) {
         lateinit var parent: MultiChoiceValue
-
-        override val rect = Rect(0f, 0f, 270f, 10f)
-
-        override fun render(graphics: GuiGraphicsExtractor) {}
     }
 }
 
@@ -551,44 +337,6 @@ class IntRangeValue(
 
             inner = first..last
         }
-
-    override val rect = Rect(0f, 0f, 150f, 14f)
-
-    var isMinDragging = false
-    var isMaxDragging = false
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        val innerCenter = (inner.first + inner.last) / 2
-        val innerCenterPos = innerCenter.map(range.first, range.last, (rect.x + rect.w - 100).toInt(), (rect.x + rect.w).toInt())
-
-        if (
-            FrameInput.clicked[0] &&
-            isCollide(FrameInput.MPos, rect.x + rect.w - 100, rect.y, 100f, rect.h)
-        ) {
-            if (FrameInput.MPos.x < innerCenterPos) isMinDragging = true
-            else isMaxDragging = true
-        } else if (FrameInput.released[0]) {
-            isMinDragging = false
-            isMaxDragging = false
-        }
-
-        if (isMinDragging) {
-            inner = FrameInput.MPos.x.map(rect.x + rect.w - 100, rect.x + rect.w, range.first.toFloat(), range.last.toFloat()).toInt().coerceIn(range.first, inner.last)..inner.last
-        }
-
-        if (isMaxDragging) {
-            inner = inner.first..FrameInput.MPos.x.map(rect.x + rect.w - 100, rect.x + rect.w, range.first.toFloat(), range.last.toFloat()).toInt().coerceIn(inner.first, range.last)
-        }
-
-        //graphics.drawText(name, rect.x, rect.y + 1, -1)
-        val innerStr = "${String.format("%.2f", inner.first)} - ${String.format("%.2f", inner.last)}"
-        //graphics.drawText(innerStr, rect.x + rect.w - 100 - mc.font.width(innerStr), rect.y + 1, -1)
-        graphics.rect(rect.x + rect.w - 100, rect.y, 100f, rect.h, 0xFF000000.toInt())
-
-        val xPosByInnerStart = rect.x + rect.w - inner.first.map(range.first, range.last, 100, 0)
-        val widthByInnerEnd = rect.x + rect.w - inner.last.map(range.first, range.last, 100, 0) - xPosByInnerStart
-        graphics.rect(xPosByInnerStart, rect.y, widthByInnerEnd, rect.h, -1)
-    }
 }
 
 /**
@@ -611,33 +359,6 @@ class IntValue(
                 return
             }
         }
-
-    override val rect = Rect(0f, 0f, 150f, 14f)
-
-    var isDragging = false
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        val floatInner = inner.toFloat()
-        val floatRange = range.first.toFloat()..range.last.toFloat()
-
-        if (!isDragging && FrameInput.clicked[0] && isCollide(FrameInput.MPos, rect.x, rect.y + 9, rect.w, 5f)) {
-            isDragging = true
-        }
-
-        if (isDragging && FrameInput.released[0]) {
-            isDragging = false
-        }
-
-        if (isDragging) {
-            inner = FrameInput.MPos.x.map(rect.x + 5, rect.x + rect.w, floatRange.start, floatRange.endInclusive).coerceIn(floatRange).toInt()
-        }
-
-        //graphics.drawText(name, rect.x, rect.y, -1)
-        //graphics.drawText(inner.toString(), rect.x + rect.w - mc.font.width(inner.toString()), rect.y, -1)
-        graphics.rect(rect.x, rect.y + 9, rect.w, 5f, 0xFF7F7F7F.toInt(), 3f)
-        val innerWidth = floatInner.map(floatRange.start, floatRange.endInclusive, 5f, rect.w)
-        graphics.rect(rect.x, rect.y + 9, innerWidth, 5f, 0xFF3776FF.toInt(), 3f)
-    }
 }
 
 class StringValue(
@@ -654,13 +375,9 @@ class StringValue(
                 return
             }
         }
-
-    override val rect = Rect(0f, 0f, 150f, 9f)
-
-    override fun render(graphics: GuiGraphicsExtractor) {}
 }
 
-open class ToggleableConfigureable(name: String, defaultToggled: Boolean) : Configureable(name), Toggleable {
+open class ToggleableConfigurable(name: String, defaultToggled: Boolean) : Configurable(name), Toggleable {
     override var json: JsonObject
         get() = buildJsonObject {
             put("info", buildJsonObject {
@@ -694,44 +411,4 @@ open class ToggleableConfigureable(name: String, defaultToggled: Boolean) : Conf
                     onDisable()
             }
         }
-
-    override fun render(graphics: GuiGraphicsExtractor) {
-        rect1.x = rect.x
-        rect1.y = rect.y
-
-        rect.h = 9f
-        if (isShowSettings) {
-            rect.h += 2
-            for (setting in inner) {
-                rect.h += setting.rect.h + 2
-            }
-        }
-
-        val suffix = if (isShowSettings) "-" else "+"
-        val suffixWidth = mc.font.width(suffix).toFloat()
-
-        if (FrameInput.clicked[0]) {
-            if (isCollide(FrameInput.MPos, rect.x, rect.y, 9f, 9f))
-                toggle()
-
-            if (isCollide(FrameInput.MPos, rect.x + rect.w - suffixWidth - 5, rect.y, suffixWidth, 9f))
-                isShowSettings = !isShowSettings
-        }
-
-        graphics.rect(rect.x, rect.y, 9f, 9f, if (toggled) 0xFF3776FF.toInt() else 0xFF7F7F7F.toInt())
-        //graphics.drawText(name, rect.x + 11, rect.y + 1, -1)
-        //graphics.drawText(suffix, rect1.x + rect1.w - suffixWidth - 5, rect1.y, -1)
-
-        if (isShowSettings) {
-            var offsetY = 2f
-            for (setting in inner) {
-                setting.rect.x = rect.x + 5
-                setting.rect.y = rect.y + rect1.h + offsetY
-                setting.render(graphics)
-                offsetY += setting.rect.h + 2
-            }
-
-            graphics.rect(rect.x, rect.y + rect1.h, 2f, rect.h - rect1.h, 0xFF3776FF.toInt())
-        }
-    }
 }

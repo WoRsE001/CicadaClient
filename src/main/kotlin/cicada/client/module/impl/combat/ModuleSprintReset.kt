@@ -57,7 +57,7 @@ object ModuleSprintReset : Module(
                 val knockbackDot = player.deltaMovement.dot(target.position() - player.position())
 
                 if (
-                    target.hurtTime == 0 &&
+                    target.hurtTime == 10 &&
                     (!notInLiquid.toggled || !player.isInLiquid) &&
                     (!notWhileKB.toggled || knockbackDot >= cos(Math.toRadians(notWhileKBFOV.toDouble())))
                 ) {

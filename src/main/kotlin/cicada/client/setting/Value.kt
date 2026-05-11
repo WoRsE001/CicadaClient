@@ -1,11 +1,9 @@
 package cicada.client.setting
 
-import cicada.client.utils.render.RenderableObject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Value<T>(val name: String, private val default: T) : SaveLoadable, ReadWriteProperty<Any?, T>,
-    RenderableObject {
+abstract class Value<T>(val name: String, private val default: T) : SaveLoadable, ReadWriteProperty<Any?, T> {
     var inner = default
 
     var visible = { true }

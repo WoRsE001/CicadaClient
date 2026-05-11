@@ -2,11 +2,9 @@ package cicada.client.module.impl.combat.attackaura.aim.mode.custom.deltatransfo
 
 import cicada.client.utils.math.gazLarpit
 import cicada.client.utils.math.random
-import cicada.client.utils.player
 import cicada.client.utils.rotation.Rotation
 import cicada.client.utils.rotation.gcd
 import cicada.client.utils.rotation.lastDelta
-import cicada.client.utils.rotation.rotation
 
 object SpeedLimiter : DeltaTransformer("Speed limit") {
     private val x by float("X", 180f, 0f..180f)

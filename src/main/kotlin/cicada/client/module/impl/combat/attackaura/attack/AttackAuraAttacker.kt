@@ -5,7 +5,7 @@ import cicada.client.event.impl.AttackEvent
 import cicada.client.event.impl.GameLoopEvent
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.mixin.accessors.AccessorMinecraft
-import cicada.client.setting.ToggleableConfigureable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.utils.connection
 import cicada.client.utils.math.gaussianRandom
 import cicada.client.utils.math.random
@@ -16,7 +16,7 @@ import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket
 import net.minecraft.world.entity.LivingEntity
 
 // SCWGxD regrets everything he did. 19.04.2026 15:22.
-object AttackAuraAttacker : ToggleableConfigureable("Attack", true) {
+object AttackAuraAttacker : ToggleableConfigurable("Attack", true) {
     private val attackType = choice("Attack type")
     private val attackTypeLegacy = attackType.choice("Legacy")
     private val attackTypeModern = attackType.choice("Modern").select()

@@ -4,7 +4,7 @@ import cicada.client.event.Event
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.event.impl.TickEvent
 import cicada.client.module.impl.combat.attackaura.attack.AttackAuraAttacker
-import cicada.client.setting.ToggleableConfigureable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.utils.connection
 import cicada.client.utils.player
 import cicada.utility.player.inventory.isSword
@@ -15,7 +15,7 @@ import net.minecraft.network.protocol.game.ServerboundUseItemPacket
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.LivingEntity
 
-object AttackAuraAutoBlock : ToggleableConfigureable("AutoBlock", false) {
+object AttackAuraAutoBlock : ToggleableConfigurable("AutoBlock", false) {
     private val blockRange by float("Block range", 6f, 0f..20f)
 
     private var shouldBlock = false

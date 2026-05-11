@@ -8,6 +8,7 @@ import cicada.client.module.impl.combat.attackaura.attack.AttackAuraAttacker
 import cicada.client.module.impl.combat.attackaura.aim.AttackAuraAimer
 import cicada.client.module.impl.combat.attackaura.autoblock.AttackAuraAutoBlock
 import cicada.client.rotation.RotationListener
+import cicada.client.setting.preset.MovementCorrector
 import cicada.client.setting.preset.TargetFinder
 import cicada.client.setting.preset.TargetRenderer
 import cicada.client.utils.nullCheck
@@ -19,7 +20,7 @@ object ModuleAttackAura : Module("AttackAura", Category.COMBAT), RotationListene
     val targetFinder = tree(TargetFinder())
     private val aimer = tree(AttackAuraAimer)
     private val attacker = tree(AttackAuraAttacker)
-    private val movementCorrector = tree(AttackAuraAttacker)
+    private val movementCorrector = tree(MovementCorrector())
     private val autoblock = tree(AttackAuraAutoBlock)
     private val targetRenderer = tree(TargetRenderer())
 

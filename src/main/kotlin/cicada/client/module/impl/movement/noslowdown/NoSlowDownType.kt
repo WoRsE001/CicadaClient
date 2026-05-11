@@ -2,7 +2,7 @@ package cicada.client.module.impl.movement.noslowdown
 
 import cicada.client.event.Event
 import cicada.client.event.impl.SlowDownEvent
-import cicada.client.setting.ToggleableConfigureable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.utils.player
 
 // SCWGxD regrets everything he did. 17.04.2026 13:34.
@@ -11,7 +11,7 @@ open class NoSlowDownType(
     defaultSlowDown:
     Float,
     private val noSlowDownType: SlowDownEvent.Type
-) : ToggleableConfigureable(name, false) {
+) : ToggleableConfigurable(name, false) {
     protected val sprintOnGround by boolean("Sprint on ground", false)
     protected val sprintInAir by boolean("Sprint in air", false)
     protected val slowDownOnGround by float("Slow down on ground", defaultSlowDown, 0.0f..1.0f)
