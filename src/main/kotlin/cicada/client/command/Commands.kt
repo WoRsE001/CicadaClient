@@ -1,6 +1,7 @@
 package cicada.client.command
 
 import cicada.client.command.impl.CommandBind
+import cicada.client.command.impl.CommandConfig
 import cicada.client.event.Event
 import cicada.client.event.EventListener
 import cicada.client.event.impl.ChatMessageEvent
@@ -19,6 +20,7 @@ object Commands : EventListener {
         registerToEvents()
 
         CommandBind
+        CommandConfig
     }
 
     operator fun plusAssign(command: Command) {
@@ -37,8 +39,6 @@ object Commands : EventListener {
             for (command in mutableCommands) {
                 if (args[0] !in command.aliases)
                     continue
-
-                println("llalaa")
 
                 command.execute(args.drop(1))
                 event.cancel()

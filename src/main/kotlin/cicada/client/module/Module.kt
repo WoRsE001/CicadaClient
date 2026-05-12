@@ -17,9 +17,7 @@ abstract class Module(
     defaultToggled: Boolean = false
 ) : ToggleableConfigurable(name, defaultToggled), EventListener, KeyListener {
     override var json: JsonObject
-        get() = buildJsonObject {
-            super.json
-        }
+        get() = super.json
         set(value) {
             super.json = value
         }
