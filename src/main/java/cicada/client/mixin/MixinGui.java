@@ -2,9 +2,9 @@ package cicada.client.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.RenderEvent;
-import cicada.client.hud.HUDs;
-import cicada.client.module.impl.visual.ModuleNoRender;
-import cicada.client.module.impl.visual.ModuleOverlay;
+import cicada.client.feature.hud.HUDManager;
+import cicada.client.feature.module.modules.visual.ModuleNoRender;
+import cicada.client.feature.module.modules.visual.ModuleOverlay;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -29,7 +29,7 @@ public class MixinGui {
         event.setGraphics(graphics);
         event.setDeltaTracker(deltaTracker);
         event.call();
-        HUDs.INSTANCE.render(graphics);
+        HUDManager.INSTANCE.render(graphics);
     }
 
     @ModifyExpressionValue(method = "extractCameraOverlays", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getTicksFrozen()I"))

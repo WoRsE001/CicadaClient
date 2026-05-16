@@ -1,7 +1,7 @@
 package cicada.client.gui.setting_client.values_renderers
 
-import cicada.client.setting.BooleanValue
-import cicada.client.setting.Value
+import cicada.client.config.types.BooleanValue
+import cicada.client.config.types.Value
 import cicada.client.utils.input.FrameInput
 import cicada.client.utils.math.Rect
 import cicada.client.utils.render.RenderableObject

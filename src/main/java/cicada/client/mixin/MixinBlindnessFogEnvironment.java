@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.module.impl.visual.ModuleNoRender;
+import cicada.client.feature.module.modules.visual.ModuleNoRender;
 import net.minecraft.client.renderer.fog.environment.BlindnessFogEnvironment;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;

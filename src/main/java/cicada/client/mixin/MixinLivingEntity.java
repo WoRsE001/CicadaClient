@@ -3,7 +3,7 @@ package cicada.client.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import cicada.client.event.impl.JumpEvent;
-import cicada.client.module.impl.movement.ModuleNoJumpDelay;
+import cicada.client.feature.module.modules.movement.ModuleNoJumpDelay;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

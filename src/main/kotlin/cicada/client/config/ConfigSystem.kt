@@ -1,7 +1,7 @@
 package cicada.client.config
 
 import cicada.client.CicadaClient
-import cicada.client.module.Modules
+import cicada.client.feature.module.ModuleManager
 import cicada.client.utils.mc
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -55,7 +55,7 @@ object ConfigSystem {
 
         val jsonConfig = buildJsonObject {
             put("lastTimeUpdate", LocalDateTime.now().toString())
-            put("modules", Modules.json)
+            put("modules", ModuleManager.serializeTo())
         }
 
         config.writeText(jsonConfig.toString())
@@ -74,7 +74,7 @@ object ConfigSystem {
         val jsonConfig = Json.parseToJsonElement(stringConfig).jsonObject
 
         val lastTimeUpdate = jsonConfig["lastTimeUpdate"]?.jsonPrimitive?.content ?: "Unknown"
-        jsonConfig["modules"]?.jsonObject?.let { Modules.json = it } ?: logger.warn("While loading \"modules\" object wasn't found.")
+        jsonConfig["modules"]?.jsonObject?.let { ModuleManager.deserializeFrom(it) } ?: logger.warn("While loading \"modules\" object wasn't found.")
 
         return true
     }

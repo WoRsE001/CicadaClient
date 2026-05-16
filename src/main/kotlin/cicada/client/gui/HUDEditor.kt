@@ -1,6 +1,6 @@
 package cicada.client.gui
 
-import cicada.client.hud.HUDs
+import cicada.client.feature.hud.HUDManager
 import cicada.client.utils.input.FrameInput
 import cicada.client.utils.mc
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -13,7 +13,7 @@ object HUDEditor : Screen(Component.empty()) {
     var offsetY = 0f
 
     override fun extractRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
-        for (HUD in HUDs.HUDs.reversed()) {
+        for (HUD in HUDManager.HUDs.reversed()) {
             if (
                 FrameInput.clicked[0] &&
                 FrameInput.MPos.x in HUD.x..(HUD.x + HUD.w) &&
@@ -34,7 +34,7 @@ object HUDEditor : Screen(Component.empty()) {
             }
         }
 
-        for (HUD in HUDs.HUDs) {
+        for (HUD in HUDManager.HUDs) {
             HUD.render(graphics)
         }
     }

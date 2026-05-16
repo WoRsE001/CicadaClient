@@ -3,7 +3,7 @@ package cicada.client.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
-import cicada.client.module.impl.visual.ModuleHandPosition;
+import cicada.client.feature.module.modules.visual.ModuleHandPosition;
 import cicada.client.rotation.CameraRotation;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;

@@ -1,7 +1,7 @@
 package cicada.client.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import cicada.client.module.impl.visual.ModuleAspectRatio;
+import cicada.client.feature.module.modules.visual.ModuleAspectRatio;
 import net.minecraft.client.renderer.Projection;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;

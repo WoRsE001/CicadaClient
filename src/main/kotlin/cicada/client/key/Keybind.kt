@@ -1,6 +1,5 @@
 package cicada.client.key
 
-import cicada.client.setting.SaveLoadable
 import kotlinx.serialization.json.*
 import org.lwjgl.glfw.GLFW
 
@@ -9,8 +8,8 @@ data class Keybind(
     var key: Int = GLFW.GLFW_KEY_UNKNOWN,
     var hold: Boolean = false,
     var mouse: Boolean = false
-) : SaveLoadable {
-    override var json: JsonObject
+) {
+    /*override var json: JsonObject
         get() = buildJsonObject {
             put("key", key)
             put("hold", hold)
@@ -20,7 +19,7 @@ data class Keybind(
             key = value["key"]?.jsonPrimitive?.intOrNull ?: return
             hold = value["hold"]?.jsonPrimitive?.booleanOrNull ?: return
             mouse = value["mouse"]?.jsonPrimitive?.booleanOrNull ?: return
-        }
+        }*/
 
     companion object {
         val NONE = Keybind()

@@ -1,7 +1,7 @@
 package cicada.client.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import cicada.client.module.impl.visual.ModuleNoRender;
+import cicada.client.feature.module.modules.visual.ModuleNoRender;
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

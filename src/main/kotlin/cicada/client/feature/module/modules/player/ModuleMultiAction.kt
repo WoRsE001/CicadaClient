@@ -1,0 +1,14 @@
+package cicada.client.feature.module.modules.player
+
+import cicada.client.feature.module.ModuleCategory
+import cicada.client.feature.module.ClientModule
+
+// SCWGxD regrets everything he did. 19.04.2026 11:41.
+object ModuleMultiAction : ClientModule("MultiAction", ModuleCategory.PLAYER) {
+    private val actions = choice("Actions")
+    private val attackWhileUsing = actions.choice("Attack while using")
+
+    @JvmStatic
+    fun mayAttackWhileUsing() =
+        this.toggled && attackWhileUsing.selected()
+}

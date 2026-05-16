@@ -1,7 +1,6 @@
 package cicada.client.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import cicada.client.module.impl.misc.ModuleFixes;
 import cicada.client.rotation.CameraRotation;
 import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;

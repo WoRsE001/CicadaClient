@@ -1,7 +1,7 @@
 package cicada.client.utils.player
 
-import cicada.client.module.impl.misc.ModuleMurderMysteryHelper
-import cicada.client.module.impl.misc.ModuleTeams
+import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
+import cicada.client.feature.module.modules.misc.ModuleTeams
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Input

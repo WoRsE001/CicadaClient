@@ -2,7 +2,7 @@ package cicada.client.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import cicada.client.module.impl.visual.ModuleNoRender;
+import cicada.client.feature.module.modules.visual.ModuleNoRender;
 import cicada.client.utils.math.MathUtilsKt;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;

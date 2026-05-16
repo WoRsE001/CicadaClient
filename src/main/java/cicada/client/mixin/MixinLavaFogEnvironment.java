@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.module.impl.visual.ModuleNoRender;
+import cicada.client.feature.module.modules.visual.ModuleNoRender;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;

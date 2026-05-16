@@ -1,14 +1,11 @@
 package cicada.client.mixin;
 
-import cicada.client.module.impl.misc.ModuleFixes;
-import cicada.client.utils.MinecraftExtensionsKt;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import cicada.client.CicadaClient;
 import cicada.client.event.impl.GameLoopEvent;
 import cicada.client.event.impl.LegitClickTimingEvent;
 import cicada.client.event.impl.TickEvent;
 import cicada.client.mixin.accessors.AccessorKeyMapping;
-import cicada.client.module.impl.player.ModuleMultiAction;
+import cicada.client.feature.module.modules.player.ModuleMultiAction;
 import cicada.client.utils.input.FrameInput;
 import cicada.client.utils.player.RaycastUtilsKt;
 import net.minecraft.client.Minecraft;

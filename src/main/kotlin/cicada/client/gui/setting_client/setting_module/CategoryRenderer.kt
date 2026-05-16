@@ -1,13 +1,13 @@
 package cicada.client.gui.setting_client.setting_module
 
-import cicada.client.module.Category
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.input.FrameInput
 import cicada.client.utils.math.Rect
 import cicada.client.utils.render.RenderableObject
 import cicada.client.utils.render.rect
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
-class CategoryRenderer(val category: Category) : RenderableObject {
+class CategoryRenderer(val category: ModuleCategory) : RenderableObject {
     override val rect = Rect(0f, 0f, 20f, 20f)
     val modulesRenderers = category.modules.map { ModuleRenderer(it) }
 

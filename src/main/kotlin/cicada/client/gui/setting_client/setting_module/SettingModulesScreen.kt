@@ -1,7 +1,6 @@
 package cicada.client.gui.setting_client.setting_module
 
-import cicada.client.module.Category
-import cicada.client.setting.Value
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.math.Rect
 import cicada.client.utils.render.RenderableObject
 import cicada.client.utils.render.font.INTER_BOLD_FONT
@@ -10,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 
 object SettingModulesScreen : RenderableObject {
     override val rect = Rect(0f, 0f, 400f, 225f)
-    val categoriesRenderers = Category.entries.map { CategoryRenderer(it) }
+    val categoriesRenderers = ModuleCategory.entries.map { CategoryRenderer(it) }
     var selectedCategory: CategoryRenderer? = null
     var selectedModule: ModuleRenderer? = null
 

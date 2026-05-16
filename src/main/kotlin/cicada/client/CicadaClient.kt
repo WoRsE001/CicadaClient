@@ -1,15 +1,14 @@
 package cicada.client
 
-import cicada.client.command.Commands
+import cicada.client.feature.command.CommandManager
 import cicada.client.config.ConfigSystem
 import cicada.client.event.EventCaller
 import cicada.client.key.KeyCaller
-import cicada.client.module.Modules
+import cicada.client.feature.module.ModuleManager
 import cicada.client.rotation.RotationHandler
 import net.fabricmc.api.ModInitializer
 import net.minecraft.resources.Identifier
 import org.slf4j.LoggerFactory
-import java.io.File
 import kotlin.system.measureTimeMillis
 
 @Suppress("UNUSED_EXPRESSION")
@@ -27,8 +26,8 @@ object CicadaClient : ModInitializer {
 			KeyCaller
 			RotationHandler
 
-			Modules
-			Commands
+			ModuleManager
+			CommandManager
 			ConfigSystem
 		}
 

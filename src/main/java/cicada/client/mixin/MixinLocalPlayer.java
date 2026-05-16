@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.PlayerStateUpdateEvent;
 import cicada.client.event.impl.SendPosEvent;
 import cicada.client.event.impl.SlowDownEvent;
-import cicada.client.module.impl.movement.ModuleSprint;
+import cicada.client.feature.module.modules.movement.ModuleSprint;
 import cicada.client.rotation.CameraRotation;
 import cicada.client.utils.MinecraftExtensionsKt;
 import cicada.client.utils.player.PlayerStateUtilsKt;
