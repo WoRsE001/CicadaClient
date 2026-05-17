@@ -8,7 +8,7 @@ abstract class Command(
     vararg val aliases: String
 ) {
     init {
-        Commands += this
+        CommandManager += this
     }
 
     abstract fun execute(args: List<String>)

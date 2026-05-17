@@ -19,7 +19,7 @@ object CommandBind : Command(
             return
         }
 
-        val module = ModuleManager.inner.firstOrNull { it.name == args[1] }
+        val module = ModuleManager.inner.firstOrNull { it.name.equals(args[1], true) }
         requireNotNull(module) { mc.displayMessage("Module ${args[0]} don't exists"); return }
 
         val key = inputByName(args[1].uppercase())

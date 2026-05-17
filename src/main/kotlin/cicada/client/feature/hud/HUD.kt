@@ -16,7 +16,7 @@ abstract class HUD(
     var isDragging = false
 
     init {
-        HUDs += this
+        HUDManager += this
     }
 
     override fun render(graphics: GuiGraphicsExtractor) {}

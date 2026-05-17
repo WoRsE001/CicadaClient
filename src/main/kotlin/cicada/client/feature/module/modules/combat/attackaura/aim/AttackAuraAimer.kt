@@ -1,21 +1,19 @@
 package cicada.client.feature.module.modules.combat.attackaura.aim
 
-import cicada.client.feature.module.modules.combat.attackaura.aim.mode.AttackAuraAimMode
-import cicada.client.feature.module.modules.combat.attackaura.aim.mode.GrimAimMode
-import cicada.client.feature.module.modules.combat.attackaura.aim.mode.IntaveAimMode
-import cicada.client.feature.module.modules.combat.attackaura.aim.mode.PolarAimMode
-import cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.CustomAimMode
+import cicada.client.feature.module.modules.combat.attackaura.aim.mode.*
 import cicada.client.config.types.ToggleableConfigurable
+import cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.CustomAimMode
 import cicada.client.utils.rotation.Rotation
 import net.minecraft.world.entity.LivingEntity
 
 // SCWGxD regrets everything he did. 20.04.2026 7:35.
 object AttackAuraAimer : ToggleableConfigurable("Aim", true) {
     private val mode by choice("Mode").apply {
-        choice(CustomAimMode).select()
+        choice(CustomAimMode)
         choice(IntaveAimMode)
         choice(GrimAimMode)
         choice(PolarAimMode)
+        choice(NoiseAimMode).select()
     }
 
     fun delta(target: LivingEntity): Rotation {

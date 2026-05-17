@@ -95,6 +95,12 @@ fun GuiGraphicsExtractor.rect(
 ) = rect(Matrix3x2f(pose()), x, y, w, h, c1, c2, c3, c4, r1, r2, r3, r4)
 
 fun GuiGraphicsExtractor.rect(
+    rect: Rect,
+    c1: Int, c2: Int, c3: Int, c4: Int,
+    r1: Float, r2: Float, r3: Float, r4: Float
+) = rect(Matrix3x2f(pose()), rect.x, rect.y, rect.w, rect.h, c1, c2, c3, c4, r1, r2, r3, r4)
+
+fun GuiGraphicsExtractor.rect(
     x: Float, y: Float, w: Float, h: Float,
     c1: Int, c2: Int, c3: Int, c4: Int,
 ) = rect(Matrix3x2f(pose()), x, y, w, h, c1, c2, c3, c4, 0f, 0f, 0f, 0f)
@@ -201,6 +207,21 @@ fun GuiGraphicsExtractor.sprite(
     x, y, w, h,
     -1, -1, -1, -1,
     r, r, r, r,
+    textureLocation
+)
+
+fun GuiGraphicsExtractor.sprite(
+    xTexture: Float, yTexture: Float,
+    wTexture: Float, hTexture: Float,
+    x: Float, y: Float,
+    w: Float, h: Float,
+    c: Int,
+    textureLocation: Identifier
+) = sprite(
+    Matrix3x2f(pose()), xTexture, yTexture, wTexture, hTexture,
+    x, y, w, h,
+    c, c, c, c,
+    0f, 0f, 0f, 0f,
     textureLocation
 )
 
