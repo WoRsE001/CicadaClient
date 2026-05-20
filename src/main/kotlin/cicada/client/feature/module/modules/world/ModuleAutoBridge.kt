@@ -13,16 +13,16 @@ import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSo
 import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSortNearestMode
 import cicada.client.feature.module.modules.world.autobridge.yaw
 import cicada.client.mixin.accessors.AccessorMinecraft
+import cicada.client.render.FILLED_QUAD_TYPE
+import cicada.client.render.Renderer3D
 import cicada.client.rotation.CameraRotation
 import cicada.client.rotation.RotationListener
-import cicada.client.utils.level
+import cicada.client.utils.client.level
 import cicada.client.utils.math.Color4f
-import cicada.client.utils.mc
-import cicada.client.utils.nullCheck
-import cicada.client.utils.player
+import cicada.client.utils.client.mc
+import cicada.client.utils.client.nullCheck
+import cicada.client.utils.client.player
 import cicada.client.utils.player.rayCast
-import cicada.client.utils.render.FILLED_QUAD
-import cicada.client.utils.render.Render3D
 import cicada.client.utils.rotation.Rotation
 import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation
@@ -66,7 +66,7 @@ object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rota
                     target!!.y.toDouble(), target!!.z.toDouble(), (target!!.x + 1).toDouble(),
                     (target!!.y + 1).toDouble(), (target!!.z + 1).toDouble()
                 )
-                Render3D.drawBox(event.poseStack, event.bufferSource, FILLED_QUAD, box, Color4f(1f, 1f, 1f, 1f))
+                Renderer3D.box(event.bufferSource, event.poseStack, FILLED_QUAD_TYPE, box, Color4f(1f, 1f, 1f, 1f))
             }
 
             if (event is LegitClickTimingEvent) {

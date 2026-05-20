@@ -4,7 +4,7 @@ import cicada.client.event.Event
 import cicada.client.event.impl.PlayerStateUpdateEvent
 import cicada.client.event.impl.SendPosEvent
 import cicada.client.config.types.ChoiceValue
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import cicada.client.utils.player.velocityY
 
 // SCWGxD regrets everything he did. 16.04.2026 10:28.

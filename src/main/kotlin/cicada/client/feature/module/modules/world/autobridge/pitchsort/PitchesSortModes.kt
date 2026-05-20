@@ -1,6 +1,6 @@
 package cicada.client.feature.module.modules.world.autobridge.pitchsort
 
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import kotlin.math.abs
 
 // SCWGxD regrets everything he did. 01.05.2026 13:10.

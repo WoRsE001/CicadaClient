@@ -2,8 +2,8 @@ package cicada.client.feature.command.commands
 
 import cicada.client.feature.command.Command
 import cicada.client.config.ConfigSystem
-import cicada.client.utils.displayMessage
-import cicada.client.utils.mc
+import cicada.client.utils.client.displayMessage
+import cicada.client.utils.client.mc
 
 object CommandConfig : Command(
     "Config",

@@ -14,12 +14,7 @@
 	"icon": "assets/cicada-client/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			{
-				"value": "cicada.client.CicadaClient",
-				"adapter": "kotlin"
-			}
-		]
+		"main": []
 	},
 	"mixins": [
 		"cicada-client.mixins.json"

@@ -5,9 +5,7 @@ import cicada.client.event.EventListener
 import cicada.client.key.KeyListener
 import cicada.client.key.Keybind
 import cicada.client.config.types.ToggleableConfigurable
-import cicada.client.utils.nullCheck
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
+import cicada.client.utils.client.nullCheck
 
 // SCWGxD regrets everything he did. 30.03.2026 11:30.
 abstract class ClientModule(

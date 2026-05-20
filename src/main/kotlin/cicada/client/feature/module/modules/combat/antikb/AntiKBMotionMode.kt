@@ -3,7 +3,7 @@ package cicada.client.feature.module.modules.combat.antikb
 import cicada.client.event.Event
 import cicada.client.event.impl.PacketEvent
 import cicada.client.config.types.ChoiceValue
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 
 // SCWGxD regrets everything he did. 17.04.2026 11:50.

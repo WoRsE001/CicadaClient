@@ -2,11 +2,11 @@ package cicada.client.feature.hud.huds
 
 import cicada.client.feature.hud.HUD
 import cicada.client.feature.module.modules.combat.ModuleAttackAura
-import cicada.client.utils.connection
+import cicada.client.render.rect
+import cicada.client.render.sprite
+import cicada.client.utils.client.connection
 import cicada.client.utils.math.Color4f
 import cicada.client.utils.math.gazLarpit
-import cicada.client.utils.render.rect
-import cicada.client.utils.render.sprite
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
@@ -35,6 +35,6 @@ object HudTargetInfo : HUD(0f, 0f, 150f, 50f, "TargetInfo", false) {
     private fun GuiGraphicsExtractor.drawHead(entity: LivingEntity, x: Float, y: Float, w: Float, h: Float, color: Int, round: Int) {
         if (entity !is Player) return
         val headTexture = (connection.getPlayerInfo(entity.uuid)?.skin ?: return).body.texturePath()
-        sprite(8f, 8f, 8f, 8f, x, y, w, h, round.toFloat(), headTexture)
+        sprite(headTexture, 8f, 8f, 8f, 8f, x, y, w, h, r = round.toFloat())
     }
 }

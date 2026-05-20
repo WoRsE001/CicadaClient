@@ -11,8 +11,8 @@ import cicada.client.rotation.RotationListener
 import cicada.client.config.types.preset.MovementCorrector
 import cicada.client.config.types.preset.TargetFinder
 import cicada.client.config.types.preset.TargetRenderer
-import cicada.client.utils.nullCheck
-import cicada.client.utils.player
+import cicada.client.utils.client.nullCheck
+import cicada.client.utils.client.player
 import cicada.client.utils.rotation.rotate
 
 // SCWGxD regrets everything he did. 04.04.2026 5:37.

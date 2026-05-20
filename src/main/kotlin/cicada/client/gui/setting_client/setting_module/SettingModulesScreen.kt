@@ -1,14 +1,15 @@
 package cicada.client.gui.setting_client.setting_module
 
 import cicada.client.feature.module.ModuleCategory
-import cicada.client.feature.module.ModuleManager
+import cicada.client.font.Fonts
+import cicada.client.render.rect
 import cicada.client.utils.math.Rect
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import cicada.client.utils.render.RenderableObject
-import cicada.client.utils.render.rect
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
 object SettingModulesScreen : RenderableObject {
+    val font = Fonts["roboto-bold"]!!
     override val rect = Rect(0f, 0f, 800f, 450f)
     val categoriesRenderers = ModuleCategory.entries.map { CategoryRenderer(it) }
     val categoryPanelRect = Rect(5f, 5f, 40f, 440f)
@@ -25,7 +26,7 @@ object SettingModulesScreen : RenderableObject {
         var xOffset = 0f
         var yOffset = 0f
 
-        graphics.rect(rect, 0x501C1C1C, 20f)
+        graphics.rect(rect.x, rect.y, rect.w, rect.h, 0x501C1C1C, 20f)
 
         graphics.rect(rect.x + categoryPanelRect.x, rect.y + categoryPanelRect.y, categoryPanelRect.w, categoryPanelRect.h,
             0xFF1F1F1F.toInt(), 0xFF1F1F1F.toInt(), 0xFF1F1F1F.toInt(), 0xFF1F1F1F.toInt(),

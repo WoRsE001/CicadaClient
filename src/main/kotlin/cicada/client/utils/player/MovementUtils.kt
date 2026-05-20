@@ -1,13 +1,9 @@
 package cicada.client.utils.player
 
-import cicada.client.utils.player
-import cicada.client.utils.player.isMoving
+import cicada.client.utils.client.player
 import net.minecraft.client.player.ClientInput
-import net.minecraft.client.player.LocalPlayer
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.player.Input
 import net.minecraft.world.phys.Vec3
-import org.joml.Math.toRadians
 import kotlin.math.cos
 import kotlin.math.sin
 

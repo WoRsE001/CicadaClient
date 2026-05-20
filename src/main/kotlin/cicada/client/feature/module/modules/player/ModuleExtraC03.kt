@@ -4,8 +4,8 @@ import cicada.client.event.Event
 import cicada.client.event.impl.SendPosEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.utils.connection
-import cicada.client.utils.player
+import cicada.client.utils.client.connection
+import cicada.client.utils.client.player
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 
 // SCWGxD regrets everything he did. 29.04.2026 11:17.

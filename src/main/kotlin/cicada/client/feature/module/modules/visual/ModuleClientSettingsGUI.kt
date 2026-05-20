@@ -4,7 +4,7 @@ import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
 import cicada.client.gui.setting_client.SettingScreen
 import cicada.client.key.Keybind
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import org.lwjgl.glfw.GLFW
 
 // SCWGxD regrets everything he did. 30.03.2026 16:09.

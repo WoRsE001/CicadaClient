@@ -1,28 +1,21 @@
 package cicada.client.utils.player
 
 import cicada.client.mixin.accessors.AccessorLocalPlayer
-import cicada.client.utils.gameMode
-import cicada.client.utils.level
-import cicada.client.utils.math.withLength
-import cicada.client.utils.mc
-import cicada.client.utils.player
+import cicada.client.utils.client.gameMode
+import cicada.client.utils.client.level
+import cicada.client.utils.client.mc
+import cicada.client.utils.client.player
 import cicada.client.utils.rotation.Rotation
 import net.minecraft.client.player.LocalPlayer
-import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntitySelector
 import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.level.ClipContext
-import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
-import net.minecraft.world.phys.Vec3
-import net.minecraft.world.phys.shapes.CollisionContext
-import kotlin.compareTo
 import kotlin.math.pow
 
 // SCWGxD regrets everything he did. 09.04.2026 8:19.

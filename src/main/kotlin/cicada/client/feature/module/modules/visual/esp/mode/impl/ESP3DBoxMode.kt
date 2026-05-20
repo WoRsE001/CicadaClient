@@ -4,12 +4,12 @@ import cicada.client.event.Event
 import cicada.client.event.impl.RenderEvent
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.visual.esp.mode.ESPMode
+import cicada.client.render.FILLED_QUAD_TYPE
+import cicada.client.render.Renderer3D
 import cicada.client.utils.math.Color4f
 import cicada.client.utils.math.boundingBox
 import cicada.client.utils.player.isDetective
 import cicada.client.utils.player.isMurder
-import cicada.client.utils.render.FILLED_QUAD
-import cicada.client.utils.render.Render3D
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 
@@ -34,9 +34,9 @@ class ESP3DBoxMode : ESPMode("Box") {
                 color.inner
         } else color.inner
 
-        Render3D.drawBox(
-            event.poseStack, event.bufferSource,
-            FILLED_QUAD, entity.boundingBox(event.deltaTracker.getGameTimeDeltaPartialTick(false)),
+        Renderer3D.box(
+            event.bufferSource, event.poseStack, FILLED_QUAD_TYPE,
+            entity.boundingBox(event.deltaTracker.getGameTimeDeltaPartialTick(false)),
             color
         )
     }

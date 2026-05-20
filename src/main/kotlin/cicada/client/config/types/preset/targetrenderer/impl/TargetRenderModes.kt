@@ -4,9 +4,9 @@ import cicada.client.CicadaClient
 import cicada.client.event.Event
 import cicada.client.event.impl.RenderEvent
 import cicada.client.config.types.preset.targetrenderer.TargetRenderMode
+import cicada.client.render.image
 import cicada.client.utils.math.projectWorldToScreen
-import cicada.client.utils.mc
-import cicada.client.utils.render.image
+import cicada.client.utils.client.mc
 import net.minecraft.world.entity.Entity
 import org.lwjgl.glfw.GLFW
 import kotlin.math.sin
@@ -31,8 +31,8 @@ class TargetRender2DRectMode : TargetRenderMode("2D rect") {
             //.rotateAbout(theta.toFloat(), 0f, 0f)
 
         graphics.image(
-            renderPosition.x - size / 2f, renderPosition.y - size / 2f, size.toFloat(), size.toFloat(),
-            CicadaClient.of("images/targetmarkers/target_marker_0.png")
+            CicadaClient.of("images/targetmarkers/target_marker_0.png"),
+            renderPosition.x - size / 2f, renderPosition.y - size / 2f, size.toFloat(), size.toFloat()
         )
 
         graphics.pose().popMatrix()

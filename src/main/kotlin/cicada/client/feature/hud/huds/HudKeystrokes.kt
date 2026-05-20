@@ -1,8 +1,8 @@
 package cicada.client.feature.hud.huds
 
 import cicada.client.feature.hud.HUD
-import cicada.client.utils.mc
-import cicada.client.utils.render.rect
+import cicada.client.render.rect
+import cicada.client.utils.client.mc
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
 // SCWGxD regrets everything he did. 03.04.2026 2:11.

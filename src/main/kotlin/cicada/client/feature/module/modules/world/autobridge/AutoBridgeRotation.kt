@@ -2,7 +2,7 @@ package cicada.client.feature.module.modules.world.autobridge
 
 import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSortMode
 import cicada.client.utils.math.roundTo
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import cicada.client.utils.player.rayCast
 import cicada.client.utils.rotation.Rotation
 import net.minecraft.core.BlockPos

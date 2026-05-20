@@ -10,7 +10,7 @@ import cicada.client.feature.module.modules.combat.sprintreset.SprintResetMode
 import cicada.client.feature.module.modules.combat.sprintreset.SprintTap
 import cicada.client.feature.module.modules.combat.sprintreset.WTap
 import cicada.client.utils.math.minus
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import kotlin.math.cos
 
 // испорченно SCWGxD в 28.12.2025:20:29

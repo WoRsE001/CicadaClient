@@ -3,7 +3,7 @@ package cicada.client.feature.module.modules.movement.noslowdown
 import cicada.client.event.Event
 import cicada.client.event.impl.SlowDownEvent
 import cicada.client.config.types.ToggleableConfigurable
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 
 // SCWGxD regrets everything he did. 17.04.2026 13:34.
 open class NoSlowDownType(

@@ -8,7 +8,7 @@ import cicada.client.feature.module.ClientModule
 import cicada.client.mixin.accessors.AccessorMinecraft
 import cicada.client.utils.math.gaussianRandom
 import cicada.client.utils.math.random
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import cicada.client.utils.time.Timer
 
 object ModuleAutoClicker : ClientModule("AutoClicker", ModuleCategory.COMBAT) {

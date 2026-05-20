@@ -4,8 +4,8 @@ import cicada.client.event.Event
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.modules.visual.esp.entitytype.ESPEntityTypeRenderer
-import cicada.client.utils.level
-import cicada.client.utils.mc
+import cicada.client.utils.client.level
+import cicada.client.utils.client.mc
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player

@@ -1,8 +1,8 @@
 package cicada.client.config.types.preset
 
 import cicada.client.config.types.Configurable
-import cicada.client.utils.level
-import cicada.client.utils.player
+import cicada.client.utils.client.level
+import cicada.client.utils.client.player
 import cicada.client.utils.player.isTeam
 import cicada.client.utils.target.BestEntityBy
 import net.minecraft.world.effect.MobEffects

@@ -6,8 +6,8 @@ import cicada.client.event.impl.PacketEvent
 import cicada.client.event.impl.PlayerStateUpdateEvent
 import cicada.client.event.impl.SendPosEvent
 import cicada.client.event.impl.TickEvent
-import cicada.client.utils.connection
-import cicada.client.utils.player
+import cicada.client.utils.client.connection
+import cicada.client.utils.client.player
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket
 
 // created by dicves_recode on 29.12.2025

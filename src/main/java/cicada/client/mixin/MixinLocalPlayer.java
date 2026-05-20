@@ -1,12 +1,12 @@
 package cicada.client.mixin;
 
+import cicada.client.utils.client.MinecraftExtensionsKt;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.PlayerStateUpdateEvent;
 import cicada.client.event.impl.SendPosEvent;
 import cicada.client.event.impl.SlowDownEvent;
 import cicada.client.feature.module.modules.movement.ModuleSprint;
 import cicada.client.rotation.CameraRotation;
-import cicada.client.utils.MinecraftExtensionsKt;
 import cicada.client.utils.player.PlayerStateUtilsKt;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.client.Minecraft;

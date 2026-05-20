@@ -1,11 +1,11 @@
 package cicada.client.mixin;
 
+import cicada.client.utils.client.MinecraftExtensionsKt;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.resource.ResourceHandle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import cicada.client.event.impl.RenderEvent;
-import cicada.client.utils.MinecraftExtensionsKt;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;

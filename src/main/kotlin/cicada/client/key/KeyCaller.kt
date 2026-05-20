@@ -3,7 +3,7 @@ package cicada.client.key
 import cicada.client.event.Event
 import cicada.client.event.EventListener
 import cicada.client.event.impl.KeyEvent
-import cicada.client.utils.nullCheck
+import cicada.client.utils.client.nullCheck
 
 // created by dicves_recode on 22.02.2026
 object KeyCaller : EventListener {

@@ -1,6 +1,6 @@
 package cicada.client.utils.input
 
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import org.joml.Vector2f
 import org.lwjgl.glfw.GLFW
 

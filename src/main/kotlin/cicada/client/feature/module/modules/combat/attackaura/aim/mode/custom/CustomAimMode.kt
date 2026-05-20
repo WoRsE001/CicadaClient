@@ -6,7 +6,7 @@ import cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.de
 import cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.deltatransform.SpeedLimiter
 import cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.deltatransform.Spring
 import cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.pointselect.PointSelector
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import cicada.client.utils.rotation.Rotation
 import cicada.client.utils.rotation.rotation
 import cicada.client.utils.rotation.rotationTo

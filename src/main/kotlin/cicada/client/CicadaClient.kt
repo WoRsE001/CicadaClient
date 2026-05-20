@@ -5,6 +5,7 @@ import cicada.client.config.ConfigSystem
 import cicada.client.event.EventCaller
 import cicada.client.key.KeyCaller
 import cicada.client.feature.module.ModuleManager
+import cicada.client.font.Fonts
 import cicada.client.rotation.RotationHandler
 import net.fabricmc.api.ModInitializer
 import net.minecraft.resources.Identifier
@@ -12,13 +13,13 @@ import org.slf4j.LoggerFactory
 import kotlin.system.measureTimeMillis
 
 @Suppress("UNUSED_EXPRESSION")
-object CicadaClient : ModInitializer {
+object CicadaClient {
+	const val NAME = "Cicada-client"
 	const val MOD_ID = "cicada-client"
-	const val NAME = "Cicada"
 
 	private val logger = LoggerFactory.getLogger(MOD_ID)
 
-	override fun onInitialize() {
+	fun initialize() {
 		logger.info("loading...")
 
 		val startTime = measureTimeMillis {
@@ -29,6 +30,7 @@ object CicadaClient : ModInitializer {
 			ModuleManager
 			CommandManager
 			ConfigSystem
+			Fonts
 		}
 
 		logger.info("successful loaded at $startTime ms.")

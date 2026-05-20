@@ -1,7 +1,7 @@
 package cicada.client.utils.target
 
 import cicada.client.rotation.CameraRotation
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import cicada.client.utils.rotation.yawTo
 import net.minecraft.world.entity.LivingEntity
 import kotlin.math.abs

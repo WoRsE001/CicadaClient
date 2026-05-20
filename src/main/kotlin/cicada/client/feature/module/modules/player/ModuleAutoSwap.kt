@@ -4,8 +4,8 @@ import cicada.client.event.Event
 import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.utils.gameMode
-import cicada.client.utils.player
+import cicada.client.utils.client.gameMode
+import cicada.client.utils.client.player
 import cicada.utility.player.inventory.isTotemOfUndying
 import cicada.utility.player.inventory.slotBy
 import net.minecraft.world.inventory.ContainerInput

@@ -5,9 +5,9 @@ import cicada.client.event.impl.GameLoopEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
 import cicada.client.config.types.ChoiceValue
-import cicada.client.utils.gameMode
-import cicada.client.utils.mc
-import cicada.client.utils.player
+import cicada.client.utils.client.gameMode
+import cicada.client.utils.client.mc
+import cicada.client.utils.client.player
 import cicada.utility.player.inventory.attackDamage
 import cicada.utility.player.inventory.getEnchantment
 import cicada.utility.player.inventory.isFood

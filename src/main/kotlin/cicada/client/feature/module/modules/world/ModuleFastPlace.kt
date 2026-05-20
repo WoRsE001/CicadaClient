@@ -8,8 +8,8 @@ import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
 import cicada.client.utils.math.gaussianRandom
 import cicada.client.utils.math.random
-import cicada.client.utils.mc
-import cicada.client.utils.player
+import cicada.client.utils.client.mc
+import cicada.client.utils.client.player
 import cicada.client.utils.time.Timer
 import net.minecraft.world.item.BlockItem
 

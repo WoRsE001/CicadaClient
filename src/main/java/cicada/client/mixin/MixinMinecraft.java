@@ -1,5 +1,6 @@
 package cicada.client.mixin;
 
+import cicada.client.CicadaClient;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.GameLoopEvent;
 import cicada.client.event.impl.LegitClickTimingEvent;
@@ -10,6 +11,7 @@ import cicada.client.utils.input.FrameInput;
 import cicada.client.utils.player.RaycastUtilsKt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.main.GameConfig;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import org.jspecify.annotations.Nullable;
@@ -32,6 +34,11 @@ public abstract class MixinMinecraft {
 	@Shadow
 	@Nullable
 	public MultiPlayerGameMode gameMode;
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void callInitializeClient(GameConfig gameConfig, CallbackInfo ci) {
+		CicadaClient.INSTANCE.initialize();
+	}
 
 	@Inject(at = @At("HEAD"), method = "tick", cancellable = true)
 	private void callTickEvent$PRE(CallbackInfo ci) {

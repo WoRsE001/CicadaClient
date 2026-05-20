@@ -5,7 +5,7 @@ import cicada.client.feature.hud.huds.HudDebug
 import cicada.client.feature.hud.huds.HudKeystrokes
 import cicada.client.feature.hud.huds.HudModuleList
 import cicada.client.feature.hud.huds.HudTargetInfo
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import cicada.client.utils.render.Renderable
 import net.minecraft.client.gui.GuiGraphicsExtractor
 

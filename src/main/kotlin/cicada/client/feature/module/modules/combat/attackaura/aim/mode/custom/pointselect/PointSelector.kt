@@ -3,7 +3,7 @@ package cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.p
 import cicada.client.config.types.Configurable
 import cicada.client.utils.math.coerceIn
 import cicada.client.utils.math.mul
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.phys.Vec3
 

@@ -5,7 +5,7 @@ import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.modules.movement.fastclimb.FastClimbMotionMode
 import cicada.client.feature.module.modules.movement.fastclimb.FastClimbPoralMode
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 
 // SCWGxD regrets everything he did. 16.04.2026 10:25.
 object ModuleFastClimb : ClientModule("FastClimb", ModuleCategory.MOVEMENT) {

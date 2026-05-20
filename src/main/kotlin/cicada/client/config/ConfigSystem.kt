@@ -2,7 +2,7 @@ package cicada.client.config
 
 import cicada.client.CicadaClient
 import cicada.client.feature.module.ModuleManager
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
@@ -13,7 +13,7 @@ import java.io.File
 import java.time.LocalDateTime
 
 object ConfigSystem {
-    private val logger = LogManager.getLogger("${CicadaClient.MOD_ID}/config-system")
+    private val logger = LogManager.getLogger("${CicadaClient.NAME}/config-system")
 
     val rootFolder = File(
         mc.gameDirectory, CicadaClient.NAME

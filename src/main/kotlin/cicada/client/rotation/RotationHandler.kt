@@ -3,8 +3,8 @@ package cicada.client.rotation
 import cicada.client.event.Event
 import cicada.client.event.EventListener
 import cicada.client.event.impl.TickEvent
-import cicada.client.utils.nullCheck
-import cicada.client.utils.player
+import cicada.client.utils.client.nullCheck
+import cicada.client.utils.client.player
 import cicada.client.utils.rotation.gcd
 import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation

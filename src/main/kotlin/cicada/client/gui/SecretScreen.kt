@@ -1,6 +1,6 @@
 package cicada.client.gui
 
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.KeyEvent

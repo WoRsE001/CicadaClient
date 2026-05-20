@@ -5,8 +5,8 @@ import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.modules.combat.attackaura.attack.AttackAuraAttacker
 import cicada.client.config.types.ToggleableConfigurable
-import cicada.client.utils.connection
-import cicada.client.utils.player
+import cicada.client.utils.client.connection
+import cicada.client.utils.client.player
 import cicada.utility.player.inventory.isSword
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction

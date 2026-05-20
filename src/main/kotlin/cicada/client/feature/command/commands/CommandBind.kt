@@ -2,9 +2,9 @@ package cicada.client.feature.command.commands
 
 import cicada.client.feature.command.Command
 import cicada.client.feature.module.ModuleManager
-import cicada.client.utils.displayMessage
+import cicada.client.utils.client.displayMessage
 import cicada.client.utils.input.inputByName
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 
 // SCWGxD regrets everything he did. 10.04.2026 7:42.
 object CommandBind : Command(

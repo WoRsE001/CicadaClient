@@ -4,9 +4,9 @@ import cicada.client.event.Event
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.utils.gameMode
-import cicada.client.utils.mc
-import cicada.client.utils.player
+import cicada.client.utils.client.gameMode
+import cicada.client.utils.client.mc
+import cicada.client.utils.client.player
 import cicada.client.utils.time.Timer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.Items

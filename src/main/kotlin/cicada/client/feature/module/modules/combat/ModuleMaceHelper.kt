@@ -10,9 +10,9 @@ import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
 import cicada.client.mixin.accessors.AccessorMinecraft
 import cicada.client.rotation.RotationListener
-import cicada.client.utils.level
-import cicada.client.utils.mc
-import cicada.client.utils.player
+import cicada.client.utils.client.level
+import cicada.client.utils.client.mc
+import cicada.client.utils.client.player
 import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation
 import cicada.client.utils.rotation.rotationTo

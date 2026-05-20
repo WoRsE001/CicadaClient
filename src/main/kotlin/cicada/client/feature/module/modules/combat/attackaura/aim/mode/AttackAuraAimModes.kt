@@ -1,10 +1,9 @@
 package cicada.client.feature.module.modules.combat.attackaura.aim.mode
 
-import cicada.client.utils.noise.FastNoiseLite
 import cicada.client.utils.math.coerceIn
 import cicada.client.utils.math.mul
 import cicada.client.utils.math.randomFloat
-import cicada.client.utils.player
+import cicada.client.utils.client.player
 import cicada.client.utils.rotation.Rotation
 import cicada.client.utils.rotation.gcd
 import cicada.client.utils.rotation.rotation
@@ -45,14 +44,9 @@ object PolarAimMode : AttackAuraAimMode("Polar") {
 }
 
 object NoiseAimMode : AttackAuraAimMode("Noise") {
-    val noiseGenerator = FastNoiseLite((System.currentTimeMillis() % Int.MAX_VALUE).toInt())
-
     override fun delta(target: LivingEntity): Rotation {
-        noiseGenerator.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S)
-        noiseGenerator.SetFrequency(1.67f)
         val point = player.eyePosition.coerceIn(target.boundingBox)
         val delta = (rotationTo(point) - player.rotation()).wrapped()
-        delta += Rotation(noiseGenerator.GetNoise(System.currentTimeMillis() / 1000f, 0f), noiseGenerator.GetNoise(0f, System.currentTimeMillis() / 1000f))
         return delta
     }
 }

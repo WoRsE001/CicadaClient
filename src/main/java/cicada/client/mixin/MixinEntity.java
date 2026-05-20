@@ -1,7 +1,7 @@
 package cicada.client.mixin;
 
 import cicada.client.rotation.CameraRotation;
-import cicada.client.utils.MinecraftExtensionsKt;
+import cicada.client.utils.client.MinecraftExtensionsKt;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;

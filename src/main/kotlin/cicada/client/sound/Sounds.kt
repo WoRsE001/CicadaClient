@@ -1,10 +1,7 @@
 package cicada.client.sound
 
-import cicada.client.utils.mc
+import cicada.client.utils.client.mc
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
-import net.minecraft.core.Holder
-import net.minecraft.core.Registry
-import net.minecraft.core.registries.Registries
 import net.minecraft.sounds.SoundEvent
 
 // SCWGxD regrets everything he did. 01.05.2026 9:25.

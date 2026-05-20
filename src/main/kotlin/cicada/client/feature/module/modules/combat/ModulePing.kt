@@ -7,7 +7,7 @@ import cicada.client.event.impl.GameLoopEvent
 import cicada.client.event.impl.PacketEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.utils.connection
+import cicada.client.utils.client.connection
 import cicada.client.utils.network.sendInvisiblePacket
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
