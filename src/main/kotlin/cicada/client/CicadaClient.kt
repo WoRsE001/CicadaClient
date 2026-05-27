@@ -10,12 +10,15 @@ import cicada.client.rotation.RotationHandler
 import net.fabricmc.api.ModInitializer
 import net.minecraft.resources.Identifier
 import org.slf4j.LoggerFactory
+import java.io.File
 import kotlin.system.measureTimeMillis
 
 @Suppress("UNUSED_EXPRESSION")
 object CicadaClient {
 	const val NAME = "Cicada-client"
 	const val MOD_ID = "cicada-client"
+
+	val rootFolder = File(NAME).apply { if (!exists()) mkdirs() }
 
 	private val logger = LoggerFactory.getLogger(MOD_ID)
 

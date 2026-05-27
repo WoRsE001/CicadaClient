@@ -5,7 +5,8 @@ import cicada.client.feature.command.commands.CommandConfig
 import cicada.client.event.Event
 import cicada.client.event.EventListener
 import cicada.client.event.impl.ChatMessageEvent
-import cicada.client.feature.command.commands.CommandAI
+import cicada.client.feature.command.commands.CommandRotateAI
+import cicada.client.feature.command.commands.CommandDataSet
 import cicada.client.utils.client.nullCheck
 
 // SCWGxD regrets everything he did. 10.04.2026 7:27.
@@ -20,9 +21,10 @@ object CommandManager : EventListener {
     init {
         registerToEvents()
 
-        CommandAI
+        CommandRotateAI
         CommandBind
         CommandConfig
+        CommandDataSet
     }
 
     operator fun plusAssign(command: Command) {
