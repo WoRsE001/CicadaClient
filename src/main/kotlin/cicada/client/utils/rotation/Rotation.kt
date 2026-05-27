@@ -113,4 +113,8 @@ open class Rotation(var x: Float, var y: Float) {
 
     val directionVector: Vec3
         get() = Vec3.directionFromRotation(x, y)
+
+    companion object {
+        val ZERO = Rotation(0f, 0f)
+    }
 }

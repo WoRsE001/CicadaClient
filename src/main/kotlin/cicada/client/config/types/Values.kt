@@ -1,6 +1,5 @@
 package cicada.client.config.types
 
-import cicada.client.CicadaClient
 import cicada.client.event.Event
 import cicada.client.config.types.MultiChoiceValue.Choice
 import cicada.client.utils.math.Color4f
@@ -9,8 +8,9 @@ import kotlin.ranges.rangeTo
 
 class BooleanValue(
     name: String,
-    default: Boolean
-) : Value<Boolean>(name, default) {
+    default: Boolean,
+    description: String = ""
+) : Value<Boolean>(name, default, description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         put("toggled", inner)
     }
@@ -25,8 +25,9 @@ class BooleanValue(
 }
 
 open class ChoiceValue(
-    name: String
-) : Value<ChoiceValue.Choice?>(name, null) {
+    name: String,
+    description: String = ""
+) : Value<ChoiceValue.Choice?>(name, null, description) {
     private val _choices = mutableListOf<Choice>()
     val choices: List<Choice>
         get() = _choices
@@ -72,8 +73,9 @@ open class ChoiceValue(
 
 class ColorValue(
     name: String,
-    default: Color4f
-) : Value<Color4f>(name, default) {
+    default: Color4f,
+    description: String = ""
+) : Value<Color4f>(name, default, description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         put("color", inner.toInt())
     }
@@ -85,8 +87,9 @@ class ColorValue(
 
 open class Configurable(
     name: String,
+    description: String = "",
     default: MutableCollection<Value<*>> = mutableListOf()
-) : Value<MutableCollection<Value<*>>>(name, default) {
+) : Value<MutableCollection<Value<*>>>(name, default, description) {
     var owner: Configurable? = null
 
     override fun serializeTo(): JsonObject = buildJsonObject {
@@ -109,21 +112,24 @@ open class Configurable(
 
     fun boolean(
         name: String,
-        default: Boolean
-    ) = BooleanValue(name, default).apply {
+        default: Boolean,
+        description: String = ""
+    ) = BooleanValue(name, default, description).apply {
         this@Configurable.inner += this
     }
 
     fun choice(
-        name: String
-    ) = ChoiceValue(name).apply {
+        name: String,
+        description: String = ""
+    ) = ChoiceValue(name, description).apply {
         this@Configurable.inner += this
     }
 
     fun color(
         name: String,
-        default: Color4f
-    ) = ColorValue(name, default).apply {
+        default: Color4f,
+        description: String = ""
+    ) = ColorValue(name, default, description).apply {
         this@Configurable.inner += this
     }
 
@@ -131,8 +137,9 @@ open class Configurable(
         name: String,
         default: Float,
         range: ClosedRange<Float>,
-        suffix: String = ""
-    ) = FloatValue(name, default, range, suffix).apply {
+        suffix: String = "",
+        description: String = ""
+    ) = FloatValue(name, default, range, suffix, description).apply {
         this@Configurable.inner += this
     }
 
@@ -140,20 +147,23 @@ open class Configurable(
         name: String,
         default: ClosedRange<Float>,
         range: ClosedRange<Float>,
-        suffix: String = ""
-    ) = FloatRangeValue(name, default, range, suffix).apply {
+        suffix: String = "",
+        description: String = ""
+    ) = FloatRangeValue(name, default, range, suffix, description).apply {
         this@Configurable.inner += this
     }
 
     fun multiChoice(
-        name: String
-    ) = MultiChoiceValue(name).apply {
+        name: String,
+        description: String = ""
+    ) = MultiChoiceValue(name, description).apply {
         this@Configurable.inner += this
     }
 
     fun group(
-        name: String
-    ) = Configurable(name).apply {
+        name: String,
+        description: String = ""
+    ) = Configurable(name, description).apply {
         this@Configurable.inner += this
     }
 
@@ -161,8 +171,9 @@ open class Configurable(
         name: String,
         default: Int,
         range: IntRange,
-        suffix: String = ""
-    ) = IntValue(name, default, range, suffix).apply {
+        suffix: String = "",
+        description: String = ""
+    ) = IntValue(name, default, range, suffix, description).apply {
         this@Configurable.inner += this
     }
 
@@ -170,22 +181,25 @@ open class Configurable(
         name: String,
         default: IntRange,
         range: IntRange,
-        suffix: String = ""
-    ) = IntRangeValue(name, default, range, suffix).apply {
+        suffix: String = "",
+        description: String = ""
+    ) = IntRangeValue(name, default, range, suffix, description).apply {
         this@Configurable.inner += this
     }
 
     fun string(
         name: String,
-        default: String
-    ) = StringValue(name, default).apply {
+        default: String,
+        description: String = ""
+    ) = StringValue(name, default, description).apply {
         this@Configurable.inner += this
     }
 
     fun toggleableGroup(
         name: String,
-        default: Boolean
-    ) = ToggleableConfigurable(name, defaultToggled = default).apply {
+        default: Boolean,
+        description: String = ""
+    ) = ToggleableConfigurable(name, default, description).apply {
         this@Configurable.inner += this
     }
 
@@ -203,8 +217,9 @@ class FloatRangeValue(
     name: String,
     default: ClosedRange<Float>,
     val range: ClosedRange<Float>,
-    val suffix: String
-) : Value<ClosedRange<Float>>(name, default) {
+    val suffix: String,
+    description: String = ""
+) : Value<ClosedRange<Float>>(name, default, description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         put("floatRange.start", inner.start)
         put("floatRange.end", inner.endInclusive)
@@ -225,8 +240,9 @@ class FloatValue(
     name: String,
     default: Float,
     val range: ClosedRange<Float>,
-    val suffix: String = ""
-) : Value<Float>(name, default) {
+    val suffix: String = "",
+    description: String = ""
+) : Value<Float>(name, default, description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         put("float", inner)
     }
@@ -237,8 +253,9 @@ class FloatValue(
 }
 
 open class MultiChoiceValue(
-    name: String
-) : Value<MutableList<Choice>>(name, mutableListOf()) {
+    name: String,
+    description: String = ""
+) : Value<MutableList<Choice>>(name, mutableListOf(), description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         for (choice in inner) {
             put(choice.name, choice.toggled)
@@ -279,8 +296,9 @@ class IntRangeValue(
     name: String,
     default: IntRange,
     val range: IntRange,
-    val suffix: String
-) : Value<IntRange>(name, default) {
+    val suffix: String,
+    description: String = ""
+) : Value<IntRange>(name, default, description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         put("intRange.first", inner.first)
         put("intRange.last", inner.last)
@@ -301,8 +319,9 @@ class IntValue(
     name: String,
     default: Int,
     val range: IntRange,
-    val suffix: String
-) : Value<Int>(name, default) {
+    val suffix: String,
+    description: String = ""
+) : Value<Int>(name, default, description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         put("int", inner)
     }
@@ -314,8 +333,9 @@ class IntValue(
 
 class StringValue(
     name: String,
-    default: String
-) : Value<String>(name, default) {
+    default: String,
+    description: String = ""
+) : Value<String>(name, default, description) {
     override fun serializeTo(): JsonObject = buildJsonObject {
         put("string", inner)
     }
@@ -325,26 +345,30 @@ class StringValue(
     }
 }
 
-    open class ToggleableConfigurable(name: String, defaultToggled: Boolean) : Configurable(name), Toggleable {
-        override fun serializeTo(): JsonObject = buildJsonObject {
-            put("toggled", toggled)
-            put("settings", super.serializeTo())
-        }
-
-        override fun deserializeFrom(jsonObject: JsonObject) {
-            toggled = jsonObject["toggled"]?.jsonPrimitive?.booleanOrNull ?: false
-            super.deserializeFrom(jsonObject)
-        }
-
-        override var toggled = defaultToggled
-            set(value) {
-                if (field != value) {
-                    field = value
-
-                    if (field)
-                        onEnable()
-                    else
-                        onDisable()
-                }
-            }
+open class ToggleableConfigurable(
+    name: String,
+    defaultToggled: Boolean,
+    description: String = ""
+) : Configurable(name, description), Toggleable {
+    override fun serializeTo(): JsonObject = buildJsonObject {
+        put("toggled", toggled)
+        put("settings", super.serializeTo())
     }
+
+    override fun deserializeFrom(jsonObject: JsonObject) {
+        toggled = jsonObject["toggled"]?.jsonPrimitive?.booleanOrNull ?: false
+        super.deserializeFrom(jsonObject)
+    }
+
+    override var toggled = defaultToggled
+        set(value) {
+            if (field != value) {
+                field = value
+
+                if (field)
+                    onEnable()
+                else
+                    onDisable()
+            }
+        }
+}

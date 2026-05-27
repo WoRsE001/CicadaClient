@@ -12,8 +12,9 @@ abstract class ClientModule(
     name: String,
     val category: ModuleCategory,
     override var keybind: Keybind = Keybind(),
-    defaultToggled: Boolean = false
-) : ToggleableConfigurable(name, defaultToggled), EventListener, KeyListener {
+    defaultToggled: Boolean = false,
+    description: String = ""
+) : ToggleableConfigurable(name, defaultToggled, description), EventListener, KeyListener {
     override var toggled = defaultToggled
         set(value) {
             if (field != value) {

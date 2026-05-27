@@ -4,11 +4,14 @@ import cicada.client.config.types.Value
 import cicada.client.feature.module.modules.combat.ModuleAntiKB
 import cicada.client.feature.module.modules.combat.ModuleAttackAura
 import cicada.client.feature.module.modules.combat.ModuleAutoClicker
+import cicada.client.feature.module.modules.combat.ModuleKillAuraAI
 import cicada.client.feature.module.modules.combat.ModuleMaceHelper
 import cicada.client.feature.module.modules.combat.ModulePing
 import cicada.client.feature.module.modules.combat.ModuleSprintReset
+import cicada.client.feature.module.modules.combat.ModuleTeleportAura
 import cicada.client.feature.module.modules.misc.ModuleFixes
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
+import cicada.client.feature.module.modules.misc.ModuleModelTrainer
 import cicada.client.feature.module.modules.misc.ModuleTeams
 import cicada.client.feature.module.modules.movement.ModuleFastClimb
 import cicada.client.feature.module.modules.movement.ModuleFlight
@@ -20,6 +23,7 @@ import cicada.client.feature.module.modules.player.ModuleAutoSwap
 import cicada.client.feature.module.modules.player.ModuleExtraC03
 import cicada.client.feature.module.modules.player.ModuleInventoryCleaner
 import cicada.client.feature.module.modules.player.ModuleMultiAction
+import cicada.client.feature.module.modules.visual.ModuleAmbient
 import cicada.client.feature.module.modules.visual.ModuleAspectRatio
 import cicada.client.feature.module.modules.visual.ModuleClientSettingsGUI
 import cicada.client.feature.module.modules.visual.ModuleESP
@@ -43,13 +47,16 @@ object ModuleManager : Value<MutableList<ClientModule>>("ModuleManager", mutable
         ModuleAntiKB
         ModuleAttackAura
         ModuleAutoClicker
+        ModuleKillAuraAI
         ModuleMaceHelper
         ModulePing
         ModuleSprintReset
+        ModuleTeleportAura
 
         // misc
         ModuleFixes
         ModuleMurderMysteryHelper
+        ModuleModelTrainer
         ModuleTeams
 
         // movement
@@ -67,6 +74,7 @@ object ModuleManager : Value<MutableList<ClientModule>>("ModuleManager", mutable
         ModuleMultiAction
 
         // visual
+        ModuleAmbient
         ModuleAspectRatio
         ModuleClientSettingsGUI
         ModuleESP

@@ -1,6 +1,7 @@
 package cicada.client.render
 
 import cicada.client.font.FontData
+import cicada.client.font.kerningKey
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import org.joml.Matrix3x2fc
@@ -13,6 +14,13 @@ private fun FontData.addVertices(vertexConsumer: VertexConsumer, pose: Matrix3x2
 
     for (i in text.indices) {
         val charCode = text[i].code
+
+        if (i > 0) {
+            val prevCode = text[i - 1].code
+            val kern = kernings[kerningKey(prevCode, charCode)]
+            if (kern != null) xOffset += kern * size
+        }
+
         val glyph = glyphs[charCode] ?: continue
 
         val currentX = x + xOffset
@@ -56,6 +64,10 @@ fun FontData.width(text: String, size: Float): Float {
     for (i in text.indices) {
         val charCode = text[i].code
         val glyph = glyphs[charCode] ?: continue
+        if (i > 0) {
+            val prevCode = text[i - 1].code
+            w += kernings[kerningKey(prevCode, charCode)] ?: 0f
+        }
         w += glyph.advance * size
     }
     return w

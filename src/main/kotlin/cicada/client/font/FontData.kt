@@ -7,14 +7,15 @@ class FontData(
     val texture: TextureSetup,
     val atlas: AtlasData,
     val metrics: MetricsData,
-    val glyphs: Map<Int, MsdfGlyph>
+    val glyphs: Map<Int, MsdfGlyph>,
+    val kernings: Map<Long, Float> = emptyMap()
 )
 
 data class RawFontData(
     val atlas: AtlasData,
     val metrics: MetricsData,
     val glyphs: List<GlyphData>,
-    val kernings: List<KerningData>
+    val kernings: List<KerningData>? = null
 )
 
 data class AtlasData(
@@ -66,3 +67,6 @@ class MsdfGlyph(
     val planeTop = data.planeBounds?.top ?: 0f
     val planeBottom = data.planeBounds?.bottom ?: 0f
 }
+
+fun kerningKey(left: Int, right: Int): Long =
+    (left.toLong() shl 32) or right.toLong()

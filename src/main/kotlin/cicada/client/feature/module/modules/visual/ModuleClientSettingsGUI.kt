@@ -2,7 +2,7 @@ package cicada.client.feature.module.modules.visual
 
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.gui.setting_client.SettingScreen
+import cicada.client.gui.setting.SettingScreen
 import cicada.client.key.Keybind
 import cicada.client.utils.client.mc
 import org.lwjgl.glfw.GLFW

@@ -80,10 +80,10 @@ fun GuiGraphicsExtractor.image(
             IMAGE_PIPELINE,
             x, y, w, h,
             { consumer ->
-                consumer.addVertexWith2DPose(pose, x    , y    ).setColor(c0).setRounding(r0, r1, r2,r3).setDimensions(0f, 0f, w, h)
-                consumer.addVertexWith2DPose(pose, x    , y + h).setColor(c1).setRounding(r0, r1, r2,r3).setDimensions(0f, h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y + h).setColor(c2).setRounding(r0, r1, r2,r3).setDimensions(w , h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y    ).setColor(c3).setRounding(r0, r1, r2,r3).setDimensions(w , 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x    , y    ).setUv(0f, 0f).setColor(c0).setRounding(r0, r1, r2,r3).setDimensions(0f, 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x    , y + h).setUv(0f, 1f).setColor(c1).setRounding(r0, r1, r2,r3).setDimensions(0f, h , w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y + h).setUv(1f, 1f).setColor(c2).setRounding(r0, r1, r2,r3).setDimensions(w , h , w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y    ).setUv(1f, 0f).setColor(c3).setRounding(r0, r1, r2,r3).setDimensions(w , 0f, w, h)
             },
             scissorStack.peek(),
             TextureSetup.singleTexture(texture.textureView, texture.sampler)

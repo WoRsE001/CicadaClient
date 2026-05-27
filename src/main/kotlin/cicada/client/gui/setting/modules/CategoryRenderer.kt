@@ -1,4 +1,4 @@
-package cicada.client.gui.setting_client.setting_module
+package cicada.client.gui.setting.modules
 
 import cicada.client.CicadaClient
 import cicada.client.feature.module.ModuleCategory

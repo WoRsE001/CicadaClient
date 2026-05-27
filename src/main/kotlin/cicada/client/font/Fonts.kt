@@ -69,15 +69,13 @@ object Fonts : LinkedHashMap<String, FontData>() {
                     glyphData.unicode to MsdfGlyph(glyphData, width, height)
                 }
 
-                println(fontName)
+                val kernings: Map<Long, Float> = rawFontData.kernings
+                    ?.associate { k -> kerningKey(k.leftChar, k.rightChar) to k.advance }
+                    ?: emptyMap()
 
                 // 4. Создаем финальный FontData и кладем его в нашу мапу
                 this[fontName] = FontData(
-                    name = fontName,
-                    texture = texture,
-                    atlas = rawFontData.atlas,
-                    metrics = rawFontData.metrics,
-                    glyphs = glyphs
+                    fontName, texture, rawFontData.atlas, rawFontData.metrics, glyphs, kernings
                 )
 
                 // Раскомментируй для дебага:

@@ -16,7 +16,7 @@ import cicada.client.utils.client.player
 import cicada.client.utils.rotation.rotate
 
 // SCWGxD regrets everything he did. 04.04.2026 5:37.
-object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT), RotationListener {
+object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT, description = "Атакует пидора"), RotationListener {
     val targetFinder = tree(TargetFinder())
     private val aimer = tree(AttackAuraAimer)
     private val attacker = tree(AttackAuraAttacker)

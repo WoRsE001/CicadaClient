@@ -14,7 +14,7 @@ object ModuleNoSlowDown : ClientModule("NoSlowDown", ModuleCategory.MOVEMENT) {
 
         } },
 
-        tree(NoSlowDownType("Consume", 1f, SlowDownEvent.Type.Consume)).apply { mode.apply {
+        tree(NoSlowDownType("Consume", 0.2f, SlowDownEvent.Type.Consume)).apply { mode.apply {
             choice(NoSlowDownIntaveConsumeMode())
         } },
 
@@ -22,7 +22,7 @@ object ModuleNoSlowDown : ClientModule("NoSlowDown", ModuleCategory.MOVEMENT) {
 
         } },
 
-        tree(NoSlowDownType("Sneak", 1f, SlowDownEvent.Type.Sneak)).apply { mode.apply {
+        tree(NoSlowDownType("Sneak", 0.3f, SlowDownEvent.Type.Sneak)).apply { mode.apply {
 
         } },
 

@@ -4,7 +4,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Value<T>(val name: String, private val default: T) : ReadWriteProperty<Any?, T> {
+abstract class Value<T>(val name: String, private val default: T, val description: String = "") : ReadWriteProperty<Any?, T> {
     var inner = default
 
     var visible = { true }
@@ -34,7 +34,6 @@ abstract class Value<T>(val name: String, private val default: T) : ReadWritePro
     abstract fun serializeTo(): JsonObject
 
     abstract fun deserializeFrom(jsonObject: JsonObject)
-
 
     override fun toString() = name
 }
