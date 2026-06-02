@@ -28,7 +28,7 @@ object ModuleKillAuraAI : ClientModule("KillAuraAI", ModuleCategory.COMBAT) {
 
         data.clear()
 
-        repeat(model!!.inputCount) {
+        repeat(model!!.memory) {
             data += Data(Vec3(0.0, 0.0, 0.0), Rotation(0f, 0f), Rotation(67f, 69f))
         }
     }
@@ -60,7 +60,7 @@ object ModuleKillAuraAI : ClientModule("KillAuraAI", ModuleCategory.COMBAT) {
                         input[j * 2 + 1 + shift] = data[j].rotation.y / 180.0
                     }
 
-                    val output = RotateModels[0].predict(input)
+                    val output = model!!.predict(input)
                     player.rotate(Rotation(output[0].toFloat() * 90, output[1].toFloat() * 180))
                 }
             }

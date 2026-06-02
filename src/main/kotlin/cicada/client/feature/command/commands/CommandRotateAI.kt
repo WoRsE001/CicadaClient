@@ -105,7 +105,7 @@ object CommandRotateAI : Command(
                 return
             }
 
-            model.train(dataSet, epochs)
+            model.train(dataSet, epochs, whileTrain = { epoch, _ -> println("epoch: $epoch") })
         }
 
         mc.displayMessage(usage)
@@ -122,7 +122,7 @@ object CommandRotateAI : Command(
             for (j in 0..<memory) {
                 input[j * 3 + 0] = data[i + j].first[0]
                 input[j * 3 + 1] = data[i + j].first[1]
-                input[j * 3 + 2] = data[i + j].first[1]
+                input[j * 3 + 2] = data[i + j].first[2]
             }
 
             val shift = memory * 3

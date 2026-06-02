@@ -28,8 +28,9 @@ object ModuleDataRecorder : ClientModule("DataRecorder", ModuleCategory.MISC) {
                 val diff = point - player.eyePosition
                 val rotation = rotationFromDiff(diff)
                 dataSet += Data(diff, (player.rotation() - lastRotation).wrapped(), rotation)
-                lastRotation = rotation
             }
+
+            lastRotation = player.rotation()
         }
     }
 
