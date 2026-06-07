@@ -5,13 +5,13 @@ import cicada.client.feature.module.ClientModule
 import com.mojang.blaze3d.platform.InputConstants
 import cicada.client.key.Keybind
 import cicada.client.rotation.CameraRotation
-import cicada.client.rotation.RotationListener
+import cicada.client.rotation.Rotator
 
 object ModuleFreelook : ClientModule(
     "Freelook",
     ModuleCategory.VISUAL,
     Keybind(InputConstants.KEY_LALT, true)
-), RotationListener {
+), Rotator {
     override val rotatePriority = 0
 
     init {

@@ -4,14 +4,12 @@ import cicada.client.config.types.Value
 import cicada.client.feature.module.modules.combat.ModuleAntiKB
 import cicada.client.feature.module.modules.combat.ModuleAttackAura
 import cicada.client.feature.module.modules.combat.ModuleAutoClicker
-import cicada.client.feature.module.modules.combat.ModuleKillAuraAI
 import cicada.client.feature.module.modules.combat.ModuleMaceHelper
 import cicada.client.feature.module.modules.combat.ModulePing
 import cicada.client.feature.module.modules.combat.ModuleSprintReset
 import cicada.client.feature.module.modules.combat.ModuleTeleportAura
 import cicada.client.feature.module.modules.misc.ModuleFixes
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
-import cicada.client.feature.module.modules.misc.ModuleDataRecorder
 import cicada.client.feature.module.modules.misc.ModuleTeams
 import cicada.client.feature.module.modules.movement.ModuleFastClimb
 import cicada.client.feature.module.modules.movement.ModuleFlight
@@ -47,7 +45,6 @@ object ModuleManager : Value<MutableList<ClientModule>>("ModuleManager", mutable
         ModuleAntiKB
         ModuleAttackAura
         ModuleAutoClicker
-        ModuleKillAuraAI
         ModuleMaceHelper
         ModulePing
         ModuleSprintReset
@@ -56,7 +53,6 @@ object ModuleManager : Value<MutableList<ClientModule>>("ModuleManager", mutable
         // misc
         ModuleFixes
         ModuleMurderMysteryHelper
-        ModuleDataRecorder
         ModuleTeams
 
         // movement

@@ -7,7 +7,7 @@ import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.modules.combat.attackaura.attack.AttackAuraAttacker
 import cicada.client.feature.module.modules.combat.attackaura.aim.AttackAuraAimer
 import cicada.client.feature.module.modules.combat.attackaura.autoblock.AttackAuraAutoBlock
-import cicada.client.rotation.RotationListener
+import cicada.client.rotation.Rotator
 import cicada.client.config.types.preset.MovementCorrector
 import cicada.client.config.types.preset.TargetFinder
 import cicada.client.config.types.preset.TargetRenderer
@@ -16,7 +16,7 @@ import cicada.client.utils.client.player
 import cicada.client.utils.rotation.rotate
 
 // SCWGxD regrets everything he did. 04.04.2026 5:37.
-object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT, description = "Атакует пидора"), RotationListener {
+object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT, description = "Атакует пидора"), Rotator {
     val targetFinder = tree(TargetFinder())
     private val aimer = tree(AttackAuraAimer)
     private val attacker = tree(AttackAuraAttacker)
@@ -24,7 +24,7 @@ object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT, desc
     private val autoblock = tree(AttackAuraAutoBlock)
     private val targetRenderer = tree(TargetRenderer())
 
-    override val rotatePriority = 1
+    override val rotatePriority = 0
 
     init {
         registerToRotations()

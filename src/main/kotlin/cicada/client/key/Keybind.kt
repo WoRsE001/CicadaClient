@@ -1,13 +1,11 @@
 package cicada.client.key
 
-import kotlinx.serialization.json.*
 import org.lwjgl.glfw.GLFW
 
 // created by dicves_recode on 22.02.2026
 data class Keybind(
     var key: Int = GLFW.GLFW_KEY_UNKNOWN,
-    var hold: Boolean = false,
-    var mouse: Boolean = false
+    var hold: Boolean = false
 ) {
     /*override var json: JsonObject
         get() = buildJsonObject {

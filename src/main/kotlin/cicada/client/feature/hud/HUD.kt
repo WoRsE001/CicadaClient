@@ -1,7 +1,7 @@
 package cicada.client.feature.hud
 
 import cicada.client.config.types.ToggleableConfigurable
-import cicada.client.utils.render.Renderable
+import cicada.client.render.Renderable
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
 // SCWGxD regrets everything he did. 02.04.2026 11:12.

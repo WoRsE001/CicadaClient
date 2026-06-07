@@ -1,17 +1,12 @@
 package cicada.client
 
 import cicada.client.feature.command.CommandManager
-import cicada.client.config.ConfigSystem
-import cicada.client.connection.Client
-import cicada.client.connection.Server
+import cicada.client.config.ConfigManager
 import cicada.client.event.EventCaller
 import cicada.client.key.KeyCaller
 import cicada.client.feature.module.ModuleManager
 import cicada.client.font.Fonts
 import cicada.client.rotation.RotationHandler
-import cicada.client.utils.client.displayMessage
-import cicada.client.utils.client.mc
-import net.fabricmc.api.ModInitializer
 import net.minecraft.resources.Identifier
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -36,18 +31,16 @@ object CicadaClient {
 
 			ModuleManager
 			CommandManager
-			ConfigSystem
+			ConfigManager
+
+			val defaultConfigFile = ConfigManager.defaultConfigFile
+			if (defaultConfigFile.exists()) {
+				ConfigManager.loadConfig(defaultConfigFile)
+			} else {
+				ConfigManager.saveConfig(defaultConfigFile)
+			}
+
 			Fonts
-
-			Server
-			Server.onMessage = { clientId, message -> mc.displayMessage("Client#$clientId: $message") }
-			Server.onClientConnected = { clientId, ip -> mc.displayMessage("Client#$clientId (ip:$ip) has connected.") }
-			Server.onClientDisconnected = { clientId -> mc.displayMessage("Client#$clientId has disconnected.") }
-
-			Client
-			Client.onMessage = { message -> mc.displayMessage("Server: $message") }
-			Client.onConnected = { ip, port -> mc.displayMessage("Client has connected to server: $ip:$port.") }
-			Client.onDisconnected = { mc.displayMessage("Client disconnected.") }
 		}
 
 		logger.info("successful loaded at $startTime ms.")

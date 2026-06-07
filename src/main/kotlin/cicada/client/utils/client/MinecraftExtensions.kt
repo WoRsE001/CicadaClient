@@ -30,7 +30,6 @@ val gameMode: MultiPlayerGameMode
 val gpuDevice: GpuDevice
     inline get() = RenderSystem.getDevice()
 
-// сделал брат <3
 fun Minecraft.displayMessage(content: Any?) =
     gui.chat.addClientSystemMessage(Component.literal("[${CicadaClient.NAME}] ${content.toString()}"))
 

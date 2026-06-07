@@ -9,7 +9,7 @@ import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
 import cicada.client.mixin.accessors.AccessorMinecraft
-import cicada.client.rotation.RotationListener
+import cicada.client.rotation.Rotator
 import cicada.client.utils.client.level
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3
 object ModuleMaceHelper : ClientModule(
     "MaceHelper",
     ModuleCategory.COMBAT
-), RotationListener {
+), Rotator {
     override val rotatePriority = 1
 
     private val autoSwitch = toggleableGroup("Auto switch", false)

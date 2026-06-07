@@ -10,20 +10,17 @@ import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation
 
 object RotationHandler : EventListener {
-    private val listeners = mutableListOf<RotationListener>()
+    private val listeners = mutableListOf<Rotator>()
 
     init {
         registerToEvents()
     }
 
-    internal operator fun plusAssign(listener: RotationListener) {
+    internal operator fun plusAssign(listener: Rotator) {
         if (listener in listeners)
             return
 
         listeners += listener
-        // Да, это тупо сортировать каждый раз список после добавления листенера,
-        // но мне было крайне лень придумывать что-либо "умнее".
-        // Ну и тем более это в инициализации, где излишней оптимизацией можно пренебречь.
         listeners.sortByDescending { it.rotatePriority }
     }
 

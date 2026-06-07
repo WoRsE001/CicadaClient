@@ -16,7 +16,7 @@ import cicada.client.mixin.accessors.AccessorMinecraft
 import cicada.client.render.FILLED_QUAD_TYPE
 import cicada.client.render.Renderer3D
 import cicada.client.rotation.CameraRotation
-import cicada.client.rotation.RotationListener
+import cicada.client.rotation.Rotator
 import cicada.client.utils.client.level
 import cicada.client.utils.math.Color4f
 import cicada.client.utils.client.mc
@@ -31,7 +31,7 @@ import net.minecraft.core.Direction
 import net.minecraft.world.phys.AABB
 
 // SCWGxD regrets everything he did. 01.05.2026 12:19.
-object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), RotationListener {
+object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rotator {
     private val blockSearch = group("Block search")
         private val searchRange by blockSearch.float("Search range", 4.5f, 0f..6f)
         private val heightCheck by blockSearch.boolean("Height check", true)
