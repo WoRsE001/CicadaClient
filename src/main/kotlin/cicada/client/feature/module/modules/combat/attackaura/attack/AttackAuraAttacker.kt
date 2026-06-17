@@ -5,7 +5,7 @@ import cicada.client.event.impl.AttackEvent
 import cicada.client.event.impl.GameLoopEvent
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.mixin.accessors.AccessorMinecraft
-import cicada.client.config.types.ToggleableConfigurable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.utils.client.connection
 import cicada.client.utils.math.gaussianRandom
 import cicada.client.utils.math.random

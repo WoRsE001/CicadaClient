@@ -4,7 +4,7 @@ import cicada.client.event.Event
 import cicada.client.event.impl.GameLoopEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.config.types.ChoiceValue
+import cicada.client.setting.ChoiceValue
 import cicada.client.utils.client.gameMode
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player

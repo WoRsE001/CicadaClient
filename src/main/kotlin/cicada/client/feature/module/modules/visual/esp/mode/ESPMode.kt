@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.visual.esp.mode
 
 import cicada.client.event.Event
-import cicada.client.config.types.ChoiceValue
-import cicada.client.config.types.ColorValue
+import cicada.client.setting.ChoiceValue
+import cicada.client.setting.ColorValue
 import net.minecraft.world.entity.Entity
 
 // SCWGxD regrets everything he did. 06.04.2026 11:47.

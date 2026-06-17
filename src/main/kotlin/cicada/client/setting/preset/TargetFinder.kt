@@ -1,6 +1,6 @@
-package cicada.client.config.types.preset
+package cicada.client.setting.preset
 
-import cicada.client.config.types.Configurable
+import cicada.client.setting.Configurable
 import cicada.client.utils.client.level
 import cicada.client.utils.client.player
 import cicada.client.utils.player.isTeam
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player
 
 // Blood! It's everywhere. SCWxD killed you on 08.03.2026 at 9:24.
 open class TargetFinder : Configurable("Finding target") {
-    val searchRange by float("Search range", 6f, 3f..50f, "%.1")
+    val searchRange by float("Search range", 100f, 3f..50f, "%.1")
     val filter = multiChoice("Filter")
     val filterAnimals = filter.choice("Animals", true)
     val filterInvisible = filter.choice("Invisible")

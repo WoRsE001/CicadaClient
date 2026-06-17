@@ -4,7 +4,7 @@ import cicada.client.event.Event
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.modules.combat.attackaura.attack.AttackAuraAttacker
-import cicada.client.config.types.ToggleableConfigurable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.player
 import cicada.utility.player.inventory.isSword

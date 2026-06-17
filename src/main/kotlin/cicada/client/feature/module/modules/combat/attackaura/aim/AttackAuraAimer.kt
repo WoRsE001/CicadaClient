@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat.attackaura.aim
 
 import cicada.client.feature.module.modules.combat.attackaura.aim.mode.*
-import cicada.client.config.types.ToggleableConfigurable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.CustomAimMode
 import cicada.client.utils.rotation.Rotation
 import net.minecraft.world.entity.LivingEntity

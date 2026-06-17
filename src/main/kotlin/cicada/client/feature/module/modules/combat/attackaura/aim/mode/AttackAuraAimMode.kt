@@ -1,6 +1,6 @@
 package cicada.client.feature.module.modules.combat.attackaura.aim.mode
 
-import cicada.client.config.types.ChoiceValue
+import cicada.client.setting.ChoiceValue
 import cicada.client.utils.rotation.Rotation
 import net.minecraft.world.entity.LivingEntity
 

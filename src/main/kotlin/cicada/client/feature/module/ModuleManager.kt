@@ -1,6 +1,5 @@
 package cicada.client.feature.module
 
-import cicada.client.config.types.Value
 import cicada.client.feature.module.modules.combat.ModuleAntiKB
 import cicada.client.feature.module.modules.combat.ModuleAttackAura
 import cicada.client.feature.module.modules.combat.ModuleAutoClicker
@@ -39,7 +38,7 @@ import kotlinx.serialization.json.jsonObject
 
 // SCWGxD regrets everything he did. 30.03.2026 11:38.
 @Suppress("UNUSED_EXPRESSION")
-object ModuleManager : Value<MutableList<ClientModule>>("ModuleManager", mutableListOf()) {
+object ModuleManager : ArrayList<ClientModule>() {
     init {
         // combat
         ModuleAntiKB
@@ -86,20 +85,22 @@ object ModuleManager : Value<MutableList<ClientModule>>("ModuleManager", mutable
         ModuleFastPlace
     }
 
-    internal operator fun plusAssign(module: ClientModule) {
-        if (module !in inner)
-            inner += module
+    operator fun plusAssign(module: ClientModule) {
+        if (module !in this)
+            this.add(module)
     }
 
-    override fun serializeTo(): JsonObject = buildJsonObject {
-        for (module in inner) {
+    fun serializeTo(): JsonObject = buildJsonObject {
+        for (module in this@ModuleManager) {
             put(module.name, module.serializeTo())
         }
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
-        for (module in inner) {
+    fun deserializeFrom(jsonObject: JsonObject) {
+        for (module in this) {
             module.deserializeFrom(jsonObject[module.name]?.jsonObject ?: run { continue })
         }
     }
+
+    private fun readResolve(): Any = ModuleManager
 }

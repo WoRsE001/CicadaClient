@@ -23,7 +23,7 @@ object HudModuleList : HUD(0f, 0f, 100f, 100f, "ModuleList") {
     private val font = Fonts["roboto-bold"]!!
 
     override fun render(graphics: GuiGraphicsExtractor) {
-        val toggledModules = ModuleManager.inner.filter { it.toggled }.sortedByDescending { font.width(it.name, 9f) }
+        val toggledModules = ModuleManager.filter { it.toggled }.sortedByDescending { font.width(it.name, 9f) }
         var offsetY = y
 
         for (module in toggledModules) {

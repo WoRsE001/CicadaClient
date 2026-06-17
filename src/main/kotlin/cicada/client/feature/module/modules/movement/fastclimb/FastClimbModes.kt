@@ -3,7 +3,7 @@ package cicada.client.feature.module.modules.movement.fastclimb
 import cicada.client.event.Event
 import cicada.client.event.impl.PlayerStateUpdateEvent
 import cicada.client.event.impl.SendPosEvent
-import cicada.client.config.types.ChoiceValue
+import cicada.client.setting.ChoiceValue
 import cicada.client.utils.client.player
 import cicada.client.utils.player.velocityY
 

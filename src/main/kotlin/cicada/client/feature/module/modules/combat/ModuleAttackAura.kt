@@ -8,9 +8,9 @@ import cicada.client.feature.module.modules.combat.attackaura.attack.AttackAuraA
 import cicada.client.feature.module.modules.combat.attackaura.aim.AttackAuraAimer
 import cicada.client.feature.module.modules.combat.attackaura.autoblock.AttackAuraAutoBlock
 import cicada.client.rotation.Rotator
-import cicada.client.config.types.preset.MovementCorrector
-import cicada.client.config.types.preset.TargetFinder
-import cicada.client.config.types.preset.TargetRenderer
+import cicada.client.setting.preset.MovementCorrector
+import cicada.client.setting.preset.TargetFinder
+import cicada.client.setting.preset.TargetRenderer
 import cicada.client.utils.client.nullCheck
 import cicada.client.utils.client.player
 import cicada.client.utils.rotation.rotate

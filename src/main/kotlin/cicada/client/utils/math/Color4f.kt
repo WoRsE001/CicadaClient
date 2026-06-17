@@ -99,4 +99,9 @@ class Color4f(var r: Float, var g: Float, var b: Float, var a: Float) {
             }
         }
     }
+
+    companion object {
+        val WHITE = Color4f(1f, 1f, 1f, 1f)
+        val BLACK = Color4f(0f, 0f, 0f, 1f)
+    }
 }

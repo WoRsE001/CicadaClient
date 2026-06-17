@@ -1,7 +1,6 @@
 package cicada.client
 
 import cicada.client.feature.command.CommandManager
-import cicada.client.config.ConfigManager
 import cicada.client.event.EventCaller
 import cicada.client.key.KeyCaller
 import cicada.client.feature.module.ModuleManager
@@ -22,7 +21,7 @@ object CicadaClient {
 	private val logger = LoggerFactory.getLogger(MOD_ID)
 
 	fun initialize() {
-		logger.info("loading...")
+		logger.info("Loading...")
 
 		val startTime = measureTimeMillis {
 			EventCaller
@@ -31,19 +30,11 @@ object CicadaClient {
 
 			ModuleManager
 			CommandManager
-			ConfigManager
-
-			val defaultConfigFile = ConfigManager.defaultConfigFile
-			if (defaultConfigFile.exists()) {
-				ConfigManager.loadConfig(defaultConfigFile)
-			} else {
-				ConfigManager.saveConfig(defaultConfigFile)
-			}
 
 			Fonts
 		}
 
-		logger.info("successful loaded at $startTime ms.")
+		logger.info("Successful loaded at $startTime ms.")
 	}
 
 	fun of(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)

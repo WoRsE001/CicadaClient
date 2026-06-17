@@ -1,4 +1,4 @@
-package cicada.client.config.types
+package cicada.client.setting
 
 import kotlinx.serialization.json.JsonObject
 import kotlin.properties.ReadWriteProperty

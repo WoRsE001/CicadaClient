@@ -1,9 +1,9 @@
-package cicada.client.config.types.preset.targetrenderer.impl
+package cicada.client.setting.preset.targetrenderer.impl
 
 import cicada.client.CicadaClient
 import cicada.client.event.Event
 import cicada.client.event.impl.RenderEvent
-import cicada.client.config.types.preset.targetrenderer.TargetRenderMode
+import cicada.client.setting.preset.targetrenderer.TargetRenderMode
 import cicada.client.render.image
 import cicada.client.utils.math.projectWorldToScreen
 import cicada.client.utils.client.mc

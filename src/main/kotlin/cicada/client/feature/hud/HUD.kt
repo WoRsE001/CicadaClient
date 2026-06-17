@@ -1,6 +1,6 @@
 package cicada.client.feature.hud
 
-import cicada.client.config.types.ToggleableConfigurable
+import cicada.client.setting.ToggleableConfigurable
 import cicada.client.render.Renderable
 import net.minecraft.client.gui.GuiGraphicsExtractor
 

@@ -8,6 +8,7 @@
     "MixinLevel",
     "MixinLivingEntity",
     "MixinPlayer",
+    "accessors.AccessorBlockBehaviour",
     "accessors.AccessorSoundEvents"
   ],
   "injectors": {

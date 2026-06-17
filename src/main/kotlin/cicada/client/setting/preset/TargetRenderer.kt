@@ -1,9 +1,9 @@
-package cicada.client.config.types.preset
+package cicada.client.setting.preset
 
 import cicada.client.event.Event
-import cicada.client.config.types.ToggleableConfigurable
-import cicada.client.config.types.preset.targetrenderer.TargetRenderMode
-import cicada.client.config.types.preset.targetrenderer.impl.TargetRender2DRectMode
+import cicada.client.setting.ToggleableConfigurable
+import cicada.client.setting.preset.targetrenderer.TargetRenderMode
+import cicada.client.setting.preset.targetrenderer.impl.TargetRender2DRectMode
 import net.minecraft.world.entity.Entity
 
 // SCWGxD regrets everything he did. 13.04.2026 7:45.

@@ -2,7 +2,7 @@ package cicada.client.feature.module.modules.movement.flight
 
 import cicada.client.event.Event
 import cicada.client.event.impl.TickEvent
-import cicada.client.config.types.ChoiceValue
+import cicada.client.setting.ChoiceValue
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
 import cicada.client.utils.player.velocityY

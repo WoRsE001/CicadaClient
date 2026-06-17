@@ -1,6 +1,6 @@
 package cicada.client.feature.module.modules.combat.attackaura.aim.mode.custom.pointselect
 
-import cicada.client.config.types.Configurable
+import cicada.client.setting.Configurable
 import cicada.client.utils.math.coerceIn
 import cicada.client.utils.math.mul
 import cicada.client.utils.client.player

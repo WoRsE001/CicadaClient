@@ -2,7 +2,7 @@ package cicada.client.feature.module.modules.combat.antikb
 
 import cicada.client.event.Event
 import cicada.client.event.impl.AttackEvent
-import cicada.client.config.types.ChoiceValue
+import cicada.client.setting.ChoiceValue
 import cicada.client.utils.client.player
 
 // SCWGxD regrets everything he did. 17.04.2026 11:57.
