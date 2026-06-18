@@ -80,6 +80,11 @@ public abstract class MixinMinecraft {
 		cir.setReturnValue(RaycastUtilsKt.startAttack(player.entityInteractionRange(), false));
 	}
 
+	@ModifyExpressionValue(method = "continueAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
+	private boolean injectMultiActionsBreakingWhileUsing(boolean original) {
+		return original && !ModuleMultiAction.mayBreakWhileUsing();
+	}
+
 	@ModifyExpressionValue(method = "handleKeybinds", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z", ordinal = 0))
 	private boolean injectMultiActionsAttackingWhileUsingAndEnforcedBlockingState(boolean isUsingItem) {
 		if (isUsingItem) {

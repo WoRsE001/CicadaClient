@@ -1,7 +1,7 @@
 package cicada.client.feature.hud.huds
 
 import cicada.client.feature.hud.HUD
-import cicada.client.feature.module.modules.combat.ModuleAttackAura
+import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
 import cicada.client.render.rect
 import cicada.client.render.sprite
 import cicada.client.utils.client.connection
@@ -18,7 +18,7 @@ object HudTargetInfo : HUD(0f, 0f, 150f, 50f, "TargetInfo", false) {
     private val gaps by int ("Gaps", 5, 0..20)
 
     override fun render(graphics: GuiGraphicsExtractor) {
-        val target = ModuleAttackAura.targetFinder.target ?: return
+        val target = ModuleAttackAura.target ?: return
 
         graphics.rect(x, y, w, h, backgroundColor.toInt(), rounded.toFloat())
         graphics.drawHead(target, x + gaps, y + gaps, h - gaps * 2, h - gaps * 2, -1, rounded)

@@ -12,14 +12,14 @@ import net.minecraft.world.entity.monster.Monster
 import net.minecraft.world.entity.player.Player
 
 // Blood! It's everywhere. SCWxD killed you on 08.03.2026 at 9:24.
-open class TargetFinder : Configurable("Finding target") {
-    val searchRange by float("Search range", 100f, 3f..50f, "%.1")
+open class TargetFinder : Configurable("Target finder") {
+    val searchRange by float("Search range", 10f, 0f..50f)
     val filter = multiChoice("Filter")
     val filterAnimals = filter.choice("Animals", true)
-    val filterInvisible = filter.choice("Invisible")
+    val filterInvisible = filter.choice("Invisible", false)
     val filterFriends = filter.choice("Friends", true)
-    val filterMonsters = filter.choice("Monsters", true)
-    val filterPlayers = filter.choice("Players")
+    val filterMonsters = filter.choice("Monsters", false)
+    val filterPlayers = filter.choice("Players", false)
     val filterTeams = filter.choice("Teams", true)
     val sortType = choice("Sort type").apply {
         choice("FOV").select()

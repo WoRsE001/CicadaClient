@@ -1,12 +1,12 @@
 package cicada.client.feature.module
 
 import cicada.client.feature.module.modules.combat.ModuleAntiKB
-import cicada.client.feature.module.modules.combat.ModuleAttackAura
+import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
 import cicada.client.feature.module.modules.combat.ModuleAutoClicker
 import cicada.client.feature.module.modules.combat.ModuleMaceHelper
 import cicada.client.feature.module.modules.combat.ModulePing
 import cicada.client.feature.module.modules.combat.ModuleSprintReset
-import cicada.client.feature.module.modules.combat.ModuleTeleportAura
+import cicada.client.feature.module.modules.combat.ModuleTPAttackAura
 import cicada.client.feature.module.modules.misc.ModuleFixes
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.misc.ModuleTeams
@@ -15,6 +15,7 @@ import cicada.client.feature.module.modules.movement.ModuleFlight
 import cicada.client.feature.module.modules.movement.ModuleNoSlowDown
 import cicada.client.feature.module.modules.movement.ModuleSpeed
 import cicada.client.feature.module.modules.movement.ModuleSprint
+import cicada.client.feature.module.modules.player.ModuleAutoOffhand
 import cicada.client.feature.module.modules.player.ModuleAutoSoup
 import cicada.client.feature.module.modules.player.ModuleAutoSwap
 import cicada.client.feature.module.modules.player.ModuleExtraC03
@@ -22,7 +23,6 @@ import cicada.client.feature.module.modules.player.ModuleInventoryCleaner
 import cicada.client.feature.module.modules.player.ModuleMultiAction
 import cicada.client.feature.module.modules.visual.ModuleAmbient
 import cicada.client.feature.module.modules.visual.ModuleAspectRatio
-import cicada.client.feature.module.modules.visual.ModuleClientSettingsGUI
 import cicada.client.feature.module.modules.visual.ModuleESP
 import cicada.client.feature.module.modules.visual.ModuleFreelook
 import cicada.client.feature.module.modules.visual.ModuleHandPosition
@@ -47,7 +47,7 @@ object ModuleManager : ArrayList<ClientModule>() {
         ModuleMaceHelper
         ModulePing
         ModuleSprintReset
-        ModuleTeleportAura
+        ModuleTPAttackAura
 
         // misc
         ModuleFixes
@@ -62,6 +62,7 @@ object ModuleManager : ArrayList<ClientModule>() {
         ModuleSprint
 
         // player
+        ModuleAutoOffhand
         ModuleAutoSoup
         ModuleAutoSwap
         ModuleExtraC03
@@ -71,7 +72,6 @@ object ModuleManager : ArrayList<ClientModule>() {
         // visual
         ModuleAmbient
         ModuleAspectRatio
-        ModuleClientSettingsGUI
         ModuleESP
         ModuleFreelook
         ModuleHandPosition

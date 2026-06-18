@@ -22,10 +22,10 @@ import net.minecraft.world.InteractionHand
 import net.minecraft.world.phys.Vec3
 
 // SCWGxD regrets everything he did. 21.05.2026 12:16.
-object ModuleTeleportAura : ClientModule("TeleportAura", ModuleCategory.COMBAT) {
+object ModuleTPAttackAura : ClientModule("TPAttackAura", ModuleCategory.COMBAT) {
     val targetFinder = tree(TargetFinder())
     private val attackRange by float("Attack range", 6f, 0f..6f)
-    private val tpStep by float("TP step", 9f, 0f..20f)
+    private val tpStep by float("TP step", 4f, 0f..20f)
 
     var path: List<Vec3>? = listOf()
 

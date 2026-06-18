@@ -15,11 +15,33 @@ inline val Entity.horizontalSpeed: Double
 
 fun Entity.hasHorizontalSpeed() = horizontalSpeed > 0
 
+fun getMovementDirectionOfInput(facingYaw: Float, input: ClientInput = player.input): Float {
+    var actualYaw = facingYaw
+    val forwardMultiplier = when {
+        input.keyPresses.backward && !input.keyPresses.forward -> {
+            actualYaw += 180f
+            -0.5f
+        }
+
+        input.keyPresses.forward && !input.keyPresses.backward -> 0.5f
+        else -> 1f
+    }
+
+    if (input.keyPresses.left && !input.keyPresses.right) {
+        actualYaw -= 90f * forwardMultiplier
+    }
+    if (input.keyPresses.right && !input.keyPresses.left) {
+        actualYaw += 90f * forwardMultiplier
+    }
+
+    return actualYaw
+}
+
 fun Vec3.withStrafe(
     speed: Double = horizontalDistance(),
     strength: Double = 1.0,
     input: ClientInput = player.input,
-    yaw: Float = player.yRot,
+    yaw: Float = getMovementDirectionOfInput(player.yRot, input),
 ): Vec3 {
     if (!input.isMoving()) {
         return Vec3(0.0, y, 0.0)

@@ -4,6 +4,7 @@ import cicada.client.event.Event
 import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
 import cicada.client.feature.module.modules.combat.sprintreset.OnePacket
 import cicada.client.feature.module.modules.combat.sprintreset.Packet
 import cicada.client.feature.module.modules.combat.sprintreset.SprintResetMode
@@ -51,9 +52,9 @@ object ModuleSprintReset : ClientModule(
         if (event is TickEvent.Pre) {
             val target =
                 if (ModuleAttackAura.toggled)
-                    ModuleAttackAura.targetFinder.target
+                    ModuleAttackAura.target
                 else if (false)
-                    ModuleAttackAura.targetFinder.target // other module
+                    ModuleAttackAura.target // other module
                 else
                     null // lastAttackedTarget
 

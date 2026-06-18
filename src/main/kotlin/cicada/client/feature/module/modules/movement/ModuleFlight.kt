@@ -9,8 +9,6 @@ import cicada.client.feature.module.modules.movement.flight.FlightMotionMode
 object ModuleFlight : ClientModule("Flight", ModuleCategory.MOVEMENT) {
     private val mode = choice("Mode").apply {
         choice(FlightMotionMode).select()
-        choice("Поральный")
-        choice("Оральный")
     }
 
     override fun onEnable() {
