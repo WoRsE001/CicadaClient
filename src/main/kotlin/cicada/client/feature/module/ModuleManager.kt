@@ -16,8 +16,7 @@ import cicada.client.feature.module.modules.movement.ModuleNoSlowDown
 import cicada.client.feature.module.modules.movement.ModuleSpeed
 import cicada.client.feature.module.modules.movement.ModuleSprint
 import cicada.client.feature.module.modules.player.ModuleAutoOffhand
-import cicada.client.feature.module.modules.player.ModuleAutoSoup
-import cicada.client.feature.module.modules.player.ModuleAutoSwap
+import cicada.client.feature.module.modules.player.ModuleAutoTool
 import cicada.client.feature.module.modules.player.ModuleExtraC03
 import cicada.client.feature.module.modules.player.ModuleInventoryCleaner
 import cicada.client.feature.module.modules.player.ModuleMultiAction
@@ -63,8 +62,7 @@ object ModuleManager : ArrayList<ClientModule>() {
 
         // player
         ModuleAutoOffhand
-        ModuleAutoSoup
-        ModuleAutoSwap
+        ModuleAutoTool
         ModuleExtraC03
         ModuleInventoryCleaner
         ModuleMultiAction

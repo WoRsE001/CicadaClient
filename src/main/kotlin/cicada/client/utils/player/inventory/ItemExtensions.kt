@@ -1,8 +1,9 @@
-package cicada.utility.player.inventory
+package cicada.client.utils.player.inventory
 
 import com.mojang.brigadier.StringReader
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
+import cicada.utility.player.inventory.getEnchantment
 import net.minecraft.commands.arguments.item.ItemInput
 import net.minecraft.commands.arguments.item.ItemParser
 import net.minecraft.core.BlockPos
@@ -21,6 +22,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockState
 import org.apache.commons.lang3.function.Consumers
 import kotlin.jvm.optionals.getOrNull
 
@@ -72,6 +74,18 @@ fun <E : Any> ResourceKey<Registry<E>>.getOrNull(): Registry<E>? =
 
 fun ResourceKey<Enchantment>.toRegistryEntryOrNull(): Holder<Enchantment>? =
     Registries.ENCHANTMENT.getOrNull()?.get(this)?.getOrNull()
+
+fun ItemStack.getDestroySpeedWithEnchantment(state: BlockState): Float {
+    var speed = this.getDestroySpeed(state)
+
+    val enchantmentLevel = this.getEnchantment(Enchantments.EFFICIENCY)
+    if (speed > 1f && enchantmentLevel != 0) {
+        val enchantmentAddition = enchantmentLevel * enchantmentLevel + 1f
+        speed += enchantmentAddition.coerceIn(0f, 1024f)
+    }
+
+    return speed
+}
 
 fun ItemStack.getBlock(): Block? {
     val item = this.item

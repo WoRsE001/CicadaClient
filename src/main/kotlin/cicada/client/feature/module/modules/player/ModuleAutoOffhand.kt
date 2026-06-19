@@ -9,7 +9,7 @@ import cicada.client.setting.ToggleableConfigurable
 import cicada.client.utils.client.gameMode
 import cicada.client.utils.client.player
 import cicada.utility.player.inventory.isTotemOfUndying
-import cicada.utility.player.inventory.slotBy
+import cicada.client.utils.player.inventory.slotBy
 import net.minecraft.world.inventory.ContainerInput
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.Items

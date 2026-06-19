@@ -8,7 +8,7 @@ import cicada.client.setting.ChoiceValue
 import cicada.client.utils.client.gameMode
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
-import cicada.utility.player.inventory.attackDamage
+import cicada.client.utils.player.inventory.attackDamage
 import cicada.utility.player.inventory.getEnchantment
 import cicada.utility.player.inventory.isFood
 import cicada.utility.player.inventory.isSword

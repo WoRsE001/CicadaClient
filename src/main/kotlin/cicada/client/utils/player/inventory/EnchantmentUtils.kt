@@ -1,5 +1,6 @@
 package cicada.utility.player.inventory
 
+import cicada.client.utils.player.inventory.toRegistryEntryOrNull
 import net.minecraft.core.Holder
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.ItemStack

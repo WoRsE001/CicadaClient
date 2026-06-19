@@ -1,4 +1,4 @@
-package cicada.utility.player.inventory
+package cicada.client.utils.player.inventory
 
 import net.minecraft.world.inventory.InventoryMenu
 import net.minecraft.world.inventory.Slot

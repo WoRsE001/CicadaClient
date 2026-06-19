@@ -1,5 +1,6 @@
 package cicada.utility.player.inventory
 
+import cicada.client.utils.player.inventory.getAttributeValue
 import net.minecraft.core.component.DataComponents
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.entity.ai.attributes.Attributes

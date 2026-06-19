@@ -17,7 +17,6 @@ object ModuleExtraC03 : ClientModule("ExtraC03", ModuleCategory.PLAYER) {
     private val regenerationToHealth by int("Regeneration to health", 19, 0..20).visible { whileRegeneration.toggled }
 
     override fun onEvent(event: Event) {
-        whileItemUse.toggled = true
         if (event is SendPosEvent.Pre) {
             if (
                 (!whileItemUse.toggled || player.isUsingItem) &&
