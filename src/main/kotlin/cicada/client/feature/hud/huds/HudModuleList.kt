@@ -12,7 +12,7 @@ import cicada.client.utils.math.gazLarpit
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
 // SCWGxD regrets everything he did. 25.04.2026 6:54.
-object HudModuleList : HUD(0f, 0f, 100f, 100f, "ModuleList") {
+object HudModuleList : HUD(0f, 0f, 100f, 100f, "ModuleList", true) {
     private val width by float("Width", 0f, 0f..10f)
     private val height by float("Height", 0f, 0f..10f)
     private val textOffset by float("Text offset", 0f, -1f..1f)

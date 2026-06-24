@@ -10,7 +10,7 @@ object AntiKBJumpMode : ChoiceValue.Choice("Jump") {
     private val hurtTime by intRange("Hurt time", 6..10, 0..10)
 
     override fun onEvent(event: Event) {
-        if (event is MovementInputEvent && player.hurtTime >= hurtTime.first && player.hurtTime <= hurtTime.last) {
+        if (event is MovementInputEvent && player.hurtTime >= hurtTime.first && player.hurtTime <= hurtTime.last && Math.random() < 0.7) {
             event.jump = true
         }
     }

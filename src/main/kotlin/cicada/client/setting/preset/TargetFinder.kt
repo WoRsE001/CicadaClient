@@ -18,12 +18,12 @@ open class TargetFinder : Configurable("Target finder") {
     val filterAnimals = filter.choice("Animals", true)
     val filterInvisible = filter.choice("Invisible", false)
     val filterFriends = filter.choice("Friends", true)
-    val filterMonsters = filter.choice("Monsters", false)
+    val filterMonsters = filter.choice("Monsters", true)
     val filterPlayers = filter.choice("Players", false)
     val filterTeams = filter.choice("Teams", true)
     val sortType = choice("Sort type").apply {
-        choice("FOV").select()
-        choice("Distance")
+        choice("FOV")
+        choice("Distance").select()
         choice("Health")
         choice("HurtTime")
     }

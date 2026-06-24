@@ -7,7 +7,8 @@ import net.minecraft.world.entity.LivingEntity
 // SCWGxD regrets everything he did. 20.04.2026 7:35.
 object AttackAuraAimer : ToggleableConfigurable("Aimer", true) {
     private val mode by choice("Mode").apply {
-        choice(RageAimMode).select()
+        choice(RageAimMode)
+        choice(UniversalAimMode).select()
     }
 
     fun rotateTo(target: LivingEntity) {

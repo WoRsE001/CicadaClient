@@ -26,11 +26,11 @@ object ModuleSprintReset : ClientModule(
         choice(OnePacket)
     }
     
-    private val delay by int("Delay", 3, 0..10)
-    private val reset by int("Reset", 2, 1..10)
+    private val delay by int("Delay", 1, 0..10)
+    private val reset by int("Reset", 1, 1..10)
     private val conditions = multiChoice("Conditions")
     private val notInLiquid = conditions.choice("Not in liquid")
-    private val notWhileKB = conditions.choice("Not while knockback")
+    private val notWhileKB = conditions.choice("Not while knockback", true)
     private val notWhileKBFOV by int("Permissible FOV for knockback", 45, 0..180, "deg")
 
     private var delayTimer = 0

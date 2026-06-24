@@ -5,6 +5,7 @@ import cicada.client.event.Event
 import cicada.utility.player.inventory.isConsumable
 import cicada.utility.player.inventory.isSword
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Input
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BowItem
 import net.minecraft.world.item.ItemStack
@@ -51,6 +52,14 @@ object SlowDownEvent : CancelableEvent() {
 interface PlayerStateUpdateEvent {
     object Pre: Event
     object Post: Event
+}
+
+object EventSendInput : Event {
+    var input = Input.EMPTY
+}
+
+object RelativeMoveEvent : Event {
+    var yaw = 0f
 }
 
 object JumpEvent : Event {

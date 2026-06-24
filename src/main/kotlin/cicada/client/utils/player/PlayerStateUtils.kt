@@ -2,6 +2,7 @@ package cicada.client.utils.player
 
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.misc.ModuleTeams
+import cicada.client.utils.rotation.Rotation
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Input
@@ -34,9 +35,6 @@ var LocalPlayer.velocityZ: Double
     set(value) {
         deltaMovement = Vec3(deltaMovement.x, deltaMovement.y, value)
     }
-
-val Entity.lastPos: Vec3
-    get() = Vec3(xo, yo, zo)
 
 val Input.isMoving: Boolean
     get() = forward != backward || left != right

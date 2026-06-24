@@ -59,6 +59,18 @@ fun GuiGraphicsExtractor.text(pose: Matrix3x2fc, fontData: FontData?, text: Stri
 fun GuiGraphicsExtractor.text(fontData: FontData?, text: String, x: Float, y: Float, size: Float, color: Int = -1) =
     text(pose(), fontData, text, x, y, size, color)
 
+fun GuiGraphicsExtractor.centeredText(pose: Matrix3x2fc, fontData: FontData?, text: String, x: Float, y: Float, size: Float, color: Int) {
+    if (fontData == null) return
+
+    text(pose, fontData, text, x + fontData.width(text, size) / 2, y + fontData.height(size) / 2, size, color)
+}
+
+fun GuiGraphicsExtractor.centeredText(fontData: FontData?, text: String, x: Float, y: Float, size: Float, color: Int = -1) {
+    if (fontData == null) return
+
+    text(pose(), fontData, text, x - fontData.width(text, size) / 2, y - fontData.height(size) / 2, size, color)
+}
+
 fun FontData.width(text: String, size: Float): Float {
     var w = 0.0f
     for (i in text.indices) {

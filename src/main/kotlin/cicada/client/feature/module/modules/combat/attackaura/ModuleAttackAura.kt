@@ -5,13 +5,10 @@ import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.combat.attackaura.aim.AttackAuraAimer
-import cicada.client.feature.module.modules.combat.attackaura.AttackAuraAttacker
 import cicada.client.rotation.Rotator
 import cicada.client.setting.preset.MovementCorrector
 import cicada.client.setting.preset.TargetFinder
 import cicada.client.setting.preset.TargetRenderer
-import cicada.client.utils.client.player
-import cicada.client.utils.rotation.rotate
 import net.minecraft.world.entity.LivingEntity
 
 // SCWGxD regrets everything he did. 04.04.2026 5:37.
@@ -43,7 +40,7 @@ object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT), Rot
         target?.let {
             //movementCorrector.
             attacker.onEvent(event, target!!)
-            //targetRenderer.render(event, target!!)
+            targetRenderer.render(event, target!!)
         }
     }
 

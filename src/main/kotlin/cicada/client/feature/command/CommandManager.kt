@@ -1,11 +1,11 @@
 package cicada.client.feature.command
 
 import cicada.client.feature.command.commands.client.CommandBind
+import cicada.client.feature.command.commands.client.CommandConfig
 import cicada.client.feature.command.commands.client.CommandToggle
+import cicada.client.feature.command.commands.client.ai.CommandDataSet
 import cicada.client.feature.command.commands.ingame.CommandCoordinates
 import net.minecraft.network.chat.Component
-import java.util.TreeMap
-import kotlin.text.get
 import kotlin.text.iterator
 
 object CommandManager : HashMap<String, Command>() {
@@ -15,7 +15,9 @@ object CommandManager : HashMap<String, Command>() {
         CommandExecutor
 
         val commands = arrayListOf(
+            CommandDataSet,
             CommandBind,
+            CommandConfig,
             CommandToggle,
             CommandCoordinates
         )

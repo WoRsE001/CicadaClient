@@ -9,6 +9,7 @@
     "MixinLivingEntity",
     "MixinPlayer",
     "accessors.AccessorBlockBehaviour",
+    "accessors.AccessorClientboundMoveEntityPacket",
     "accessors.AccessorSoundEvents"
   ],
   "injectors": {

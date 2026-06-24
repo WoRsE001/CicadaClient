@@ -164,3 +164,9 @@ fun GuiGraphicsExtractor.sprite(
     c, c, c, c,
     r, r, r, r
 )
+
+fun GuiGraphicsExtractor.cut(x: Float, y: Float, w: Float, h: Float, block: () -> Unit) {
+    enableScissor(x.toInt(), y.toInt(), (x + w).toInt(), (y + h).toInt())
+    block()
+    disableScissor()
+}

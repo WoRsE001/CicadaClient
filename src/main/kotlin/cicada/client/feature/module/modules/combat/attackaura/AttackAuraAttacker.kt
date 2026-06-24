@@ -12,12 +12,12 @@ import net.minecraft.world.entity.LivingEntity
 // SCWGxD regrets everything he did. 19.04.2026 15:22.
 object AttackAuraAttacker : ToggleableConfigurable("Attack", true) {
     private val attackSync = choice("Attack sync")
-    private val attackSyncNone = attackSync.choice("None").select()
+    private val attackSyncNone = attackSync.choice("None")
     private val attackSyncCrit = attackSync.choice("Crit")
-    private val attackSyncCombined = attackSync.choice("Combined")
+    private val attackSyncCombined = attackSync.choice("Combined").select()
 
-    private val preAttackRange by float("Pre attack range", 6f, 0f..10f)
-    private val attackRange = float("Attack range", 6f, 0f..6f)
+    private val preAttackRange by float("Pre attack range", 3f, 0f..10f)
+    private val attackRange = float("Attack range", 3f, 0f..6f)
 
     private val rayCast = toggleableGroup("Ray cast", true)
 

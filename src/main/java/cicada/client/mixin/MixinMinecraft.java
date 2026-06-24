@@ -1,6 +1,7 @@
 package cicada.client.mixin;
 
 import cicada.client.CicadaClient;
+import cicada.client.utils.player.PlayerStateUtilsKt;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.GameLoopEvent;
 import cicada.client.event.impl.LegitClickTimingEvent;

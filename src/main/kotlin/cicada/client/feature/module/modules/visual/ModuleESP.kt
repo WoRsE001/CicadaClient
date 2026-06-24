@@ -11,17 +11,18 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 
 object ModuleESP : ClientModule("ESP", ModuleCategory.VISUAL) {
-    private val entityTypeRenderer = choice("Entity type").apply {
-        choice(ESPEntityTypeRenderer("Player") { it is Player && (it !is LocalPlayer || !mc.options.cameraType.isFirstPerson) }).select()
+    private val entityTypeRenderer = multiChoice("Entity type").apply {
+        choice(ESPEntityTypeRenderer("Player") { it is Player && (it !is LocalPlayer || !mc.options.cameraType.isFirstPerson) })
         choice(ESPEntityTypeRenderer("Item") { it is ItemEntity })
     }
 
     override fun onEvent(event: Event) {
         for (entity in level.entitiesForRendering()) {
-            for (choice in entityTypeRenderer.choices) {
-                if (choice.selected() && choice is ESPEntityTypeRenderer) {
-                    choice.onEvent(event, entity)
-                }
+            for (choice in entityTypeRenderer.inner.filter { it.toggled }) {
+                if (choice !is ESPEntityTypeRenderer || !choice.isValidEntity(entity))
+                    continue
+
+                choice.onEvent(event, entity)
             }
         }
     }

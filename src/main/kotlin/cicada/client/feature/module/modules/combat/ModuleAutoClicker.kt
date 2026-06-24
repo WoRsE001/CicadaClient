@@ -12,10 +12,10 @@ import cicada.client.utils.client.mc
 import cicada.client.utils.time.Timer
 
 object ModuleAutoClicker : ClientModule("AutoClicker", ModuleCategory.COMBAT) {
-    private val CPS by floatRange("CPS", 20f..20f, 1f..40f)
+    private val CPS by floatRange("CPS", 14f..16f, 1f..40f)
     private val randomType = choice("Random type")
-    private val randomTypeDefault = randomType.choice("Default").select()
-    private val randomTypeGaussian = randomType.choice("Gaussian")
+    private val randomTypeDefault = randomType.choice("Default")
+    private val randomTypeGaussian = randomType.choice("Gaussian").select()
     private val condition = multiChoice("Condition")
     private val whenClickMouse = condition.choice("When click mouse", true)
 

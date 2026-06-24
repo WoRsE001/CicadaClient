@@ -13,12 +13,12 @@ var lastDelta = Rotation(0f, 0f)
 
 fun LocalPlayer.rotation() = Rotation(xRot, yRot)
 fun LocalPlayer.rotate(delta: Rotation, clampX: Boolean = true) {
-    lastDelta = delta
-
     xRot += delta.x
     yRot += delta.y
 
     if (clampX) xRot = xRot.coerceIn(-90f, 90f)
+
+    lastDelta = delta
 }
 
 fun pitchFromDiff(diff: Vec3) = -Math.toDegrees(atan2(diff.y, diff.horizontalDistance())).toFloat()

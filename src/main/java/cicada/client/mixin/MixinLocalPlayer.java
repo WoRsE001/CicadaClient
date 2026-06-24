@@ -1,5 +1,6 @@
 package cicada.client.mixin;
 
+import cicada.client.event.impl.EventSendInput;
 import cicada.client.utils.client.MinecraftExtensionsKt;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.PlayerStateUpdateEvent;
@@ -154,5 +155,12 @@ public class MixinLocalPlayer {
         SlowDownEvent.INSTANCE.setSlowDown((float) player.getAttributeValue(Attributes.SNEAKING_SPEED));
         SlowDownEvent.INSTANCE.call();
         return SlowDownEvent.INSTANCE.getSlowDown();
+    }
+
+    @ModifyExpressionValue(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/ClientInput;keyPresses:Lnet/minecraft/world/entity/player/Input;"))
+    private Input callEventSendInput(Input original) {
+        EventSendInput.INSTANCE.setInput(original);
+        EventSendInput.INSTANCE.call();
+        return EventSendInput.INSTANCE.getInput();
     }
 }

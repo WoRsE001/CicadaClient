@@ -1,14 +1,16 @@
-package cicada.client.feature.module.modules.movement
+package cicada.client.feature.module.modules.movement.speed
 
 import cicada.client.event.Event
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.feature.module.modules.movement.speed.SpeedMetaHVHMode
+import cicada.client.feature.module.ModuleCategory
+import cicada.client.feature.module.modules.movement.speed.modes.SpeedIntave
+import cicada.client.feature.module.modules.movement.speed.modes.SpeedMotion
 
 // SCWGxD regrets everything he did. 20.04.2026 3:55.
 object ModuleSpeed : ClientModule("Speed", ModuleCategory.MOVEMENT) {
     private val mode by choice("Mode").apply {
-        choice(SpeedMetaHVHMode)
+        choice(SpeedMotion)
+        choice(SpeedIntave).select()
     }
 
     override fun onEvent(event: Event) {

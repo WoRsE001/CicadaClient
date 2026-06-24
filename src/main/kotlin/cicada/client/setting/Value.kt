@@ -1,10 +1,11 @@
 package cicada.client.setting
 
+import cicada.client.config.AsJson
 import kotlinx.serialization.json.JsonObject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Value<T>(val name: String, private val default: T, val description: String = "") : ReadWriteProperty<Any?, T> {
+abstract class Value<T>(val name: String, private val default: T, val description: String = "") : ReadWriteProperty<Any?, T>, AsJson {
     var inner = default
 
     var visible = { true }
@@ -30,10 +31,6 @@ abstract class Value<T>(val name: String, private val default: T, val descriptio
     fun visible(visible: () -> Boolean) = apply {
         this.visible = visible
     }
-
-    abstract fun serializeTo(): JsonObject
-
-    abstract fun deserializeFrom(jsonObject: JsonObject)
 
     override fun toString() = name
 }

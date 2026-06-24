@@ -26,19 +26,6 @@ class ESP2DOutlineMode : ESPMode("Outline 2D") {
         val bb = entity.boundingBox(event.deltaTracker.getGameTimeDeltaPartialTick(false))
         val cameraPos = mc.gameRenderer.mainCamera.position().toVector3f()
 
-        // 5 строк вместо 10
-
-        /*val points = mutableListOf(
-            Vector3f(bb.minX.toFloat(), bb.minY.toFloat(), bb.minZ.toFloat()),
-            Vector3f(bb.maxX.toFloat(), bb.minY.toFloat(), bb.minZ.toFloat()),
-            Vector3f(bb.minX.toFloat(), bb.maxY.toFloat(), bb.minZ.toFloat()),
-            Vector3f(bb.maxX.toFloat(), bb.maxY.toFloat(), bb.minZ.toFloat()),
-            Vector3f(bb.minX.toFloat(), bb.minY.toFloat(), bb.maxZ.toFloat()),
-            Vector3f(bb.maxX.toFloat(), bb.minY.toFloat(), bb.maxZ.toFloat()),
-            Vector3f(bb.minX.toFloat(), bb.maxY.toFloat(), bb.maxZ.toFloat()),
-            Vector3f(bb.maxX.toFloat(), bb.maxY.toFloat(), bb.maxZ.toFloat())
-        )*/
-
         val points = List(8) { i ->
             Vector3f(
                 if (i and 0x1 == 1) bb.maxX.toFloat() else bb.minX.toFloat(),

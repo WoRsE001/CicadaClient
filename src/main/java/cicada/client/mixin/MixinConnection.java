@@ -21,7 +21,7 @@ public class MixinConnection {
             ci.cancel();
     }
 
-    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketListener;shouldHandleMessage(Lnet/minecraft/network/protocol/Packet;)Z", shift = At.Shift.BEFORE), cancellable = true)
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;genericsFtw(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;)V", shift = At.Shift.BEFORE), cancellable = true)
     private static void callReceivePacketEvent(ChannelHandlerContext ctx, Packet<?> packet, CallbackInfo ci) {
         PacketEvent.Receive packetEvent = new PacketEvent.Receive(packet);
         packetEvent.call();

@@ -1,7 +1,9 @@
 package cicada.client.mixin;
 
+import cicada.client.event.impl.RelativeMoveEvent;
 import cicada.client.rotation.CameraRotation;
 import cicada.client.utils.client.MinecraftExtensionsKt;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,5 +46,12 @@ public class MixinEntity {
             rotation.setX(xRot);
             rotation.setY(rotation.getY() + Mth.wrapDegrees(yRot - rotation.getY()));
         }
+    }
+
+    @ModifyExpressionValue(method = "moveRelative", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getYRot()F"))
+    private float callRelativeMoveEvent(float original) {
+        RelativeMoveEvent.INSTANCE.setYaw(original);
+        RelativeMoveEvent.INSTANCE.call();
+        return RelativeMoveEvent.INSTANCE.getYaw();
     }
 }

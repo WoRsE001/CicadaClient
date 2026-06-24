@@ -12,11 +12,11 @@ class BooleanValue(
     default: Boolean,
     description: String = ""
 ) : Value<Boolean>(name, default, description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("toggled", inner)
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         inner = jsonObject["toggled"]?.jsonPrimitive?.booleanOrNull ?: run { return }
     }
 
@@ -33,11 +33,11 @@ open class ChoiceValue(
     val choices: List<Choice>
         get() = _choices
 
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("choice", inner?.name)
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         val name = jsonObject["choice"]?.jsonPrimitive?.contentOrNull ?: run { return }
         inner = _choices.firstOrNull { it.name == name } ?: run { return }
     }
@@ -77,11 +77,11 @@ class ColorValue(
     default: Color4f,
     description: String = ""
 ) : Value<Color4f>(name, default, description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("color", inner.toInt())
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         inner.setFromARGB(jsonObject["color"]?.jsonPrimitive?.intOrNull ?: run { return })
     }
 }
@@ -93,15 +93,15 @@ open class Configurable(
 ) : Value<MutableCollection<Value<*>>>(name, default, description) {
     var owner: Configurable? = null
 
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         for (value in inner) {
-            put(value.name, value.serializeTo())
+            put(value.name, value.asJson())
         }
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         for (item in inner) {
-            item.deserializeFrom(jsonObject[item.name]?.jsonObject ?: run { continue })
+            item.fromJson(jsonObject[item.name]?.jsonObject ?: run { continue })
         }
     }
 
@@ -221,12 +221,12 @@ class FloatRangeValue(
     val suffix: String,
     description: String = ""
 ) : Value<ClosedRange<Float>>(name, default, description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("floatRange.start", inner.start)
         put("floatRange.end", inner.endInclusive)
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         val start = jsonObject["floatRange.start"]?.jsonPrimitive?.floatOrNull ?: run { return }
         val end = jsonObject["floatRange.end"]?.jsonPrimitive?.floatOrNull ?: run { return }
         inner = start..end
@@ -244,11 +244,11 @@ class FloatValue(
     val suffix: String = "",
     description: String = ""
 ) : Value<Float>(name, default, description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("float", inner)
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         inner = jsonObject["float"]?.jsonPrimitive?.floatOrNull ?: run { return }
     }
 }
@@ -257,13 +257,13 @@ open class MultiChoiceValue(
     name: String,
     description: String = ""
 ) : Value<MutableList<Choice>>(name, mutableListOf(), description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         for (choice in inner) {
             put(choice.name, choice.toggled)
         }
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         for (choice in inner) {
             choice.toggled = jsonObject[choice.name]?.jsonPrimitive?.booleanOrNull ?: run { return }
         }
@@ -300,12 +300,12 @@ class IntRangeValue(
     val suffix: String,
     description: String = ""
 ) : Value<IntRange>(name, default, description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("intRange.first", inner.first)
         put("intRange.last", inner.last)
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         val first = jsonObject["intRange.first"]?.jsonPrimitive?.intOrNull ?: run { return }
         val last = jsonObject["intRange.last"]?.jsonPrimitive?.intOrNull ?: run { return }
         inner = first..last
@@ -323,11 +323,11 @@ class IntValue(
     val suffix: String,
     description: String = ""
 ) : Value<Int>(name, default, description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("int", inner)
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         inner = jsonObject["int"]?.jsonPrimitive?.intOrNull ?: run { return }
     }
 }
@@ -337,11 +337,11 @@ class StringValue(
     default: String,
     description: String = ""
 ) : Value<String>(name, default, description) {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("string", inner)
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         inner = jsonObject["string"]?.jsonPrimitive?.contentOrNull ?: run { return }
     }
 }
@@ -351,14 +351,14 @@ open class ToggleableConfigurable(
     defaultToggled: Boolean,
     description: String = ""
 ) : Configurable(name, description), Toggleable {
-    override fun serializeTo(): JsonObject = buildJsonObject {
+    override fun asJson(): JsonObject = buildJsonObject {
         put("toggled", toggled)
-        put("settings", super.serializeTo())
+        put("settings", super.asJson())
     }
 
-    override fun deserializeFrom(jsonObject: JsonObject) {
+    override fun fromJson(jsonObject: JsonObject) {
         toggled = jsonObject["toggled"]?.jsonPrimitive?.booleanOrNull ?: false
-        super.deserializeFrom(jsonObject)
+        super.fromJson(jsonObject)
     }
 
     override var toggled = defaultToggled
