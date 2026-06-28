@@ -4,6 +4,7 @@ import cicada.client.feature.command.commands.client.CommandBind
 import cicada.client.feature.command.commands.client.CommandConfig
 import cicada.client.feature.command.commands.client.CommandToggle
 import cicada.client.feature.command.commands.client.ai.CommandDataSet
+import cicada.client.feature.command.commands.client.ai.CommandModel
 import cicada.client.feature.command.commands.ingame.CommandCoordinates
 import net.minecraft.network.chat.Component
 import kotlin.text.iterator
@@ -15,6 +16,7 @@ object CommandManager : HashMap<String, Command>() {
         CommandExecutor
 
         val commands = arrayListOf(
+            CommandModel,
             CommandDataSet,
             CommandBind,
             CommandConfig,

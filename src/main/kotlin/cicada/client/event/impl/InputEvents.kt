@@ -24,7 +24,7 @@ object LegitClickTimingEvent : Event
 
 object MovementInputEvent : Event {
     var forward = false
-    var back = false
+    var backward = false
     var left = false
     var right = false
     var jump = false

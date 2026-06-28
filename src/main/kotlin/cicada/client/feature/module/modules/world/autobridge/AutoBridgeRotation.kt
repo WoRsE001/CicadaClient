@@ -4,7 +4,8 @@ import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSo
 import cicada.client.utils.math.roundTo
 import cicada.client.utils.client.player
 import cicada.client.utils.player.rayCast
-import cicada.client.utils.rotation.Rotation
+import cicada.client.rotation.Rotation
+import cicada.client.utils.rotation.rotation
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 
@@ -31,4 +32,8 @@ fun pitch(heightCheck: Boolean, yaw: Float, target: BlockPos, pitchesSortMode: P
     val pitches = validPitches(heightCheck, yaw, target)
     if (pitches.isEmpty()) return player.xRot
     return pitchesSortMode.sort(pitches)[0]
+}
+
+fun nearestRotation(target: BlockPos): Rotation {
+    return player.rotation().clamped(target)
 }

@@ -12,6 +12,15 @@ import java.io.File
 // SCWGxD regrets everything he did. 19.06.2026 15:11.
 object ConfigManager {
     val configsFolder = File(CicadaClient.rootFolder, "configs").apply { if (!exists()) mkdirs() }
+    val defaultConfig = File(configsFolder, "default.ccc")
+
+    init {
+        if (defaultConfig.exists()) {
+            load(defaultConfig)
+        } else {
+            save(defaultConfig)
+        }
+    }
 
     fun create(file: File) {
         if (file.exists()) file.createNewFile()

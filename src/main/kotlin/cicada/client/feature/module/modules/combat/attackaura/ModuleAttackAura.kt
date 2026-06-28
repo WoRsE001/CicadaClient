@@ -38,7 +38,7 @@ object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT), Rot
         }
 
         target?.let {
-            //movementCorrector.
+            movementCorrector.onEvent(event)
             attacker.onEvent(event, target!!)
             targetRenderer.render(event, target!!)
         }

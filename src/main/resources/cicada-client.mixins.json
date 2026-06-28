@@ -3,6 +3,7 @@
   "package": "cicada.client.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "MixinBlockCollisions",
     "MixinConnection",
     "MixinEntity",
     "MixinLevel",

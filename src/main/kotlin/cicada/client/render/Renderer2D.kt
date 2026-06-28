@@ -1,5 +1,12 @@
 package cicada.client.render
 
+import cicada.client.render.engine.ElementToDraw
+import cicada.client.render.engine.IMAGE_PIPELINE
+import cicada.client.render.engine.RECT_PIPELINE
+import cicada.client.render.engine.TRIANGLE_PIPELINE
+import cicada.client.render.engine.TexturedElementToDraw
+import cicada.client.render.engine.setDimensions
+import cicada.client.render.engine.setRounding
 import cicada.client.utils.math.normalize
 import cicada.client.utils.client.mc
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -44,10 +51,14 @@ fun GuiGraphicsExtractor.rect(
             RECT_PIPELINE,
             x, y, w, h,
             { consumer ->
-                consumer.addVertexWith2DPose(pose, x    , y    ).setColor(c0).setRounding(r0, r1, r2,r3).setDimensions(0f, 0f, w, h)
-                consumer.addVertexWith2DPose(pose, x    , y + h).setColor(c1).setRounding(r0, r1, r2,r3).setDimensions(0f, h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y + h).setColor(c2).setRounding(r0, r1, r2,r3).setDimensions(w , h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y    ).setColor(c3).setRounding(r0, r1, r2,r3).setDimensions(w , 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x, y).setColor(c0).setRounding(r0, r1, r2, r3)
+                    .setDimensions(0f, 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x, y + h).setColor(c1).setRounding(r0, r1, r2, r3)
+                    .setDimensions(0f, h, w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y + h).setColor(c2).setRounding(r0, r1, r2, r3)
+                    .setDimensions(w, h, w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y).setColor(c3).setRounding(r0, r1, r2, r3)
+                    .setDimensions(w, 0f, w, h)
             },
             scissorStack.peek()
         )
@@ -80,10 +91,14 @@ fun GuiGraphicsExtractor.image(
             IMAGE_PIPELINE,
             x, y, w, h,
             { consumer ->
-                consumer.addVertexWith2DPose(pose, x    , y    ).setUv(0f, 0f).setColor(c0).setRounding(r0, r1, r2,r3).setDimensions(0f, 0f, w, h)
-                consumer.addVertexWith2DPose(pose, x    , y + h).setUv(0f, 1f).setColor(c1).setRounding(r0, r1, r2,r3).setDimensions(0f, h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y + h).setUv(1f, 1f).setColor(c2).setRounding(r0, r1, r2,r3).setDimensions(w , h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y    ).setUv(1f, 0f).setColor(c3).setRounding(r0, r1, r2,r3).setDimensions(w , 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x, y).setUv(0f, 0f).setColor(c0).setRounding(r0, r1, r2, r3)
+                    .setDimensions(0f, 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x, y + h).setUv(0f, 1f).setColor(c1).setRounding(r0, r1, r2, r3)
+                    .setDimensions(0f, h, w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y + h).setUv(1f, 1f).setColor(c2).setRounding(r0, r1, r2, r3)
+                    .setDimensions(w, h, w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y).setUv(1f, 0f).setColor(c3).setRounding(r0, r1, r2, r3)
+                    .setDimensions(w, 0f, w, h)
             },
             scissorStack.peek(),
             TextureSetup.singleTexture(texture.textureView, texture.sampler)
@@ -125,10 +140,14 @@ fun GuiGraphicsExtractor.sprite(
             IMAGE_PIPELINE,
             x, y, w, h,
             { consumer ->
-                consumer.addVertexWith2DPose(pose, x    , y    ).setUv(u0, v0).setColor(c0).setRounding(r0, r1, r2,r3).setDimensions(0f, 0f, w, h)
-                consumer.addVertexWith2DPose(pose, x    , y + h).setUv(u0, v1).setColor(c1).setRounding(r0, r1, r2,r3).setDimensions(0f, h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y + h).setUv(u1, v1).setColor(c2).setRounding(r0, r1, r2,r3).setDimensions(w , h , w, h)
-                consumer.addVertexWith2DPose(pose, x + w, y    ).setUv(u1, v0).setColor(c3).setRounding(r0, r1, r2,r3).setDimensions(w , 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x, y).setUv(u0, v0).setColor(c0).setRounding(r0, r1, r2, r3)
+                    .setDimensions(0f, 0f, w, h)
+                consumer.addVertexWith2DPose(pose, x, y + h).setUv(u0, v1).setColor(c1).setRounding(r0, r1, r2, r3)
+                    .setDimensions(0f, h, w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y + h).setUv(u1, v1).setColor(c2).setRounding(r0, r1, r2, r3)
+                    .setDimensions(w, h, w, h)
+                consumer.addVertexWith2DPose(pose, x + w, y).setUv(u1, v0).setColor(c3).setRounding(r0, r1, r2, r3)
+                    .setDimensions(w, 0f, w, h)
             },
             scissorStack.peek(),
             TextureSetup.singleTexture(texture.textureView, texture.sampler)

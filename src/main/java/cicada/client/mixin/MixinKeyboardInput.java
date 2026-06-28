@@ -15,7 +15,7 @@ public class MixinKeyboardInput {
         MovementInputEvent MIE = MovementInputEvent.INSTANCE;
         
         MIE.setForward(original.forward());
-        MIE.setBack(original.backward());
+        MIE.setBackward(original.backward());
         MIE.setLeft(original.left());
         MIE.setRight(original.right());
         MIE.setJump(original.jump());
@@ -25,7 +25,7 @@ public class MixinKeyboardInput {
 
         return new Input(
                 MIE.getForward(),
-                MIE.getBack(),
+                MIE.getBackward(),
                 MIE.getLeft(),
                 MIE.getRight(),
                 MIE.getJump(),

@@ -1,5 +1,6 @@
 package cicada.client.utils.rotation
 
+import cicada.client.rotation.Rotation
 import cicada.client.utils.math.minus
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player

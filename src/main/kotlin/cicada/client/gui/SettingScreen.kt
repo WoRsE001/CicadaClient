@@ -3,7 +3,7 @@ package cicada.client.gui
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.font.Fonts
-import cicada.client.render.centeredText
+import cicada.client.render.engine.centeredText
 import cicada.client.render.cut
 import cicada.client.render.rect
 import cicada.client.utils.input.FrameInput

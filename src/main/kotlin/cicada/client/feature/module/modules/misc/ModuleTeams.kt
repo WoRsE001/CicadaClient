@@ -41,8 +41,8 @@ object ModuleTeams : ClientModule("Teams", ModuleCategory.MISC) {
                 }
 
                 if (nameCheck.toggled) {
-                    val playerColorName = player.displayName.style.color
-                    val entityColorName = entity.displayName.style.color
+                    val playerColorName = player.displayName?.style?.color
+                    val entityColorName = entity.displayName?.style?.color
 
                     if (playerColorName != null && entityColorName != null && playerColorName.value == entityColorName.value) {
                         _teams += entity

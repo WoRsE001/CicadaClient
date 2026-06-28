@@ -5,8 +5,6 @@ import cicada.client.feature.hud.huds.HudKeystrokes
 import cicada.client.feature.hud.huds.HudModuleList
 import cicada.client.feature.hud.huds.HudTargetInfo
 import cicada.client.feature.module.ClientModule
-import cicada.client.render.Renderable
-import cicada.client.utils.client.mc
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
 // SCWGxD regrets everything he did. 02.04.2026 11:22.

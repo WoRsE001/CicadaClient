@@ -2,7 +2,7 @@ package cicada.client.feature.hud.huds
 
 import cicada.client.feature.hud.HUD
 import cicada.client.font.Fonts
-import cicada.client.render.text
+import cicada.client.render.engine.text
 import cicada.client.utils.client.mc
 import net.minecraft.client.gui.GuiGraphicsExtractor
 

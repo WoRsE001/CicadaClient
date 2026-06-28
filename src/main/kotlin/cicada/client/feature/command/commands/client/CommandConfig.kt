@@ -5,10 +5,7 @@ import cicada.client.feature.command.Command
 import cicada.client.utils.client.displayMessage
 import cicada.client.utils.client.mc
 import net.ccbluex.liquidbounce.features.command.builder.CommandBuilder
-import net.ccbluex.liquidbounce.features.command.builder.ParameterBuilder
-import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.MutableComponent
-import net.minecraft.network.chat.contents.PlainTextContents
+import cicada.client.feature.command.builder.ParameterBuilder
 import java.io.File
 
 // SCWGxD regrets everything he did. 19.06.2026 15:30.

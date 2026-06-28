@@ -5,8 +5,8 @@ import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
 import cicada.client.font.Fonts
 import cicada.client.render.rect
 import cicada.client.render.sprite
-import cicada.client.render.text
-import cicada.client.render.width
+import cicada.client.render.engine.text
+import cicada.client.render.engine.width
 import cicada.client.utils.client.connection
 import cicada.client.utils.math.Color4f
 import cicada.client.utils.math.gazLarpit

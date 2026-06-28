@@ -1,18 +1,18 @@
 package cicada.client.feature.module
 
-import cicada.client.feature.module.modules.combat.ModuleAntiKB
+import cicada.client.feature.module.modules.combat.antikb.ModuleAntiKB
 import cicada.client.feature.module.modules.combat.ModuleAttributeSwapper
 import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
 import cicada.client.feature.module.modules.combat.ModuleAutoClicker
 import cicada.client.feature.module.modules.combat.ModulePing
-import cicada.client.feature.module.modules.combat.ModuleSprintReset
+import cicada.client.feature.module.modules.combat.sprintreset.ModuleSprintReset
 import cicada.client.feature.module.modules.combat.ModuleTPAttackAura
 import cicada.client.feature.module.modules.misc.ModuleFixes
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.misc.ModuleRatkaEXE
 import cicada.client.feature.module.modules.misc.ModuleTeams
-import cicada.client.feature.module.modules.movement.ModuleFastClimb
-import cicada.client.feature.module.modules.movement.ModuleFlight
+import cicada.client.feature.module.modules.movement.fastclimb.ModuleFastClimb
+import cicada.client.feature.module.modules.movement.flight.ModuleFlight
 import cicada.client.feature.module.modules.movement.ModuleNoSlowDown
 import cicada.client.feature.module.modules.movement.speed.ModuleSpeed
 import cicada.client.feature.module.modules.movement.ModuleSprint
@@ -21,6 +21,7 @@ import cicada.client.feature.module.modules.player.ModuleAutoTool
 import cicada.client.feature.module.modules.player.ModuleExtraC03
 import cicada.client.feature.module.modules.player.ModuleInventoryCleaner
 import cicada.client.feature.module.modules.player.ModuleMultiAction
+import cicada.client.feature.module.modules.player.phase.ModulePhase
 import cicada.client.feature.module.modules.visual.ModuleAmbient
 import cicada.client.feature.module.modules.visual.ModuleAspectRatio
 import cicada.client.feature.module.modules.visual.ModuleESP
@@ -68,6 +69,7 @@ object ModuleManager : ArrayList<ClientModule>() {
         ModuleExtraC03
         ModuleInventoryCleaner
         ModuleMultiAction
+        ModulePhase
 
         // visual
         ModuleAmbient

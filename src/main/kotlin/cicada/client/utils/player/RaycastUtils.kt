@@ -5,7 +5,7 @@ import cicada.client.utils.client.gameMode
 import cicada.client.utils.client.level
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
-import cicada.client.utils.rotation.Rotation
+import cicada.client.rotation.Rotation
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.InteractionHand

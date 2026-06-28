@@ -8,7 +8,8 @@ import net.minecraft.world.entity.LivingEntity
 object AttackAuraAimer : ToggleableConfigurable("Aimer", true) {
     private val mode by choice("Mode").apply {
         choice(RageAimMode)
-        choice(UniversalAimMode).select()
+        choice(IntaveAimMode).select()
+        choice(UniversalAimMode)
     }
 
     fun rotateTo(target: LivingEntity) {

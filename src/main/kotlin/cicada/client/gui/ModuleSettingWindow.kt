@@ -3,8 +3,8 @@ package cicada.client.gui
 import cicada.client.feature.module.ClientModule
 import cicada.client.font.Fonts
 import cicada.client.render.rect
-import cicada.client.render.text
-import cicada.client.render.width
+import cicada.client.render.engine.text
+import cicada.client.render.engine.width
 import cicada.client.setting.BooleanValue
 import cicada.client.setting.ChoiceValue
 import cicada.client.setting.Value

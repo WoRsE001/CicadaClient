@@ -59,7 +59,7 @@ open class ChoiceValue(
 
         fun select() = apply {
             parent.set(this)
-            onEnable()
+            //onEnable()
         }
 
         fun selected() = parent.get() == this

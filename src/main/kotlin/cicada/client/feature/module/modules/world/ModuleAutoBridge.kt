@@ -13,7 +13,7 @@ import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSo
 import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSortNearestMode
 import cicada.client.feature.module.modules.world.autobridge.yaw
 import cicada.client.mixin.accessors.AccessorMinecraft
-import cicada.client.render.FILLED_QUAD_TYPE
+import cicada.client.render.engine.FILLED_QUAD_TYPE
 import cicada.client.render.Renderer3D
 import cicada.client.rotation.CameraRotation
 import cicada.client.rotation.Rotator
@@ -23,7 +23,7 @@ import cicada.client.utils.client.mc
 import cicada.client.utils.client.nullCheck
 import cicada.client.utils.client.player
 import cicada.client.utils.player.rayCast
-import cicada.client.utils.rotation.Rotation
+import cicada.client.rotation.Rotation
 import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation
 import net.minecraft.core.BlockPos

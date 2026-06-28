@@ -1,4 +1,4 @@
-package net.ccbluex.liquidbounce.features.command.builder
+package cicada.client.feature.command.builder
 
 import cicada.client.feature.command.Parameter
 import cicada.client.feature.module.ModuleManager

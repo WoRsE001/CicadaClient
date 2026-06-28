@@ -6,7 +6,7 @@ import cicada.client.utils.client.displayMessage
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
 import net.ccbluex.liquidbounce.features.command.builder.CommandBuilder
-import net.ccbluex.liquidbounce.features.command.builder.ParameterBuilder
+import cicada.client.feature.command.builder.ParameterBuilder
 import net.minecraft.core.Vec3i
 
 // SCWGxD regrets everything he did. 17.06.2026 5:42.

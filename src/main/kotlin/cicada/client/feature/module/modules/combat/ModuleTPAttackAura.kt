@@ -7,7 +7,7 @@ import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.mixin.accessors.AccessorBlockBehaviour
-import cicada.client.render.FILLED_QUAD_TYPE
+import cicada.client.render.engine.FILLED_QUAD_TYPE
 import cicada.client.render.Renderer3D
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.gameMode

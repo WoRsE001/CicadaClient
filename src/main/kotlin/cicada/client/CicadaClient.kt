@@ -1,5 +1,6 @@
 package cicada.client
 
+import cicada.client.config.ConfigManager
 import cicada.client.feature.command.CommandManager
 import cicada.client.event.EventCaller
 import cicada.client.key.KeyCaller
@@ -30,6 +31,7 @@ object CicadaClient {
 
 			ModuleManager
 			CommandManager
+			ConfigManager
 
 			Fonts
 		}
