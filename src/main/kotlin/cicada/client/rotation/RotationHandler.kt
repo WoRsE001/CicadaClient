@@ -32,7 +32,7 @@ object RotationHandler : EventListener {
             if (!listener.willRotate())
                 continue
 
-            CameraRotation.unlocked = true
+            CameraRotation.unlocked = false
             listener.rotate()
             return
         }

@@ -31,7 +31,7 @@ class TargetRender2DRectMode : TargetRenderMode("2D rect") {
             //.rotateAbout(theta.toFloat(), 0f, 0f)
 
         graphics.image(
-            CicadaClient.of("images/targetmarkers/target_marker_1.png"),
+            CicadaClient.of("images/targetmarkers/target_marker_0.png"),
             renderPosition.x - size / 2f, renderPosition.y - size / 2f, size.toFloat(), size.toFloat()
         )
 

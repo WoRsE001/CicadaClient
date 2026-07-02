@@ -25,21 +25,21 @@ object HudTargetInfo : HUD(0f, 0f, 150f, 50f, "TargetInfo", true) {
     override fun render(graphics: GuiGraphicsExtractor) {
         val target = ModuleAttackAura.target ?: return
 
-        graphics.rect(x, y, w, h, backgroundColor.toInt(), rounded.toFloat())
+        graphics.rect(x, y, w, h, backgroundColor.toInt(), r0 = rounded.toFloat())
         graphics.drawHead(target, x + gaps, y + gaps, h - gaps * 2, h - gaps * 2, -1, rounded)
 
         graphics.text(font, target.name.string, x + h, y + h / 2 - gaps / 2 - 8, 9f)
         val hpText = "%.1f".format(target.health)
         graphics.text(font, hpText, x + w - gaps - font.width(hpText, 9f), y + h / 2 - gaps / 2 - 8, 9f)
 
-        graphics.rect(x + h, y + h / 2 + gaps / 2, w - h - gaps, h / 5, -1, rounded.toFloat())
+        graphics.rect(x + h, y + h / 2 + gaps / 2, w - h - gaps, h / 5, -1, r0 = rounded.toFloat())
         graphics.rect(x + h, y + h / 2 + gaps / 2,
-            gazLarpit(target.health / target.maxHealth, 0f, w - h - gaps), h / 5, 0xFFFF0000.toInt(), rounded.toFloat())
+            gazLarpit(target.health / target.maxHealth, 0f, w - h - gaps), h / 5, 0xFFFF0000.toInt(), r0 = rounded.toFloat())
     }
 
     private fun GuiGraphicsExtractor.drawHead(entity: LivingEntity, x: Float, y: Float, w: Float, h: Float, color: Int, round: Int) {
         if (entity !is Player) return
         val headTexture = (connection.getPlayerInfo(entity.uuid)?.skin ?: return).body.texturePath()
-        sprite(headTexture, 8f, 8f, 8f, 8f, x, y, w, h, r = round.toFloat())
+        sprite(headTexture, 8f, 8f, 8f, 8f, x, y, w, h, r0 = round.toFloat())
     }
 }

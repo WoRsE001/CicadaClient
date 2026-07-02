@@ -67,14 +67,9 @@ fun GuiGraphicsExtractor.rect(
 
 fun GuiGraphicsExtractor.rect(
     x: Float, y: Float, w: Float, h: Float,
-    c0: Int = -1, c1: Int = -1, c2: Int = -1, c3: Int = -1,
-    r0: Float = 0f, r1: Float = 0f, r2: Float = 0f, r3: Float = 0f
+    c0: Int = -1, c1: Int = c0, c2: Int = c0, c3: Int = c0,
+    r0: Float = 0f, r1: Float = r0, r2: Float = r0, r3: Float = r0
 ) = rect(Matrix3x2f(pose()), x, y, w, h, c0, c1, c2, c3, r0, r1, r2, r3)
-
-fun GuiGraphicsExtractor.rect(
-    x: Float, y: Float, w: Float, h: Float,
-    c: Int = -1, r: Float = 0f
-) = rect(Matrix3x2f(pose()), x, y, w, h, c, c, c, c, r, r, r, r)
 
 fun GuiGraphicsExtractor.image(
     textureLocation: Identifier,
@@ -109,15 +104,9 @@ fun GuiGraphicsExtractor.image(
 fun GuiGraphicsExtractor.image(
     textureLocation: Identifier,
     x: Float, y: Float, w: Float, h: Float,
-    c0: Int = -1, c1: Int = -1, c2: Int = -1, c3: Int = -1,
-    r0: Float = 0f, r1: Float = 0f, r2: Float = 0f, r3: Float = 0f
+    c0: Int = -1, c1: Int = c0, c2: Int = c0, c3: Int = c0,
+    r0: Float = 0f, r1: Float = r0, r2: Float = r0, r3: Float = r0
 ) = image(textureLocation, Matrix3x2f(pose()), x, y, w, h, c0, c1, c2, c3, r0, r1, r2, r3)
-
-fun GuiGraphicsExtractor.image(
-    textureLocation: Identifier,
-    x: Float, y: Float, w: Float, h: Float,
-    c: Int = -1, r: Float = 0f
-) = image(textureLocation, Matrix3x2f(pose()), x, y, w, h, c, c, c, c, r, r, r, r)
 
 fun GuiGraphicsExtractor.sprite(
     textureLocation: Identifier,
@@ -159,8 +148,8 @@ fun GuiGraphicsExtractor.sprite(
     textureLocation: Identifier,
     xTexture: Float, yTexture: Float, wTexture: Float, hTexture: Float,
     x: Float, y: Float, w: Float, h: Float,
-    c0: Int = -1, c1: Int = -1, c2: Int = -1, c3: Int = -1,
-    r0: Float = 0f, r1: Float = 0f, r2: Float = 0f, r3: Float = 0f
+    c0: Int = -1, c1: Int = c0, c2: Int = c0, c3: Int = c0,
+    r0: Float = 0f, r1: Float = r0, r2: Float = r0, r3: Float = r0
 ) = sprite(
     textureLocation,
     Matrix3x2f(pose()),
@@ -168,20 +157,6 @@ fun GuiGraphicsExtractor.sprite(
     x, y, w, h,
     c0, c1, c2, c3,
     r0, r1, r2, r3
-)
-
-fun GuiGraphicsExtractor.sprite(
-    textureLocation: Identifier,
-    xTexture: Float, yTexture: Float, wTexture: Float, hTexture: Float,
-    x: Float, y: Float, w: Float, h: Float,
-    c: Int = -1, r: Float = 0f
-) = sprite(
-    textureLocation,
-    Matrix3x2f(pose()),
-    xTexture, yTexture, wTexture, hTexture,
-    x, y, w, h,
-    c, c, c, c,
-    r, r, r, r
 )
 
 fun GuiGraphicsExtractor.cut(x: Float, y: Float, w: Float, h: Float, block: () -> Unit) {

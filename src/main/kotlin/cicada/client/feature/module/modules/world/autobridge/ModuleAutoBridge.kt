@@ -1,29 +1,28 @@
-package cicada.client.feature.module.modules.world
+package cicada.client.feature.module.modules.world.autobridge
 
 import cicada.client.event.Event
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.event.impl.RenderEvent
 import cicada.client.event.impl.TickEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import cicada.client.feature.module.modules.world.autobridge.pitch
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSortHighestMode
 import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSortLowestMode
 import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSortMode
 import cicada.client.feature.module.modules.world.autobridge.pitchsort.PitchesSortNearestMode
-import cicada.client.feature.module.modules.world.autobridge.yaw
 import cicada.client.mixin.accessors.AccessorMinecraft
-import cicada.client.render.engine.FILLED_QUAD_TYPE
 import cicada.client.render.Renderer3D
+import cicada.client.render.engine.FILLED_QUAD_TYPE
 import cicada.client.rotation.CameraRotation
+import cicada.client.rotation.Rotation
 import cicada.client.rotation.Rotator
+import cicada.client.setting.preset.MovementCorrector
 import cicada.client.utils.client.level
-import cicada.client.utils.math.Color4f
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.nullCheck
 import cicada.client.utils.client.player
+import cicada.client.utils.math.Color4f
 import cicada.client.utils.player.rayCast
-import cicada.client.rotation.Rotation
 import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation
 import net.minecraft.core.BlockPos
@@ -37,17 +36,25 @@ object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rota
         private val heightCheck by blockSearch.boolean("Height check", true)
     private val rotation = group("Rotation")
         private val pitch = rotation.group("Pitch")
-            private val pitchSpeed by pitch.float("Speed", 180f, 0f..180f)
             private val pitchesSort = pitch.choice("Pitches sort").apply {
                 choice(PitchesSortNearestMode).select()
                 choice(PitchesSortLowestMode)
                 choice(PitchesSortHighestMode)
             }
+            private val pitchSpeed by pitch.float("Speed", 180f, 0f..180f)
         private val yaw = rotation.group("Yaw")
+            private val yawNearest by yaw.boolean("Nearest", true)
             private val yawSpeed by yaw.float("Speed", 180f, 0f..180f)
-            private val yawRound by yaw.float("Round", 45f, 0f..90f)
+            private val yawRound by yaw.float("Round", 0.1f, 0.1f..90f)
+            private val telly = yaw.toggleableGroup("Telly", false)
+                private val tellyYawSpeed by yaw.float("Speed on telly", 180f, 0f..180f)
+                private val tellyGroundTicks by telly.int("Ground ticks", 0, 0..10)
+                private val tellyAirTicks by telly.int("Air ticks", 0, 0..10)
+        private val snap by rotation.boolean("Snap", true)
+    private val movementCorrector = MovementCorrector()
 
     private var target: BlockPos? = null
+    private var deltaTo: Rotation? = null
 
     override val rotatePriority = 0
 
@@ -62,7 +69,8 @@ object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rota
 
         target?.let {
             if (event is RenderEvent.World) {
-                val box = AABB(target!!.x.toDouble(),
+                val box = AABB(
+                    target!!.x.toDouble(),
                     target!!.y.toDouble(), target!!.z.toDouble(), (target!!.x + 1).toDouble(),
                     (target!!.y + 1).toDouble(), (target!!.z + 1).toDouble()
                 )
@@ -75,18 +83,42 @@ object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rota
                     (mc as AccessorMinecraft).invokeStartUseItem()
                 }
             }
+
+            if (deltaTo != null || !snap)
+                movementCorrector.onEvent(event)
         }
     }
 
     override fun rotate() {
-        val yaw = yaw(CameraRotation.y, yawRound)
-        val pitch = pitch(heightCheck, yaw, target!!, (pitchesSort.inner as PitchesSortMode))
-        val delta = (Rotation(pitch, yaw) - player.rotation()).wrapped().clamped(pitchSpeed, yawSpeed)
-
-        player.rotate(delta)
+        player.rotate(deltaTo ?: Rotation(0f, 0f))
     }
 
-    override fun willRotate() = toggled && nullCheck() && target != null
+    override fun willRotate(): Boolean {
+        if (!toggled || !nullCheck() || target == null)
+            return false
+
+        deltaTo = deltaTo(target!!)
+
+        return deltaTo != null || !snap
+    }
+
+    fun deltaTo(targetBlock: BlockPos): Rotation? {
+        if (yawNearest) {
+            val guessYaw = yaw(CameraRotation.y, yawRound)
+
+            val rotationTo = nearestRotation(
+                heightCheck, targetBlock,
+                (pitchesSort.inner as PitchesSortMode),
+                guessYaw
+            ) ?: return null
+
+            return (rotationTo - player.rotation()).wrapped().clamped(pitchSpeed, yawSpeed)
+        } else {
+            val yaw = yaw(CameraRotation.y, yawRound)
+            val pitch = pitch(heightCheck, yaw, targetBlock, (pitchesSort.inner as PitchesSortMode)) ?: return null
+            return (Rotation(pitch, yaw) - player.rotation()).wrapped().clamped(pitchSpeed, yawSpeed)
+        }
+    }
 
     fun blockSearch(): BlockPos? {
         var endBlockPos: BlockPos? = null

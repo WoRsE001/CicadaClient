@@ -1,5 +1,6 @@
 package cicada.client.feature.module.modules.combat.attackaura.aim.mode
 
+import FastNoise
 import cicada.client.feature.module.modules.combat.attackaura.aim.mode.UniversalAimMode.Jitter
 import cicada.client.feature.module.modules.combat.attackaura.aim.mode.UniversalAimMode.speed
 import cicada.client.utils.math.coerceIn
@@ -14,6 +15,7 @@ import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation
 import cicada.client.utils.rotation.rotationTo
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.phys.Vec3
 
 object RageAimMode : AttackAuraAimMode("Rage") {
     override fun rotateTo(target: LivingEntity) {
@@ -95,5 +97,34 @@ object UniversalAimMode : AttackAuraAimMode("Universal") {
         delta.round(gcd(), gcd())
         player.rotate(delta)
         lastDelta = delta
+    }
+}
+
+object NoiseAimMode : AttackAuraAimMode("Noise") {
+    val noiseGenerator = FastNoise(1488)
+
+    override fun rotateTo(target: LivingEntity) {
+        val time = (System.currentTimeMillis() % Int.MAX_VALUE) / 1_000f
+
+        noiseGenerator.SetNoiseType(FastNoise.NoiseType.OpenSimplex2)
+        noiseGenerator.SetFrequency(1f)
+
+        val noiseX = noiseGenerator.GetNoise(time, 0f  , 0f  )
+        val noiseY = noiseGenerator.GetNoise(0f  , time, 0f  )
+        val noiseZ = noiseGenerator.GetNoise(0f  , 0f  , time)
+
+        val boundingBox = target.boundingBox
+        val wHitBox = (boundingBox.maxX - boundingBox.minX) / 2
+        val hHitBox = (boundingBox.maxY - boundingBox.minY) / 2
+        val lHitBox = (boundingBox.maxZ - boundingBox.minZ) / 2
+
+        val point = Vec3(
+            boundingBox.center.x + wHitBox * noiseX,
+            boundingBox.center.y + hHitBox * noiseY,
+            boundingBox.center.z + lHitBox * noiseZ,
+        )
+
+        val delta = (rotationTo(point) - player.rotation()).wrapped()
+        player.rotate(delta)
     }
 }

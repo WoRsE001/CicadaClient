@@ -8,6 +8,7 @@ import cicada.client.rotation.Rotation
 import cicada.client.utils.rotation.rotation
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import kotlin.math.abs
 
 // SCWGxD regrets everything he did. 01.05.2026 13:02.
 fun yaw(cameraYaw: Float, round: Float): Float {
@@ -28,12 +29,23 @@ fun validPitches(heightCheck: Boolean, yaw: Float, target: BlockPos): List<Float
     return pitches
 }
 
-fun pitch(heightCheck: Boolean, yaw: Float, target: BlockPos, pitchesSortMode: PitchesSortMode): Float {
+fun pitch(heightCheck: Boolean, yaw: Float, target: BlockPos, pitchesSortMode: PitchesSortMode): Float? {
     val pitches = validPitches(heightCheck, yaw, target)
-    if (pitches.isEmpty()) return player.xRot
-    return pitchesSortMode.sort(pitches)[0]
+    return pitchesSortMode.sort(pitches).firstOrNull()
 }
 
-fun nearestRotation(target: BlockPos): Rotation {
-    return player.rotation().clamped(target)
+fun nearestRotation(heightCheck: Boolean, target: BlockPos, pitchesSortMode: PitchesSortMode, guessYaw: Float): Rotation? {
+    var nearestYaw: Float? = null
+    var bestPitch: Float? = null
+
+    for (i in -180..180) {
+        val yaw = i.toFloat()
+        val pitch = pitch(heightCheck, yaw, target, pitchesSortMode) ?: continue
+        if (nearestYaw == null || abs(yaw - guessYaw) < abs(yaw - nearestYaw)) {
+            nearestYaw = yaw
+            bestPitch = pitch
+        }
+    }
+
+    return if (nearestYaw == null || bestPitch == null) null else Rotation(bestPitch, nearestYaw)
 }

@@ -4,7 +4,6 @@ import cicada.ai.Activation
 import cicada.ai.LayerConfig
 import cicada.client.CicadaClient
 import cicada.client.feature.command.Command
-import cicada.client.rotation.ai.RotationModel
 import cicada.client.rotation.ai.RotationNN
 import cicada.client.utils.client.displayMessage
 import cicada.client.utils.client.mc
@@ -12,8 +11,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import net.ccbluex.liquidbounce.features.command.builder.CommandBuilder
 import cicada.client.feature.command.builder.ParameterBuilder
+import cicada.client.feature.module.modules.combat.ModuleAIAttackAura
 import java.io.File
-import kotlin.collections.flatten
 import kotlin.concurrent.thread
 
 // SCWGxD regrets everything he did. 25.06.2026 18:43.
@@ -83,7 +82,7 @@ object CommandModel : Command.Factory {
 
                     thread {
                         runCatching {
-                            model.train(dataSet, epochs)
+                            model.train(dataSet, epochs, whileTrain = { epochs: Int, loss: Double -> println(epochs) })
                             // Persist the trained weights (and avgLoss) back to disk.
                             modelFile.writeText(Json { prettyPrint = true }.encodeToString(JsonObject.serializer(), model.asJson))
                         }.onFailure { it.printStackTrace() }
@@ -104,7 +103,7 @@ object CommandModel : Command.Factory {
                     val file = File(CicadaClient.rootFolder, "models/$name.cam")
 
                     runCatching {
-                        RotationModel.active = RotationNN.fromJson(Json.decodeFromString(file.readText()))
+                        ModuleAIAttackAura.model = RotationNN.fromJson(Json.decodeFromString(file.readText()))
                     }.onSuccess {
                         mc.displayMessage("Model '$name' is now active")
                     }.onFailure {

@@ -28,6 +28,7 @@ dependencies {
 	implementation "net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}"
 
 	implementation(files("libraries/CicadaAI-1.0-SNAPSHOT.jar"))
+	implementation(files("libraries/FastNoise.jar"))
 }
 
 processResources {

@@ -1,5 +1,6 @@
 package cicada.client.feature.module
 
+import cicada.client.feature.module.modules.combat.ModuleAIAttackAura
 import cicada.client.feature.module.modules.combat.antikb.ModuleAntiKB
 import cicada.client.feature.module.modules.combat.ModuleAttributeSwapper
 import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
@@ -30,7 +31,7 @@ import cicada.client.feature.module.modules.visual.ModuleHandPosition
 import cicada.client.feature.module.modules.visual.ModuleNoRender
 import cicada.client.feature.module.modules.visual.ModuleOverlay
 import cicada.client.feature.module.modules.visual.ModuleSettingGUI
-import cicada.client.feature.module.modules.world.ModuleAutoBridge
+import cicada.client.feature.module.modules.world.autobridge.ModuleAutoBridge
 import cicada.client.feature.module.modules.world.ModuleBridgeAssist
 import cicada.client.feature.module.modules.world.ModuleFastPlace
 import kotlinx.serialization.json.JsonObject
@@ -49,6 +50,7 @@ object ModuleManager : ArrayList<ClientModule>() {
         ModulePing
         ModuleSprintReset
         ModuleTPAttackAura
+        ModuleAIAttackAura
 
         // misc
         ModuleFixes

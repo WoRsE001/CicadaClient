@@ -31,7 +31,7 @@ object ModuleRatkaEXE : ClientModule("RatkaEXE", ModuleCategory.MISC) {
 
                 dataSet += Sample(
                     target.position() - player.position(),
-                    player.rotation() - lastRotation,
+                    (player.rotation() - lastRotation).wrapped(),
                     player.canCrit(),
                     player.hurtTime,
                     target.hurtTime,

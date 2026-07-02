@@ -77,6 +77,8 @@ class ColorValue(
     default: Color4f,
     description: String = ""
 ) : Value<Color4f>(name, default, description) {
+    var isOpen = false
+
     override fun asJson(): JsonObject = buildJsonObject {
         put("color", inner.toInt())
     }
@@ -92,6 +94,7 @@ open class Configurable(
     default: MutableCollection<Value<*>> = mutableListOf()
 ) : Value<MutableCollection<Value<*>>>(name, default, description) {
     var owner: Configurable? = null
+    var isOpen = false
 
     override fun asJson(): JsonObject = buildJsonObject {
         for (value in inner) {
