@@ -1,12 +1,14 @@
 package cicada.client
 
 import cicada.client.config.ConfigManager
-import cicada.client.feature.command.CommandManager
 import cicada.client.event.EventCaller
-import cicada.client.key.KeyCaller
+import cicada.client.feature.command.CommandManager
 import cicada.client.feature.module.ModuleManager
 import cicada.client.font.Fonts
+import cicada.client.key.KeyCaller
+import cicada.client.packethandle.PacketHandler
 import cicada.client.rotation.RotationHandler
+import cicada.client.utils.player.LocalPlayerStateTracker
 import net.minecraft.resources.Identifier
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -27,7 +29,9 @@ object CicadaClient {
 		val startTime = measureTimeMillis {
 			EventCaller
 			KeyCaller
+			PacketHandler
 			RotationHandler
+			LocalPlayerStateTracker
 
 			ModuleManager
 			CommandManager

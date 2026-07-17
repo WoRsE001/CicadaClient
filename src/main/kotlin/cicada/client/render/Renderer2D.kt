@@ -1,14 +1,8 @@
 package cicada.client.render
 
-import cicada.client.render.engine.ElementToDraw
-import cicada.client.render.engine.IMAGE_PIPELINE
-import cicada.client.render.engine.RECT_PIPELINE
-import cicada.client.render.engine.TRIANGLE_PIPELINE
-import cicada.client.render.engine.TexturedElementToDraw
-import cicada.client.render.engine.setDimensions
-import cicada.client.render.engine.setRounding
-import cicada.client.utils.math.normalize
+import cicada.client.render.engine.*
 import cicada.client.utils.client.mc
+import cicada.client.utils.math.normalize
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.render.TextureSetup
 import net.minecraft.resources.Identifier

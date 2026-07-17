@@ -3,10 +3,10 @@ package cicada.client.setting.preset.targetrenderer.impl
 import cicada.client.CicadaClient
 import cicada.client.event.Event
 import cicada.client.event.impl.RenderEvent
-import cicada.client.setting.preset.targetrenderer.TargetRenderMode
 import cicada.client.render.image
-import cicada.client.utils.math.projectWorldToScreen
+import cicada.client.setting.preset.targetrenderer.TargetRenderMode
 import cicada.client.utils.client.mc
+import cicada.client.utils.math.projectWorldToScreen
 import net.minecraft.world.entity.Entity
 import org.lwjgl.glfw.GLFW
 import kotlin.math.sin

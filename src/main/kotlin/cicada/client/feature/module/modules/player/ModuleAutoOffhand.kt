@@ -5,11 +5,11 @@ import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
-import cicada.client.setting.ToggleableConfigurable
+import cicada.client.setting.value.ToggleableConfigurable
 import cicada.client.utils.client.gameMode
 import cicada.client.utils.client.player
-import cicada.utility.player.inventory.isTotemOfUndying
 import cicada.client.utils.player.inventory.slotBy
+import cicada.utility.player.inventory.isTotemOfUndying
 import net.minecraft.world.inventory.ContainerInput
 import net.minecraft.world.inventory.Slot
 import net.minecraft.world.item.Items

@@ -10,14 +10,10 @@ import org.joml.Vector2i
 import org.joml.Vector3d
 import org.joml.Vector3f
 import org.joml.Vector4f
+import java.lang.Math
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.math.E
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.log
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
+import kotlin.math.*
 import kotlin.random.Random
 
 lateinit var lastProjectionMatrix: Matrix4f

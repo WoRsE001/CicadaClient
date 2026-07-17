@@ -1,11 +1,10 @@
-package cicada.client.setting
+package cicada.client.setting.value
 
 import cicada.client.event.Event
-import cicada.client.setting.MultiChoiceValue.Choice
+import cicada.client.setting.Toggleable
+import cicada.client.setting.value.MultiChoiceValue.Choice
 import cicada.client.utils.math.Color4f
 import kotlinx.serialization.json.*
-import kotlinx.serialization.json.put
-import kotlin.ranges.rangeTo
 
 class BooleanValue(
     name: String,

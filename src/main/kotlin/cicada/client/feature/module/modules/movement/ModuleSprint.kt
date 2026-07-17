@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.movement
 
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 
 object ModuleSprint : ClientModule(
     "Sprint",

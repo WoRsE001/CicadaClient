@@ -4,8 +4,6 @@ import cicada.client.CicadaClient
 import cicada.client.utils.client.mc
 import com.google.gson.Gson
 import net.minecraft.client.gui.render.TextureSetup
-import net.minecraft.resources.Identifier
-import net.minecraft.server.packs.resources.Resource
 import java.io.File
 import java.nio.charset.StandardCharsets
 

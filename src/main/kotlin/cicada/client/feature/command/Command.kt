@@ -1,7 +1,7 @@
 package cicada.client.feature.command
 
 import net.minecraft.network.chat.Component
-import java.util.TreeMap
+import java.util.*
 
 class Command(
     val name: String,

@@ -4,11 +4,11 @@ import cicada.client.event.Event
 import cicada.client.event.impl.AttackEvent
 import cicada.client.event.impl.TickEvent
 import cicada.client.event.impl.WorldChangeEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
-import cicada.client.utils.math.Color4f
 import cicada.client.utils.client.player
+import cicada.client.utils.math.Color4f
 import cicada.utility.player.inventory.isSword
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.entity.player.Player

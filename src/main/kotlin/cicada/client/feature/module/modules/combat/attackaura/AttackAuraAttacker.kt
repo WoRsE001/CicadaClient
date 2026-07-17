@@ -3,13 +3,13 @@ package cicada.client.feature.module.modules.combat.attackaura
 import cicada.client.event.Event
 import cicada.client.event.impl.GameLoopEvent
 import cicada.client.event.impl.LegitClickTimingEvent
-import cicada.client.setting.Configurable
-import cicada.client.setting.ToggleableConfigurable
+import cicada.client.setting.value.Configurable
+import cicada.client.setting.value.ToggleableConfigurable
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
 import cicada.client.utils.math.random
-import cicada.client.utils.raycast.customStartAttack
 import cicada.client.utils.player.canCrit
+import cicada.client.utils.raycast.customStartAttack
 import net.minecraft.world.entity.LivingEntity
 import kotlin.math.max
 import kotlin.math.roundToInt

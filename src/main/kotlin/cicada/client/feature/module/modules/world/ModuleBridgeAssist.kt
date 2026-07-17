@@ -2,8 +2,8 @@ package cicada.client.feature.module.modules.world
 
 import cicada.client.event.Event
 import cicada.client.event.impl.MovementInputEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
 import cicada.client.utils.client.player
 import cicada.client.utils.player.velocityX

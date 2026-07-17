@@ -4,7 +4,7 @@ import cicada.client.event.Event
 import cicada.client.event.impl.MovementInputEvent
 import cicada.client.event.impl.RelativeMoveEvent
 import cicada.client.rotation.CameraRotation
-import cicada.client.setting.Configurable
+import cicada.client.setting.value.Configurable
 import cicada.client.utils.client.player
 import net.minecraft.util.Mth
 import kotlin.math.roundToInt

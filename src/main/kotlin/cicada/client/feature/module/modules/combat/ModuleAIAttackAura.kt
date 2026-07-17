@@ -7,13 +7,11 @@ import cicada.client.feature.module.ModuleCategory
 import cicada.client.rotation.Rotation
 import cicada.client.rotation.ai.RotationNN
 import cicada.client.setting.preset.TargetFinder
-import cicada.client.utils.client.gameMode
 import cicada.client.utils.client.player
 import cicada.client.utils.math.minus
 import cicada.client.utils.player.canCrit
 import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation
-import net.minecraft.world.InteractionHand
 
 // SCWGxD regrets everything he did. 29.06.2026 11:58.
 object ModuleAIAttackAura : ClientModule("AIAttackAura", ModuleCategory.COMBAT) {

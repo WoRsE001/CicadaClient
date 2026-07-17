@@ -1,8 +1,10 @@
 package cicada.client.utils.math
 
+import cicada.client.utils.math.AStar.findPath
 import net.minecraft.core.Vec3i
 import net.minecraft.world.phys.Vec3
-import kotlin.math.*
+import kotlin.math.max
+import kotlin.math.sqrt
 
 /**
  * Grid-based A* pathfinder operating on integer block coordinates.

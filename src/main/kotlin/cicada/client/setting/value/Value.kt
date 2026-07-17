@@ -1,11 +1,11 @@
-package cicada.client.setting
+package cicada.client.setting.value
 
 import cicada.client.config.AsJson
-import kotlinx.serialization.json.JsonObject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Value<T>(val name: String, private val default: T, val description: String = "") : ReadWriteProperty<Any?, T>, AsJson {
+abstract class Value<T>(val name: String, private val default: T, val description: String = "") : ReadWriteProperty<Any?, T>,
+    AsJson {
     var inner = default
 
     var visible = { true }

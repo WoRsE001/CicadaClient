@@ -11,7 +11,7 @@ import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket
 // SCWGxD regrets everything he did. 28.06.2026 7:11.
 object SprintResetPacket : SprintResetMode("Packet") {
     override fun startReset(event: Event): Boolean {
-        if (event is SendPosEvent.Pre && player.isSprinting) {
+        if (event is SendPosEvent.Pre) {
             connection.send(ServerboundPlayerCommandPacket(player, ServerboundPlayerCommandPacket.Action.STOP_SPRINTING))
             return true
         }

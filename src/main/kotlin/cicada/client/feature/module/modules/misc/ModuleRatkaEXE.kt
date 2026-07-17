@@ -4,16 +4,13 @@ import cicada.client.event.Event
 import cicada.client.event.impl.TickEvent
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
+import cicada.client.rotation.Rotation
+import cicada.client.rotation.ai.Sample
 import cicada.client.setting.preset.TargetFinder
 import cicada.client.utils.client.player
 import cicada.client.utils.math.minus
 import cicada.client.utils.player.canCrit
-import cicada.client.rotation.Rotation
-import cicada.client.rotation.ai.Sample
 import cicada.client.utils.rotation.rotation
-import kotlinx.serialization.json.*
-import net.minecraft.world.entity.player.Input
-import net.minecraft.world.phys.Vec3
 
 // SCWGxD regrets everything he did. 24.06.2026 12:45.
 object ModuleRatkaEXE : ClientModule("RatkaEXE", ModuleCategory.MISC) {

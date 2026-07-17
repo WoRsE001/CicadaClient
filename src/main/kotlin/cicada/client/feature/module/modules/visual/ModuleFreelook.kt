@@ -1,11 +1,11 @@
 package cicada.client.feature.module.modules.visual
 
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
-import com.mojang.blaze3d.platform.InputConstants
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.key.Keybind
 import cicada.client.rotation.CameraRotation
 import cicada.client.rotation.Rotator
+import com.mojang.blaze3d.platform.InputConstants
 
 object ModuleFreelook : ClientModule(
     "Freelook",

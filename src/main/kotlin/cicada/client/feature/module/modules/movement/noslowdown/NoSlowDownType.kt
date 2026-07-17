@@ -2,7 +2,7 @@ package cicada.client.feature.module.modules.movement.noslowdown
 
 import cicada.client.event.Event
 import cicada.client.event.impl.SlowDownEvent
-import cicada.client.setting.ToggleableConfigurable
+import cicada.client.setting.value.ToggleableConfigurable
 import cicada.client.utils.client.player
 
 // SCWGxD regrets everything he did. 17.04.2026 13:34.

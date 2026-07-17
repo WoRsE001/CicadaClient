@@ -3,8 +3,8 @@ package cicada.client.feature.module.modules.misc
 import cicada.client.event.Event
 import cicada.client.event.impl.TickEvent
 import cicada.client.event.impl.WorldChangeEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
 import cicada.client.utils.client.player
 import net.minecraft.core.component.DataComponents

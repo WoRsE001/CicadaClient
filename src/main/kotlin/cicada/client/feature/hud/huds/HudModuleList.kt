@@ -4,9 +4,9 @@ import cicada.client.feature.hud.HUD
 import cicada.client.feature.module.ModuleManager
 import cicada.client.font.Fonts
 import cicada.client.render.engine.height
-import cicada.client.render.rect
 import cicada.client.render.engine.text
 import cicada.client.render.engine.width
+import cicada.client.render.rect
 import cicada.client.utils.math.Color4f
 import cicada.client.utils.math.gazLarpit
 import net.minecraft.client.gui.GuiGraphicsExtractor

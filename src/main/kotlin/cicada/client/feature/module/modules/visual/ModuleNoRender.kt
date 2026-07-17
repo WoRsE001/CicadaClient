@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.visual
 
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 
 // SCWGxD regrets everything he did. 01.04.2026 12:04.
 object ModuleNoRender : ClientModule("NoRender", ModuleCategory.VISUAL) {

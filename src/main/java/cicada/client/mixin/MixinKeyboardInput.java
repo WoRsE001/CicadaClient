@@ -1,7 +1,7 @@
 package cicada.client.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.MovementInputEvent;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.world.entity.player.Input;
 import org.spongepowered.asm.mixin.Mixin;

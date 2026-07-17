@@ -2,10 +2,10 @@ package cicada.client.feature.command.commands.client.ai
 
 import cicada.client.CicadaClient
 import cicada.client.feature.command.Command
+import cicada.client.feature.command.builder.ParameterBuilder
 import cicada.client.feature.module.modules.misc.ModuleRatkaEXE
 import kotlinx.serialization.json.*
 import net.ccbluex.liquidbounce.features.command.builder.CommandBuilder
-import cicada.client.feature.command.builder.ParameterBuilder
 import java.io.File
 
 // SCWGxD regrets everything he did. 24.06.2026 13:20.

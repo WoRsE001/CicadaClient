@@ -5,7 +5,6 @@ import cicada.client.font.kerningKey
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import org.joml.Matrix3x2fc
-import kotlin.code
 
 // SCWGxD regrets everything he did. 18.05.2026 7:20.
 private fun FontData.addVertices(vertexConsumer: VertexConsumer, pose: Matrix3x2fc, text: String, x: Float, y: Float, size: Float, color: Int) {

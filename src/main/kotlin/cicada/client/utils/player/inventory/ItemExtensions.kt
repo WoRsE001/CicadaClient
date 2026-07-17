@@ -1,9 +1,9 @@
 package cicada.client.utils.player.inventory
 
-import com.mojang.brigadier.StringReader
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
 import cicada.utility.player.inventory.getEnchantment
+import com.mojang.brigadier.StringReader
 import net.minecraft.commands.arguments.item.ItemInput
 import net.minecraft.commands.arguments.item.ItemParser
 import net.minecraft.core.BlockPos

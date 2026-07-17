@@ -2,8 +2,8 @@ package cicada.client.feature.module.modules.player
 
 import cicada.client.event.Event
 import cicada.client.event.impl.SendPosEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.player
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket

@@ -3,12 +3,12 @@ package cicada.client.feature.module.modules.combat
 import cicada.client.event.Event
 import cicada.client.event.impl.GameLoopEvent
 import cicada.client.event.impl.LegitClickTimingEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.mixin.accessors.AccessorMinecraft
+import cicada.client.utils.client.mc
 import cicada.client.utils.math.gaussianRandom
 import cicada.client.utils.math.random
-import cicada.client.utils.client.mc
 import cicada.client.utils.time.Timer
 
 object ModuleAutoClicker : ClientModule("AutoClicker", ModuleCategory.COMBAT) {

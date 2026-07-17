@@ -2,9 +2,7 @@ package cicada.client.render.engine
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat.builder
-import com.mojang.blaze3d.vertex.VertexFormatElement.COLOR
-import com.mojang.blaze3d.vertex.VertexFormatElement.POSITION
-import com.mojang.blaze3d.vertex.VertexFormatElement.UV0
+import com.mojang.blaze3d.vertex.VertexFormatElement.*
 
 // SCWGxD regrets everything he did. 17.05.2026 10:18.
 val RECT_FORMAT: VertexFormat = builder()

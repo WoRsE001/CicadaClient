@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat.antikb.modes
 
 import cicada.client.event.Event
-import cicada.client.setting.MultiChoiceValue
+import cicada.client.setting.value.MultiChoiceValue
 
 // SCWGxD regrets everything he did. 28.06.2026 6:49.
 abstract class AntiKBMode(name: String) : MultiChoiceValue.Choice(name, false) {

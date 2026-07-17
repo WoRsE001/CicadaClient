@@ -1,7 +1,6 @@
 package cicada.client.config
 
 import cicada.client.CicadaClient
-import cicada.client.feature.hud.HUDManager
 import cicada.client.feature.module.ModuleManager
 import kotlinx.io.files.FileNotFoundException
 import kotlinx.serialization.json.Json

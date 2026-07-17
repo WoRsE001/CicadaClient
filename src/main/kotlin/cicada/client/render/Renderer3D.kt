@@ -1,7 +1,7 @@
 package cicada.client.render
 
-import cicada.client.utils.math.Color4f
 import cicada.client.utils.client.mc
+import cicada.client.utils.math.Color4f
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.rendertype.RenderType

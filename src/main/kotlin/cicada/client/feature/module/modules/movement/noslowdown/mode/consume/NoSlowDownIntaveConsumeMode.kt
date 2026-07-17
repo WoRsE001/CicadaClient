@@ -2,7 +2,7 @@ package cicada.client.feature.module.modules.movement.noslowdown.mode.consume
 
 import cicada.client.event.Event
 import cicada.client.event.impl.PlayerStateUpdateEvent
-import cicada.client.setting.ChoiceValue
+import cicada.client.setting.value.ChoiceValue
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.player
 import net.minecraft.core.Direction

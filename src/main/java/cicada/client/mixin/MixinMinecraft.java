@@ -1,15 +1,16 @@
 package cicada.client.mixin;
 
 import cicada.client.CicadaClient;
-import cicada.client.utils.player.PlayerStateUtilsKt;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.event.impl.GameLoopEvent;
 import cicada.client.event.impl.LegitClickTimingEvent;
 import cicada.client.event.impl.TickEvent;
-import cicada.client.mixin.accessors.AccessorKeyMapping;
 import cicada.client.feature.module.modules.player.ModuleMultiAction;
+import cicada.client.mixin.accessors.AccessorKeyMapping;
+import cicada.client.packethandle.PacketHandler;
+import cicada.client.utils.client.MinecraftExtensionsKt;
 import cicada.client.utils.input.FrameInput;
 import cicada.client.utils.player.RaycastUtilsKt;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.main.GameConfig;
@@ -57,6 +58,7 @@ public abstract class MixinMinecraft {
 
 	@Inject(at = @At("HEAD"), method = "runTick")
 	private void callGameLoopEvent$PRE(boolean advanceGameTime, CallbackInfo ci) {
+		PacketHandler.INSTANCE.handle();
 		FrameInput.INSTANCE.getScroll().set(0, 0);
 		GameLoopEvent.Pre.INSTANCE.call();
 	}

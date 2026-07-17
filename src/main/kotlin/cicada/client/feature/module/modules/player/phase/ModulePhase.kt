@@ -3,7 +3,8 @@ package cicada.client.feature.module.modules.player.phase
 import cicada.client.event.Event
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
-import cicada.client.feature.module.modules.player.phase.mode.*
+import cicada.client.feature.module.modules.player.phase.mode.PhaseIntave
+import cicada.client.feature.module.modules.player.phase.mode.PhaseNoCollision
 
 // SCWGxD regrets everything he did. 24.06.2026 14:53.
 object ModulePhase : ClientModule("Phase", ModuleCategory.PLAYER) {

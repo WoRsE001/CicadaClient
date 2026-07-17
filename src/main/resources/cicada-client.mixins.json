@@ -11,6 +11,7 @@
     "MixinPlayer",
     "accessors.AccessorBlockBehaviour",
     "accessors.AccessorClientboundMoveEntityPacket",
+    "accessors.AccessorConnection",
     "accessors.AccessorSoundEvents"
   ],
   "injectors": {

@@ -1,8 +1,8 @@
 package cicada.client.mixin;
 
 import cicada.client.feature.module.modules.visual.ModuleAspectRatio;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import cicada.client.rotation.CameraRotation;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,14 +1,14 @@
 package cicada.client.feature.module.modules.combat
 
-import com.google.common.collect.Queues
 import cicada.client.event.Event
 import cicada.client.event.impl.AttackEvent
 import cicada.client.event.impl.GameLoopEvent
 import cicada.client.event.impl.PacketEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.connection
 import cicada.client.utils.network.sendInvisiblePacket
+import com.google.common.collect.Queues
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.network.protocol.game.ServerboundContainerClickPacket

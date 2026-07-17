@@ -3,7 +3,8 @@ package cicada.client.feature.module.modules.movement.flight
 import cicada.client.event.Event
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
-import cicada.client.feature.module.modules.movement.flight.mode.*
+import cicada.client.feature.module.modules.movement.flight.mode.FlightIntave
+import cicada.client.feature.module.modules.movement.flight.mode.FlightMotion
 
 // SCWGxD regrets everything he did. 02.05.2026 5:13.
 object ModuleFlight : ClientModule("Flight", ModuleCategory.MOVEMENT) {

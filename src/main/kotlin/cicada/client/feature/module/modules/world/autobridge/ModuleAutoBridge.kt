@@ -47,11 +47,11 @@ object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rota
             private val yawSpeed by yaw.float("Speed", 180f, 0f..180f)
             private val yawRound by yaw.float("Round", 0.1f, 0.1f..90f)
             private val telly = yaw.toggleableGroup("Telly", false)
-                private val tellyYawSpeed by yaw.float("Speed on telly", 180f, 0f..180f)
+                private val tellyYawSpeed by yaw.float("Speed on telly", 180f, 0f..180f) //TODO: сделать
                 private val tellyGroundTicks by telly.int("Ground ticks", 0, 0..10)
                 private val tellyAirTicks by telly.int("Air ticks", 0, 0..10)
         private val snap by rotation.boolean("Snap", true)
-    private val movementCorrector = MovementCorrector()
+    private val movementCorrector = tree(MovementCorrector())
 
     private var target: BlockPos? = null
     private var deltaTo: Rotation? = null
@@ -60,6 +60,10 @@ object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rota
 
     init {
         registerToRotations()
+    }
+
+    override fun onDisable() {
+        target = null
     }
 
     override fun onEvent(event: Event) {
@@ -84,8 +88,7 @@ object ModuleAutoBridge : ClientModule("AutoBridge", ModuleCategory.WORLD), Rota
                 }
             }
 
-            if (deltaTo != null || !snap)
-                movementCorrector.onEvent(event)
+            movementCorrector.onEvent(event)
         }
     }
 

@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.visual
 
 import cicada.client.event.Event
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.visual.esp.entitytype.ESPEntityTypeRenderer
 import cicada.client.utils.client.level
 import cicada.client.utils.client.mc

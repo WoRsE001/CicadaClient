@@ -1,13 +1,13 @@
 package cicada.client.feature.command.commands.client
 
 import cicada.client.feature.command.Command
+import cicada.client.feature.command.builder.ParameterBuilder
 import cicada.client.feature.module.ClientModule
 import cicada.client.key.Keybind
 import cicada.client.utils.client.displayMessage
 import cicada.client.utils.client.mc
 import cicada.client.utils.input.inputByName
 import net.ccbluex.liquidbounce.features.command.builder.CommandBuilder
-import cicada.client.feature.command.builder.ParameterBuilder
 
 // SCWGxD regrets everything he did. 17.06.2026 6:29.
 object CommandBind : Command.Factory {

@@ -1,7 +1,7 @@
 package cicada.client.setting.preset
 
 import cicada.client.event.Event
-import cicada.client.setting.ToggleableConfigurable
+import cicada.client.setting.value.ToggleableConfigurable
 import cicada.client.setting.preset.targetrenderer.TargetRenderMode
 import cicada.client.setting.preset.targetrenderer.impl.TargetRender2DRectMode
 import net.minecraft.world.entity.Entity

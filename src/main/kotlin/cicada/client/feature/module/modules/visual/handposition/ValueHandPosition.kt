@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.visual.handposition
 
+import cicada.client.setting.value.ToggleableConfigurable
 import com.mojang.blaze3d.vertex.PoseStack
-import cicada.client.setting.ToggleableConfigurable
 
 // SCWGxD regrets everything he did. 18.04.2026 4:08.
 class ValueHandPosition(name: String) : ToggleableConfigurable(name, false) {

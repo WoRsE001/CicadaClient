@@ -2,9 +2,7 @@ package cicada.client.utils.player
 
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.misc.ModuleTeams
-import cicada.client.rotation.Rotation
 import net.minecraft.client.player.LocalPlayer
-import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Input
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
@@ -42,10 +40,6 @@ val Input.isMoving: Boolean
 var utilAirTicks = 0
 var utilGroundTicks = 0
 
-val LocalPlayer.airTicks: Int
-    get() = utilAirTicks
 
-val LocalPlayer.groundTicks: Int
-    get() = utilGroundTicks
 
 fun Player.canCrit() = fallDistance > 0f && !onGround() && !onClimbable() && !isInWater && !isMobilityRestricted && !isPassenger

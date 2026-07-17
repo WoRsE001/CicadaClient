@@ -5,7 +5,7 @@ import cicada.client.feature.module.modules.visual.esp.mode.ESPMode
 import cicada.client.feature.module.modules.visual.esp.mode.impl.ESP2DOutlineMode
 import cicada.client.feature.module.modules.visual.esp.mode.impl.ESP2DPointerMode
 import cicada.client.feature.module.modules.visual.esp.mode.impl.ESP3DBoxMode
-import cicada.client.setting.MultiChoiceValue
+import cicada.client.setting.value.MultiChoiceValue
 import net.minecraft.world.entity.Entity
 
 // SCWGxD regrets everything he did. 06.04.2026 12:12.

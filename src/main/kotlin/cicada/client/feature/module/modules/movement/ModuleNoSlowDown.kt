@@ -2,8 +2,8 @@ package cicada.client.feature.module.modules.movement
 
 import cicada.client.event.Event
 import cicada.client.event.impl.SlowDownEvent
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.movement.noslowdown.NoSlowDownType
 import cicada.client.feature.module.modules.movement.noslowdown.mode.consume.NoSlowDownIntaveConsumeMode
 

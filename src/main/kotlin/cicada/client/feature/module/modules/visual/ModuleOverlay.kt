@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.visual
 
 import cicada.client.CicadaClient
-import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.ClientModule
+import cicada.client.feature.module.ModuleCategory
 import cicada.client.render.image
 import net.minecraft.client.gui.GuiGraphicsExtractor
 

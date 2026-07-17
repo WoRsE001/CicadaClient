@@ -1,15 +1,12 @@
 package cicada.client.feature.module.modules.combat.attackaura.aim.mode
 
 import FastNoise
-import cicada.client.feature.module.modules.combat.attackaura.aim.mode.UniversalAimMode.Jitter
-import cicada.client.feature.module.modules.combat.attackaura.aim.mode.UniversalAimMode.speed
-import cicada.client.utils.math.coerceIn
-import cicada.client.utils.client.player
-import cicada.client.utils.math.randomFloat
 import cicada.client.rotation.Rotation
-import cicada.client.setting.Configurable
-import cicada.client.utils.math.boundingBox
+import cicada.client.setting.value.Configurable
+import cicada.client.utils.client.player
+import cicada.client.utils.math.coerceIn
 import cicada.client.utils.math.random
+import cicada.client.utils.math.randomFloat
 import cicada.client.utils.rotation.gcd
 import cicada.client.utils.rotation.rotate
 import cicada.client.utils.rotation.rotation

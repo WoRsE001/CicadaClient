@@ -1,9 +1,9 @@
 package cicada.client.utils.rotation
 
 import cicada.client.rotation.Rotation
-import cicada.client.utils.math.minus
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
+import cicada.client.utils.math.minus
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
 import net.minecraft.util.Mth

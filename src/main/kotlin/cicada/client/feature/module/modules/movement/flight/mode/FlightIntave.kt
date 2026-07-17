@@ -6,7 +6,7 @@ import cicada.client.event.impl.RelativeMoveEvent
 import cicada.client.feature.module.modules.movement.flight.ModuleFlight
 import cicada.client.rotation.CameraRotation
 import cicada.client.rotation.Rotator
-import cicada.client.setting.ChoiceValue
+import cicada.client.setting.value.ChoiceValue
 import cicada.client.utils.client.nullCheck
 import cicada.client.utils.client.player
 import cicada.client.utils.math.roundTo

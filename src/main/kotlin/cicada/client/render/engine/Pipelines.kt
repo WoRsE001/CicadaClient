@@ -1,5 +1,6 @@
 package cicada.client.render.engine
 
+import cicada.client.CicadaClient
 import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.ColorTargetState
 import com.mojang.blaze3d.pipeline.DepthStencilState
@@ -8,7 +9,6 @@ import com.mojang.blaze3d.pipeline.RenderPipeline.builder
 import com.mojang.blaze3d.platform.CompareOp
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
-import cicada.client.CicadaClient
 import net.minecraft.client.renderer.RenderPipelines.MATRICES_PROJECTION_SNIPPET
 import net.minecraft.client.renderer.RenderPipelines.register
 
