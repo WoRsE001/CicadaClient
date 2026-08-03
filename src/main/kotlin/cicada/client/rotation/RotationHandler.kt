@@ -2,7 +2,7 @@ package cicada.client.rotation
 
 import cicada.client.event.Event
 import cicada.client.event.EventListener
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.utils.client.nullCheck
 import cicada.client.utils.client.player
 import cicada.client.utils.rotation.gcd
@@ -25,7 +25,7 @@ object RotationHandler : EventListener {
     }
 
     override fun onEvent(event: Event) {
-        if (event !is TickEvent.Pre)
+        if (event !is EventTick.Pre)
             return
 
         for (listener in listeners) {

@@ -3,14 +3,14 @@ package cicada.client.event.impl
 import cicada.client.event.CancelableEvent
 import cicada.client.event.Event
 
-interface TickEvent {
+interface EventTick {
     object Pre : CancelableEvent()
     object Post : Event
 }
 
-interface GameLoopEvent {
+interface EventGameLoop {
     object Pre : Event
     object Post : Event
 }
 
-object WorldChangeEvent : Event
+object EventWorldChange : Event

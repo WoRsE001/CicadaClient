@@ -16,6 +16,9 @@ val Player.isDetective: Boolean
 val Player.isTeam: Boolean
     get() = this in ModuleTeams.teams
 
+val Player.isFriend: Boolean
+    get() = this.name.string in Friends
+
 var LocalPlayer.velocityX: Double
     get() = deltaMovement.x
     set(value) {
@@ -37,9 +40,13 @@ var LocalPlayer.velocityZ: Double
 val Input.isMoving: Boolean
     get() = forward != backward || left != right
 
-var utilAirTicks = 0
-var utilGroundTicks = 0
+var utilGroundTick = 0
+var utilAirTick = 0
 
+val LocalPlayer.groundTick: Int
+    get() = utilGroundTick
 
+val LocalPlayer.airTick: Int
+    get() = utilGroundTick
 
 fun Player.canCrit() = fallDistance > 0f && !onGround() && !onClimbable() && !isInWater && !isMobilityRestricted && !isPassenger

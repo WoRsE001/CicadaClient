@@ -1,12 +1,9 @@
-package cicada.client.render.gui.element.impl
+package cicada.client.render.gui.element.elements
 
 import cicada.client.render.gui.element.Element
 import cicada.client.render.rect
 import net.minecraft.client.gui.GuiGraphicsExtractor
 
-/**
- * ElementRect - рисует прямоугольник
- */
 class ElementRect(
     xProvider: () -> Float = { 0f },
     yProvider: () -> Float = { 0f },
@@ -19,8 +16,9 @@ class ElementRect(
     private val r0: Float = 0f,
     private val r1: Float = r0,
     private val r2: Float = r0,
-    private val r3: Float = r0
-) : Element(xProvider, yProvider, wProvider, hProvider) {
+    private val r3: Float = r0,
+    subElementsProvider: (() -> List<Element>) = { emptyList() }
+) : Element(xProvider, yProvider, wProvider, hProvider, subElementsProvider) {
 
     override fun draw(graphics: GuiGraphicsExtractor, offsetX: Float, offsetY: Float) {
         graphics.rect(

@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat
 
 import cicada.client.event.Event
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.rotation.Rotation
@@ -34,7 +34,7 @@ object ModuleAIAttackAura : ClientModule("AIAttackAura", ModuleCategory.COMBAT) 
         // command thread and would otherwise not smart-cast).
         val model = model ?: return
 
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             targetFinder.updateTarget()
 
             val target = targetFinder.target

@@ -1,4 +1,4 @@
-package cicada.client.render.gui.element.impl
+package cicada.client.render.gui.element.elements
 
 import cicada.client.font.FontData
 import cicada.client.render.engine.text
@@ -53,6 +53,8 @@ class ElementMultiChoice(
     }
 
     override fun handle(offsetX: Float, offsetY: Float): Boolean {
+        if (super.handle(offsetX, offsetY)) return true
+
         val mx = FrameInput.MPos[0]
         val my = FrameInput.MPos[1]
         val ax = offsetX + x

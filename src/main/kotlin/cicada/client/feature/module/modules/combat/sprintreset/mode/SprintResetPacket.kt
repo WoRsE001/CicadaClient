@@ -3,7 +3,7 @@ package cicada.client.feature.module.modules.combat.sprintreset.mode
 import cicada.client.event.Event
 import cicada.client.event.impl.PacketEvent
 import cicada.client.event.impl.SendPosEvent
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.player
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket
@@ -20,7 +20,7 @@ object SprintResetPacket : SprintResetMode("Packet") {
     }
 
     override fun reset(event: Event): Boolean {
-        if (event is TickEvent.Pre)
+        if (event is EventTick.Pre)
             return true
 
         if (event is PacketEvent.Send) {

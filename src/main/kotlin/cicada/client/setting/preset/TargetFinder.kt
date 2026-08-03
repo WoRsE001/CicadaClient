@@ -3,11 +3,13 @@ package cicada.client.setting.preset
 import cicada.client.setting.value.Configurable
 import cicada.client.utils.client.level
 import cicada.client.utils.client.player
+import cicada.client.utils.player.isFriend
 import cicada.client.utils.player.isTeam
 import cicada.client.utils.target.BestEntityBy
 import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.animal.Animal
+import net.minecraft.world.entity.decoration.ArmorStand
 import net.minecraft.world.entity.monster.Monster
 import net.minecraft.world.entity.player.Player
 
@@ -16,10 +18,11 @@ open class TargetFinder : Configurable("Target finder") {
     var searchRange = float("Search range", 10f, 0f..20f)
     var filter = multiChoice("Filter")
     var filterAnimals = filter.choice("Animals", true)
+    var filterArmorStand = filter.choice("Armor stand", true)
     var filterInvisible = filter.choice("Invisible", false)
-    var filterFriends = filter.choice("Friends", true)
     var filterMonsters = filter.choice("Monsters", true)
     var filterPlayers = filter.choice("Players", false)
+    var filterFriends = filter.choice("Friends", true)
     var filterTeams = filter.choice("Teams", true)
     var sortType = choice("Sort type").apply {
         choice("FOV")
@@ -33,7 +36,6 @@ open class TargetFinder : Configurable("Target finder") {
     var target: LivingEntity? = null
 
     fun updateTarget() {
-        filterMonsters.toggled = false
         if (lockTarget.toggled)
             if (target != null && !target!!.isDeadOrDying && player.distanceTo(target!!) <= lockTargetRange.inner)
                 return
@@ -44,10 +46,12 @@ open class TargetFinder : Configurable("Target finder") {
             if (entity !is LivingEntity || entity == player) continue
             if (entity.isDeadOrDying || player.distanceTo(entity) > searchRange.inner) continue
             if (filterAnimals.toggled && entity is Animal) continue
+            if (filterArmorStand.toggled && entity is ArmorStand) continue
             if (filterMonsters.toggled && entity is Monster) continue
             if (filterInvisible.toggled && entity.hasEffect(MobEffects.INVISIBILITY)) continue
             if (entity is Player) {
                 if (filterPlayers.toggled) continue
+                if (filterFriends.toggled && entity.isFriend) continue
                 if (filterTeams.toggled && entity.isTeam) continue
             }
 

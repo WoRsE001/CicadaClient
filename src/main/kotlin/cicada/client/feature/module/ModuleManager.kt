@@ -8,6 +8,7 @@ import cicada.client.feature.module.modules.misc.ModuleFixes
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.misc.ModuleRatkaEXE
 import cicada.client.feature.module.modules.misc.ModuleTeams
+import cicada.client.feature.module.modules.movement.ModuleMovementHelper
 import cicada.client.feature.module.modules.movement.ModuleNoSlowDown
 import cicada.client.feature.module.modules.movement.ModuleSprint
 import cicada.client.feature.module.modules.movement.fastclimb.ModuleFastClimb
@@ -16,6 +17,7 @@ import cicada.client.feature.module.modules.movement.speed.ModuleSpeed
 import cicada.client.feature.module.modules.player.*
 import cicada.client.feature.module.modules.player.phase.ModulePhase
 import cicada.client.feature.module.modules.visual.*
+import cicada.client.feature.module.modules.visual.druns.ModuleDruns
 import cicada.client.feature.module.modules.world.ModuleBridgeAssist
 import cicada.client.feature.module.modules.world.ModuleFastPlace
 import cicada.client.feature.module.modules.world.autobridge.ModuleAutoBridge
@@ -31,9 +33,9 @@ object ModuleManager : ArrayList<ClientModule>() {
         ModuleAntiKB
         ModuleAttackAura
         ModuleAttributeSwapper
+        ModuleAutoAttack
         ModuleAutoClicker
         ModulePing
-        ModulePingKAKA
         ModulePulseBlink
         ModuleSprintReset
         ModuleTPAttackAura
@@ -48,6 +50,7 @@ object ModuleManager : ArrayList<ClientModule>() {
         // movement
         ModuleFastClimb
         ModuleFlight
+        ModuleMovementHelper
         ModuleNoSlowDown
         ModuleSpeed
         ModuleSprint
@@ -55,6 +58,7 @@ object ModuleManager : ArrayList<ClientModule>() {
         // player
         ModuleAutoOffhand
         ModuleAutoTool
+        ModuleChestStealer
         ModuleExtraC03
         ModuleInventoryCleaner
         ModuleMultiAction
@@ -63,12 +67,14 @@ object ModuleManager : ArrayList<ClientModule>() {
         // visual
         ModuleAmbient
         ModuleAspectRatio
+        ModuleDruns
         ModuleESP
         ModuleFreelook
         ModuleHandPosition
         ModuleNoRender
         ModuleOverlay
         ModuleSettingGUI
+        ModuleNoisePointSelect
 
         // world
         ModuleAutoBridge

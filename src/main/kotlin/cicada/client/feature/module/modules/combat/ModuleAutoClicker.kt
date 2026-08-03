@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat
 
 import cicada.client.event.Event
-import cicada.client.event.impl.GameLoopEvent
+import cicada.client.event.impl.EventGameLoop
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
@@ -24,7 +24,7 @@ object ModuleAutoClicker : ClientModule("AutoClicker", ModuleCategory.COMBAT) {
     private var clicks = 0
 
     override fun onEvent(event: Event) {
-        if (event is GameLoopEvent.Pre) {
+        if (event is EventGameLoop.Pre) {
             if (
                 (!whenClickMouse.toggled || mc.options.keyAttack.isDown)
             ) {

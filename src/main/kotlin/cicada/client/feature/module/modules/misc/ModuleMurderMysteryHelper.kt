@@ -2,8 +2,8 @@ package cicada.client.feature.module.modules.misc
 
 import cicada.client.event.Event
 import cicada.client.event.impl.AttackEvent
-import cicada.client.event.impl.TickEvent
-import cicada.client.event.impl.WorldChangeEvent
+import cicada.client.event.impl.EventTick
+import cicada.client.event.impl.EventWorldChange
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
@@ -56,10 +56,10 @@ object ModuleMurderMysteryHelper : ClientModule(
                 player.inventory.setSelectedSlot(stashSlot)
         }
 
-        if (event is WorldChangeEvent)
+        if (event is EventWorldChange)
             clear()
 
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             for (player in level.players()) {
                 if (player in _murders || player in _detectives)
                     continue

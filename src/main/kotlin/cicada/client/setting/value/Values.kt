@@ -28,6 +28,7 @@ open class ChoiceValue(
     name: String,
     description: String = ""
 ) : Value<ChoiceValue.Choice?>(name, null, description) {
+    var isOpen = false
     private val _choices = mutableListOf<Choice>()
     val choices: List<Choice>
         get() = _choices
@@ -49,6 +50,14 @@ open class ChoiceValue(
     fun choice(choice: Choice) = choice.apply {
         parent = this@ChoiceValue
         _choices += this
+    }
+
+    fun next() {
+        choices[(choices.indexOf(inner) + 1) % choices.size].select()
+    }
+
+    fun previous() {
+        choices[(choices.indexOf(inner) - 1 + choices.size) % choices.size].select()
     }
 
     open class Choice internal constructor(
@@ -259,6 +268,8 @@ open class MultiChoiceValue(
     name: String,
     description: String = ""
 ) : Value<MutableList<Choice>>(name, mutableListOf(), description) {
+    var isOpen = false
+    var selected = 0
     override fun asJson(): JsonObject = buildJsonObject {
         for (choice in inner) {
             put(choice.name, choice.toggled)
@@ -273,14 +284,14 @@ open class MultiChoiceValue(
 
     fun choice(name: String, defaultToggled: Boolean) = Choice(name, defaultToggled).apply {
         parent = this@MultiChoiceValue
-        inner += this
+        this@MultiChoiceValue.inner += this
     }
 
     fun choice(name: String) = choice(name, false)
 
     fun choice(choice: Choice) = choice.apply {
         parent = this@MultiChoiceValue
-        inner += this
+        this@MultiChoiceValue.inner += this
     }
 
     open class Choice internal constructor(

@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.WorldChangeEvent;
+import cicada.client.event.impl.EventWorldChange;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -15,6 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinClientLevel {
     @Inject(at = @At("TAIL"), method = "<init>")
     private void callWorldChangeEvent(ClientPacketListener connection, ClientLevel.ClientLevelData levelData, ResourceKey dimension, Holder dimensionType, int serverChunkRadius, int serverSimulationDistance, LevelRenderer levelRenderer, boolean isDebug, long biomeZoomSeed, int seaLevel, CallbackInfo ci) {
-        WorldChangeEvent.INSTANCE.call();
+        EventWorldChange.INSTANCE.call();
     }
 }

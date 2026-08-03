@@ -1,4 +1,4 @@
-package cicada.client.render.gui.element.impl
+package cicada.client.render.gui.element.elements
 
 import cicada.client.render.gui.element.Element
 import cicada.client.render.rect
@@ -15,8 +15,9 @@ class ElementColorPicker(
     wProvider: () -> Float = { 200f },
     hProvider: () -> Float = { 200f },
     private var color: Int = 0xFFFF0000.toInt(),
-    private val onChange: (Int) -> Unit = {}
-) : Element(xProvider, yProvider, wProvider, hProvider) {
+    private val onChange: (Int) -> Unit = {},
+    subElementsProvider: (() -> List<Element>) = { emptyList() }
+) : Element(xProvider, yProvider, wProvider, hProvider, subElementsProvider) {
 
     private var isDragging = false
 
@@ -43,9 +44,13 @@ class ElementColorPicker(
 
         // Показываем текущий выбранный цвет
         graphics.rect(ax, ay + h + 10f, w, 30f, color, color, color, color, 4f, 4f, 4f, 4f)
+
+        super.draw(graphics, offsetX, offsetY)
     }
 
     override fun handle(offsetX: Float, offsetY: Float): Boolean {
+        if (super.handle(offsetX, offsetY)) return true
+
         val mx = FrameInput.MPos[0]
         val my = FrameInput.MPos[1]
 

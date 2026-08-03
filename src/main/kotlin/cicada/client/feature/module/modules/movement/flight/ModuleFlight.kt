@@ -5,12 +5,14 @@ import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.movement.flight.mode.FlightIntave
 import cicada.client.feature.module.modules.movement.flight.mode.FlightMotion
+import cicada.client.feature.module.modules.movement.flight.mode.FlightPolar
 
 // SCWGxD regrets everything he did. 02.05.2026 5:13.
 object ModuleFlight : ClientModule("Flight", ModuleCategory.MOVEMENT) {
     private val mode = choice("Mode").apply {
         choice(FlightMotion)
-        choice(FlightIntave).select()
+        choice(FlightIntave)
+        choice(FlightPolar).select()
     }
 
     override fun onEnable() {

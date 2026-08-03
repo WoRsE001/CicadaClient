@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.player
 
 import cicada.client.event.Event
-import cicada.client.event.impl.GameLoopEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.setting.value.ChoiceValue
@@ -21,8 +21,8 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.ProjectileItem
 import net.minecraft.world.item.enchantment.Enchantments
 
-object ModuleInventoryCleaner : ClientModule("InventoryManager", ModuleCategory.PLAYER) {
-    private val sortedSlots = List(9) { i ->
+object ModuleInventoryCleaner : ClientModule("InventoryCleaner", ModuleCategory.PLAYER) {
+    val sortedSlots = List(9) { i ->
         choice("Slot $i").apply {
             choice(ItemForSort("Sword", { it.isSword }, { a, b -> a.attackDamage > b.attackDamage }))
             choice(ItemForSort("Fishing rod", { it.`is`(Items.FISHING_ROD) }, { a, b -> false }))
@@ -38,7 +38,7 @@ object ModuleInventoryCleaner : ClientModule("InventoryManager", ModuleCategory.
 
     override fun onEvent(event: Event) {
         if (mc.screen !is InventoryScreen) return
-        if (event !is GameLoopEvent.Pre) return
+        if (event !is EventTick.Pre) return
 
         sort()
     }
@@ -64,6 +64,7 @@ object ModuleInventoryCleaner : ClientModule("InventoryManager", ModuleCategory.
                     ContainerInput.SWAP,
                     player
                 )
+                return
             }
         }
     }
@@ -81,7 +82,7 @@ object ModuleInventoryCleaner : ClientModule("InventoryManager", ModuleCategory.
         }
     }
 
-    private class ItemForSort(
+    class ItemForSort(
         name: String,
         val `is`: (ItemStack) -> Boolean,
         val compare: (ItemStack, ItemStack) -> Boolean

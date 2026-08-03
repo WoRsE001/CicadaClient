@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat.attackaura
 
 import cicada.client.event.Event
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.combat.attackaura.aim.AttackAuraAimer
@@ -33,7 +33,7 @@ object ModuleAttackAura : ClientModule("AttackAura", ModuleCategory.COMBAT), Rot
     }
 
     override fun onEvent(event: Event) {
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             targetFinder.updateTarget()
         }
 

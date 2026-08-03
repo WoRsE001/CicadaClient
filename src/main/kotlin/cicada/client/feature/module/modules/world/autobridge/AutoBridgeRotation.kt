@@ -10,12 +10,6 @@ import net.minecraft.core.Direction
 import kotlin.math.abs
 
 // SCWGxD regrets everything he did. 01.05.2026 13:02.
-fun yaw(cameraYaw: Float, round: Float): Float {
-    var yaw = cameraYaw - 180f
-    yaw = yaw.roundTo(round)
-    return yaw
-}
-
 fun validPitches(heightCheck: Boolean, yaw: Float, target: BlockPos): List<Float> {
     val pitches = mutableListOf<Float>()
 

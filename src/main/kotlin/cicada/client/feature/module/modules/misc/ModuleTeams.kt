@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.misc
 
 import cicada.client.event.Event
-import cicada.client.event.impl.TickEvent
-import cicada.client.event.impl.WorldChangeEvent
+import cicada.client.event.impl.EventTick
+import cicada.client.event.impl.EventWorldChange
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
@@ -27,7 +27,7 @@ object ModuleTeams : ClientModule("Teams", ModuleCategory.MISC) {
     }
 
     override fun onEvent(event: Event) {
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             for (entity in level.entitiesForRendering()) {
                 if (entity !is Player || entity in _teams) continue
 
@@ -51,7 +51,7 @@ object ModuleTeams : ClientModule("Teams", ModuleCategory.MISC) {
             }
         }
 
-        if (event is WorldChangeEvent) {
+        if (event is EventWorldChange) {
             _teams.clear()
         }
     }

@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.world
 
 import cicada.client.event.Event
-import cicada.client.event.impl.GameLoopEvent
+import cicada.client.event.impl.EventGameLoop
 import cicada.client.event.impl.LegitClickTimingEvent
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
@@ -24,7 +24,7 @@ object ModuleFastPlace : ClientModule("FastPlace", ModuleCategory.WORLD) {
     private var clicks = 0
     
     override fun onEvent(event: Event) {
-        if (event is GameLoopEvent.Pre) {
+        if (event is EventGameLoop.Pre) {
             if (mc.options.keyUse.isDown && player.mainHandItem.item is BlockItem) {
                 clickTimer.reached(time) {
                     clicks++

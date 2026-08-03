@@ -36,7 +36,7 @@ object FlightIntave : ChoiceValue.Choice("Intave"), Rotator {
                 val index = Math.floorMod((CameraRotation.y.roundTo(90f) / 90f + 1).roundToInt(), 4)
                 event.yaw = rotation[index]
             } else {
-                event.yaw = CameraRotation.y.roundTo(90f) + 30
+                event.yaw = CameraRotation.y.roundTo(90f) + 90
             }
         }
 

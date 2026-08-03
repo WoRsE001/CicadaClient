@@ -1,15 +1,13 @@
 package cicada.client.mixin;
 
 import cicada.client.CicadaClient;
-import cicada.client.event.impl.GameLoopEvent;
+import cicada.client.event.impl.EventGameLoop;
 import cicada.client.event.impl.LegitClickTimingEvent;
-import cicada.client.event.impl.TickEvent;
+import cicada.client.event.impl.EventTick;
 import cicada.client.feature.module.modules.player.ModuleMultiAction;
 import cicada.client.mixin.accessors.AccessorKeyMapping;
 import cicada.client.packethandle.PacketHandler;
-import cicada.client.utils.client.MinecraftExtensionsKt;
 import cicada.client.utils.input.FrameInput;
-import cicada.client.utils.player.RaycastUtilsKt;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -23,7 +21,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
@@ -42,9 +39,14 @@ public abstract class MixinMinecraft {
 		CicadaClient.INSTANCE.initialize();
 	}
 
+    @Inject(method = "stop", at = @At("TAIL"))
+    private void callUninitializeClient(CallbackInfo ci) {
+        CicadaClient.INSTANCE.uninitialize();
+    }
+
 	@Inject(at = @At("HEAD"), method = "tick", cancellable = true)
 	private void callTickEvent$PRE(CallbackInfo ci) {
-		TickEvent.Pre event = TickEvent.Pre.INSTANCE;
+		EventTick.Pre event = EventTick.Pre.INSTANCE;
 		event.call();
 
 		if (event.getCanceled())
@@ -53,19 +55,19 @@ public abstract class MixinMinecraft {
 
 	@Inject(at = @At("RETURN"), method = "tick")
 	private void callTickEvent$POST(CallbackInfo ci) {
-		TickEvent.Post.INSTANCE.call();
+		EventTick.Post.INSTANCE.call();
 	}
 
 	@Inject(at = @At("HEAD"), method = "runTick")
 	private void callGameLoopEvent$PRE(boolean advanceGameTime, CallbackInfo ci) {
 		PacketHandler.INSTANCE.handle();
 		FrameInput.INSTANCE.getScroll().set(0, 0);
-		GameLoopEvent.Pre.INSTANCE.call();
+		EventGameLoop.Pre.INSTANCE.call();
 	}
 
 	@Inject(at = @At("RETURN"), method = "runTick")
 	private void callGameLoopEvent$POST(boolean advanceGameTime, CallbackInfo ci) {
-		GameLoopEvent.Post.INSTANCE.call();
+		EventGameLoop.Post.INSTANCE.call();
 	}
 
 	@Inject(at = @At("HEAD"), method = "runTick")
@@ -78,10 +80,10 @@ public abstract class MixinMinecraft {
 		LegitClickTimingEvent.INSTANCE.call();
 	}
 
-	@Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
+	/*@Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
 	private void customStartAttack(CallbackInfoReturnable<Boolean> cir) {
 		cir.setReturnValue(RaycastUtilsKt.startAttack(player.entityInteractionRange(), false));
-	}
+	}*/
 
 	@ModifyExpressionValue(method = "continueAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
 	private boolean injectMultiActionsBreakingWhileUsing(boolean original) {

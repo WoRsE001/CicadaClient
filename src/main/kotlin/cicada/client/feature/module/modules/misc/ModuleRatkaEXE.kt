@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.misc
 
 import cicada.client.event.Event
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.rotation.Rotation
@@ -20,7 +20,7 @@ object ModuleRatkaEXE : ClientModule("RatkaEXE", ModuleCategory.MISC) {
     private var lastRotation = Rotation(0f, 0f)
 
     override fun onEvent(event: Event) {
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             targetFinder.updateTarget()
 
             if (targetFinder.target != null) {

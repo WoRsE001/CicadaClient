@@ -1,13 +1,10 @@
-package cicada.client.render.gui.element.impl
+package cicada.client.render.gui.element.elements
 
 import cicada.client.render.gui.element.Element
 import cicada.client.render.image
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.resources.Identifier
 
-/**
- * ElementImage - рисует изображение
- */
 class ElementImage(
     xProvider: () -> Float = { 0f },
     yProvider: () -> Float = { 0f },
@@ -31,7 +28,7 @@ class ElementImage(
             c0, c1, c2, c3,
             r0, r1, r2, r3
         )
-    }
 
-    override fun handle(offsetX: Float, offsetY: Float) = false
+        super.draw(graphics, offsetX, offsetY)
+    }
 }

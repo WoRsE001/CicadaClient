@@ -1,7 +1,7 @@
 package cicada.client.mixin;
 
 import cicada.client.event.impl.JumpEvent;
-import cicada.client.feature.module.modules.movement.ModuleNoJumpDelay;
+import cicada.client.feature.module.modules.movement.ModuleMovementHelper;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.util.Mth;
@@ -40,7 +40,7 @@ public class MixinLivingEntity {
 
     @ModifyConstant(method = "aiStep", constant = @Constant(intValue = 10))
     private int noJumpDelay(int constant) {
-        if (ModuleNoJumpDelay.INSTANCE.getToggled())
+        if (ModuleMovementHelper.INSTANCE.getToggled() && ModuleMovementHelper.INSTANCE.getNoJumpDelay())
             return 0;
 
         return constant;

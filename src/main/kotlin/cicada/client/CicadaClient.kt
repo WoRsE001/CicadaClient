@@ -8,7 +8,7 @@ import cicada.client.font.Fonts
 import cicada.client.key.KeyCaller
 import cicada.client.packethandle.PacketHandler
 import cicada.client.rotation.RotationHandler
-import cicada.client.utils.player.LocalPlayerStateTracker
+import cicada.client.utils.player.Friends
 import net.minecraft.resources.Identifier
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -31,17 +31,21 @@ object CicadaClient {
 			KeyCaller
 			PacketHandler
 			RotationHandler
-			LocalPlayerStateTracker
 
 			ModuleManager
 			CommandManager
 			ConfigManager
 
 			Fonts
+            Friends
 		}
 
 		logger.info("Successful loaded at $startTime ms.")
 	}
+
+    fun uninitialize() {
+        ConfigManager.save(ConfigManager.defaultConfig)
+    }
 
 	fun of(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)
 }

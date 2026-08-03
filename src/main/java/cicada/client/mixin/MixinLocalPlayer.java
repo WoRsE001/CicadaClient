@@ -54,11 +54,11 @@ public class MixinLocalPlayer {
         LocalPlayer player = (LocalPlayer) (Object) this;
 
         if (player.onGround()) {
-            PlayerStateUtilsKt.setUtilAirTicks(0);
-            PlayerStateUtilsKt.setUtilGroundTicks(PlayerStateUtilsKt.getUtilGroundTicks() + 1);
+            PlayerStateUtilsKt.setUtilAirTick(0);
+            PlayerStateUtilsKt.setUtilGroundTick(PlayerStateUtilsKt.getUtilGroundTick() + 1);
         } else {
-            PlayerStateUtilsKt.setUtilAirTicks(PlayerStateUtilsKt.getUtilAirTicks() + 1);
-            PlayerStateUtilsKt.setUtilGroundTicks(0);
+            PlayerStateUtilsKt.setUtilAirTick(PlayerStateUtilsKt.getUtilAirTick() + 1);
+            PlayerStateUtilsKt.setUtilGroundTick(0);
         }
 
         PlayerStateUpdateEvent.Pre.INSTANCE.call();

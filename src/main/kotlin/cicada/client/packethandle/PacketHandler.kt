@@ -17,10 +17,11 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.world.phys.Vec3
+import java.util.concurrent.CopyOnWriteArrayList
 
 // SCWGxD regrets everything he did. 06.07.2026 11:13.
 object PacketHandler {
-    private val packets = mutableListOf<Pair<Packet<*>, Long>>()
+    private val packets = CopyOnWriteArrayList<Pair<Packet<*>, Long>>()
     private val packetKAKAs = mutableListOf<PacketKAKA>()
 
     var delay = 0

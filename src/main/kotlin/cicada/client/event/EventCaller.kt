@@ -7,11 +7,11 @@ object EventCaller {
     private val listeners = mutableSetOf<EventListener>()
 
     init {
-        TickEvent.Pre
-        TickEvent.Post
+        EventTick.Pre
+        EventTick.Post
 
-        GameLoopEvent.Pre
-        GameLoopEvent.Post
+        EventGameLoop.Pre
+        EventGameLoop.Post
 
         ChatMessageEvent.Send
         ChatMessageEvent.Receive

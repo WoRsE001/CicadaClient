@@ -7,7 +7,9 @@ import cicada.client.rotation.CameraRotation
 import cicada.client.setting.value.Configurable
 import cicada.client.utils.client.player
 import net.minecraft.util.Mth
+import kotlin.math.cos
 import kotlin.math.roundToInt
+import kotlin.math.sin
 
 class MovementCorrector : Configurable("Movement corrector") {
     private val free by boolean("Free", true)
@@ -20,12 +22,12 @@ class MovementCorrector : Configurable("Movement corrector") {
                     val z = if (event.forward == event.backward) 0f else (if (event.forward) 1f else -1f)
                     val x = if (event.left == event.right) 0f else (if (event.left) 1f else -1f)
 
-                    val deltaYaw = player.yRot - CameraRotation.y
+                    val deltaYaw = Mth.wrapDegrees(CameraRotation.y - player.yRot)
 
-                    val newX = x * Mth.cos((deltaYaw * Mth.DEG_TO_RAD).toDouble()) - z *
-                            Mth.sin((deltaYaw * Mth.DEG_TO_RAD).toDouble())
-                    val newZ = z * Mth.cos((deltaYaw * Mth.DEG_TO_RAD).toDouble()) + x *
-                            Mth.sin((deltaYaw * Mth.DEG_TO_RAD).toDouble())
+                    val newX = x * cos((deltaYaw * Mth.DEG_TO_RAD).toDouble()) - z *
+                            sin((deltaYaw * Mth.DEG_TO_RAD).toDouble())
+                    val newZ = z * cos((deltaYaw * Mth.DEG_TO_RAD).toDouble()) + x *
+                            sin((deltaYaw * Mth.DEG_TO_RAD).toDouble())
 
                     val movementSideways = newX.roundToInt()
                     val movementForward = newZ.roundToInt()

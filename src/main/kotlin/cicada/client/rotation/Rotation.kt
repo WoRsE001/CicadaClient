@@ -83,6 +83,10 @@ open class Rotation(var x: Float, var y: Float) {
         this.x = this.x.coerceIn(-x, x)
     }
 
+    fun clampY(y: Float) {
+        this.y = this.y.coerceIn(-y, y)
+    }
+
     fun clamp(x: Float, y: Float) {
         this.x = this.x.coerceIn(-x, x)
         this.y = this.y.coerceIn(-y, y)

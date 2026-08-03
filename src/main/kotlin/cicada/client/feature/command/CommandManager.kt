@@ -2,6 +2,7 @@ package cicada.client.feature.command
 
 import cicada.client.feature.command.commands.client.CommandBind
 import cicada.client.feature.command.commands.client.CommandConfig
+import cicada.client.feature.command.commands.client.CommandFriend
 import cicada.client.feature.command.commands.client.CommandToggle
 import cicada.client.feature.command.commands.client.ai.CommandDataSet
 import cicada.client.feature.command.commands.client.ai.CommandModel
@@ -19,6 +20,7 @@ object CommandManager : HashMap<String, Command>() {
             CommandDataSet,
             CommandBind,
             CommandConfig,
+            CommandFriend,
             CommandToggle,
             CommandCoordinates
         )

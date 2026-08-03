@@ -90,6 +90,7 @@ operator fun Vec3.minus(another: Vec3) = subtract(another)
 operator fun Vec3.unaryMinus() = Vec3(-x, -y, -z)
 operator fun Vec3.times(another: Vec3) = multiply(another)
 operator fun Vec3.times(times: Double) = multiply(times, times, times)
+fun Vec3.length() = x * x + y * y + z + z
 
 fun Vec3.coerceIn(box: AABB) = Vec3(
     x.coerceIn(box.minX, box.maxX),

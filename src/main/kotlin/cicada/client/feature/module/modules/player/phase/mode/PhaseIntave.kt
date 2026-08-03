@@ -3,7 +3,7 @@ package cicada.client.feature.module.modules.player.phase.mode
 import cicada.client.event.Event
 import cicada.client.event.impl.EventBlockShape
 import cicada.client.event.impl.MovementInputEvent
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.setting.value.ChoiceValue
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.mc
@@ -22,7 +22,7 @@ object PhaseIntave : ChoiceValue.Choice("Intave") {
     }
 
     override fun onEvent(event: Event) {
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             if (mc.options.keyAttack.isDown && player.xRot > 80) {
                 connection.send(
                     ServerboundPlayerActionPacket(
@@ -47,9 +47,9 @@ object PhaseIntave : ChoiceValue.Choice("Intave") {
         }
 
         if (event is EventBlockShape) {
-            //if (event.pos.y >= player.y || mc.options.keyShift.isDown && player.onGround()) {
-            EventBlockShape.shape = Shapes.empty()
-            //}
+            if (event.pos.y >= player.y || mc.options.keyShift.isDown && player.onGround()) {
+                EventBlockShape.shape = Shapes.empty()
+            }
         }
     }
 }

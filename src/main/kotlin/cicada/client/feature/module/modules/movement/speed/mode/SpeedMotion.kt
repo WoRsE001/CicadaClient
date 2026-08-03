@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.movement.speed.mode
 
 import cicada.client.event.Event
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.setting.value.ChoiceValue
 import cicada.client.utils.client.player
 import cicada.client.utils.player.withStrafe
@@ -13,7 +13,7 @@ object SpeedMotion : ChoiceValue.Choice("Motion") {
     private val speed by float("Speed", 1f, 0.1f..10f).visible { customSpeed }
 
     override fun onEvent(event: Event) {
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             when {
                 customSpeed -> player.deltaMovement = player.deltaMovement.withStrafe(
                     speed = speed.toDouble(),

@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.player
 
 import cicada.client.event.Event
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
@@ -41,7 +41,7 @@ object ModuleAutoOffhand : ClientModule("AutoOffhand", ModuleCategory.PLAYER) {
     }
 
     override fun onEvent(event: Event) {
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             for (swapper in swappers) {
                 if (swapper.toggled && swapper.doSwap()) {
                     swapper.slotToSwap()?.let { slot ->

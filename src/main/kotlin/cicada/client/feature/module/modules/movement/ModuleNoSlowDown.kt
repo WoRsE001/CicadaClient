@@ -6,6 +6,7 @@ import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.movement.noslowdown.NoSlowDownType
 import cicada.client.feature.module.modules.movement.noslowdown.mode.consume.NoSlowDownIntaveConsumeMode
+import cicada.client.feature.module.modules.movement.noslowdown.mode.sword.NoSlowDownIntaveSwordBlockMode
 
 // SCWGxD regrets everything he did. 17.04.2026 12:10.
 object ModuleNoSlowDown : ClientModule("NoSlowDown", ModuleCategory.MOVEMENT) {
@@ -26,8 +27,8 @@ object ModuleNoSlowDown : ClientModule("NoSlowDown", ModuleCategory.MOVEMENT) {
 
         } },
 
-        tree(NoSlowDownType("SwordBlock", 0.2f, SlowDownEvent.Type.SwordBlock)).apply { mode.apply {
-
+        tree(NoSlowDownType("SwordBlock", 1f, SlowDownEvent.Type.SwordBlock)).apply { mode.apply {
+            choice(NoSlowDownIntaveSwordBlockMode())
         } },
     )
 

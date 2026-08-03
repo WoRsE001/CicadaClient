@@ -8,8 +8,7 @@ import cicada.client.utils.client.player
 // SCWGxD regrets everything he did. 17.04.2026 13:34.
 open class NoSlowDownType(
     name: String,
-    defaultSlowDown:
-    Float,
+    defaultSlowDown: Float,
     private val noSlowDownType: SlowDownEvent.Type
 ) : ToggleableConfigurable(name, false) {
     protected val sprintOnGround by boolean("Sprint on ground", false)

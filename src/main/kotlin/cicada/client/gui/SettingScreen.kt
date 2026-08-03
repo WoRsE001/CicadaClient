@@ -1,38 +1,47 @@
 package cicada.client.gui
 
+import cicada.client.config.ConfigManager
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.font.Fonts
+import cicada.client.render.engine.height
+import cicada.client.render.engine.width
 import cicada.client.render.gui.Screen
 import cicada.client.render.gui.element.Element
-import cicada.client.render.gui.element.impl.*
+import cicada.client.render.gui.element.elements.ElementCut
+import cicada.client.render.gui.element.elements.*
 import cicada.client.setting.value.BooleanValue
 import cicada.client.setting.value.ChoiceValue
-import cicada.client.setting.value.ColorValue
 import cicada.client.setting.value.Configurable
-import cicada.client.setting.value.FloatRangeValue
 import cicada.client.setting.value.FloatValue
-import cicada.client.setting.value.IntRangeValue
 import cicada.client.setting.value.IntValue
 import cicada.client.setting.value.MultiChoiceValue
-import cicada.client.setting.value.StringValue
 import cicada.client.setting.value.ToggleableConfigurable
 import cicada.client.setting.value.Value
+import cicada.client.utils.math.roundTo
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.network.chat.Component
+import org.apache.commons.lang3.StringUtils
+import kotlin.math.roundToInt
 
 // SCWGxD regrets everything he did. 21.06.2026 20:40.
 object SettingScreen : net.minecraft.client.gui.screens.Screen(Component.literal("")) {
     private val screen = Screen()
+    private val windowWidth = 400f
+    private val windowHeight = 225f
     private val font = Fonts["jetbrains-mono"]!!
 
-    private var selectedCategory: ModuleCategory? = null
+    private var selectedClientCategory: String? = null
+    private var selectedModuleCategory: ModuleCategory? = null
     private var selectedModule: ClientModule? = null
 
-    // Дерево строится один раз; состав детей пересчитывается каждый кадр через .children {},
-    // поэтому смена выбора/раскрытие просто меняют модель — пересобирать экран вручную не нужно.
     init {
         buildScreen()
+    }
+
+    override fun onClose() {
+        ConfigManager.save(ConfigManager.defaultConfig)
+        super.onClose()
     }
 
     override fun extractRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
@@ -42,379 +51,542 @@ object SettingScreen : net.minecraft.client.gui.screens.Screen(Component.literal
     }
 
     private fun buildScreen() {
-        screen.add(
-            ElementRect(
-                { width / 2 - 200f },
-                { height / 2 - 100f },
-                { 400f }, { 200f },
-                COLOR_PANEL
-            ).add(
-                ElementRow({ 8f }, { 8f }).children {
-                    buildList {
-                        // Колонка категорий — всегда
-                        add(categoryColumn())
-                        // Колонка модулей выбранной категории
-                        selectedCategory?.let { add(moduleColumn(it)) }
-                        // Колонка настроек выбранного модуля
-                        selectedModule?.let { add(settingsColumn(it)) }
-                    }
-                }
-            )
+        screen.add(window())
+    }
+
+    private fun window() = ElementRect(
+        { width / 2f - windowWidth / 2 }, { height / 2f - windowHeight / 2 },
+        { windowWidth }, { windowHeight },
+        COLOR_BACKGROUND,
+        r0 = 10f
+    ) {
+        listOf(windowContent())
+    }
+
+    private fun windowContent() = ElementRow({ 5f }, { 5f }, 5f) {
+        val content = mutableListOf(sidebar())
+
+        if (selectedClientCategory == "Modules") {
+            content += modulePage()
+        }
+
+        content
+    }
+
+    private fun sidebar() = ElementColumn(gap = 5f) {
+        listOf(
+            logo(),
+            sidebarTab("Modules"),
+            sidebarTab("Kaka")
         )
     }
 
-    private fun categoryColumn() = ElementColumn().key("categories").children {
-        ModuleCategory.entries.map { categoryButton(it) }
+    private fun logo() = ElementRect(
+        wProvider = { 75f },
+        hProvider = { 25f },
+        c0 = -1,
+        r0 = 5f
+    )
+
+    private fun sidebarTab(name: String): ElementButton {
+        val tabColor = { IntArray(4) { if (selectedClientCategory == name) COLOR_ACTIVE else 0 } }
+
+        return ElementButton(
+            wProvider = { 75f },
+            hProvider = { 10f },
+            colorNormal = tabColor,
+            colorHover = tabColor,
+            colorPressed = tabColor,
+            radiiProvider = { FloatArray(4) { 5f } },
+            onClick = {
+                selectedClientCategory = name
+            }
+        ) {
+            listOf(
+                ElementText(
+                    xProvider = { 5f },
+                    font = font,
+                    fontSize = 6f,
+                    textProvider = { name },
+                    colorProvider = { COLOR_TEXT }
+                )
+            )
+        }
     }
 
-    private fun moduleColumn(category: ModuleCategory) = ElementColumn().key(category).children {
-        category.modules.map { moduleButton(it) }
-    }
+    private fun modulePage(): ElementColumn {
+        fun searchBar() = ElementRect(
+            wProvider = { 310f },
+            hProvider = { 25f },
+            c0 = -1,
+            r0 = 5f
+        )
 
-    private fun settingsColumn(module: ClientModule) = ElementColumn().key(module).children {
-        buildList {
-            add(ElementText(font = font, fontSize = 10f, textProvider = { module.name }).key("title"))
-            for (value in module.inner) {
-                if (value.visible()) add(settingButton(value))
+        fun categoryTabs(): ElementRow {
+            fun categoryTab(moduleCategory: ModuleCategory): ElementButton {
+                val buttonColor = {
+                    IntArray(4) { if (selectedModuleCategory == moduleCategory) COLOR_ACTIVE else COLOR_ELEMENT }
+                }
+
+                val name = StringUtils.capitalize(moduleCategory.name.lowercase())
+
+                return ElementButton(
+                    wProvider = { font.width(name, 6f) + 10f },
+                    hProvider = { 10f },
+                    colorNormal = buttonColor,
+                    colorHover = buttonColor,
+                    colorPressed = buttonColor,
+                    radiiProvider = { FloatArray(4) { 5f } },
+                    fontProvider = { font },
+                    fontSizeProvider = { 6f },
+                    textProvider = { name },
+                    textColorProvider = { COLOR_TEXT },
+                    onClick = {
+                        selectedModuleCategory = moduleCategory
+                    }
+                )
+            }
+
+            return ElementRow(gap = 5f) {
+                ModuleCategory.entries.map { categoryTab(it) }
             }
         }
-    }
 
-    private fun categoryButton(category: ModuleCategory) = ElementButton(
-        wProvider = { 100f },
-        hProvider = { 20f },
-        font = font,
-        fontSize = 6f,
-        textProvider = { category.name },
-        colorNormal = { if (selectedCategory == category) COLOR_ACTIVE else COLOR_IDLE },
-        colorHover = { COLOR_HOVER },
-        colorPressed = { COLOR_PRESSED },
-        textColor = COLOR_TEXT,
-        radius = 4f,
-        onClick = {
-            selectedCategory = category
-            selectedModule = null
+        fun modulesList(category: ModuleCategory): ElementCut {
+            fun moduleButton(clientModule: ClientModule): ElementButton {
+                val buttonColor = {
+                    IntArray(4) { if (clientModule.toggled) COLOR_ACTIVE else COLOR_ELEMENT }
+                }
+
+                return ElementButton(
+                    wProvider = { 310f },
+                    hProvider = { 25f },
+                    colorNormal = buttonColor,
+                    colorHover = buttonColor,
+                    colorPressed = buttonColor,
+                    radiiProvider = { FloatArray(4) { 5f } },
+                    onClick = { button ->
+                        if (button == 0)
+                            clientModule.toggle()
+                        else if (button == 1)
+                            selectedModule = clientModule
+                    }
+                ) {
+                    listOf(
+                        ElementText(
+                            xProvider = { 5f },
+                            yProvider = { 5f },
+                            font = font,
+                            fontSize = 8f,
+                            textProvider = { clientModule.name },
+                            colorProvider = { COLOR_TEXT }
+                        )
+                    )
+                }
+            }
+
+            return ElementCut(
+                wProvider = { 310f },
+                hProvider = { 170f }
+            ) {
+                listOf(
+                    ElementColumn(gap = 5f) {
+                        category.modules.map { moduleButton(it) }
+                    }
+                )
+            }
         }
-    ).key(category)
 
-    private fun moduleButton(module: ClientModule) = ElementButton(
-        wProvider = { 100f },
-        hProvider = { 18f },
-        font = font,
-        fontSize = 6f,
-        textProvider = { module.name },
-        colorNormal = { if (module.toggled) COLOR_ACTIVE else COLOR_IDLE },
-        colorHover = { COLOR_HOVER },
-        colorPressed = { COLOR_PRESSED },
-        textColor = COLOR_TEXT,
-        radius = 4f,
-        // ЛКМ — включить/выключить, ПКМ — выбрать модуль и показать настройки
-        onClick = {
-            module.toggle()
-        },
-        onRightClick = {
-            selectedModule = if (selectedModule == module) null else module
-        }
-    ).key(module)
+        fun moduleSettings(selectedModule: ClientModule): ElementRect {
+            fun values(xProvider: () -> Float, values: List<Value<*>>): ElementColumn {
+                fun value(value: Value<*>): Element {
+                    when (value) {
+                        is BooleanValue -> {
+                            return ElementRow(gap = 3f) {
+                                listOf(
+                                    ElementText(
+                                        font = font,
+                                        fontSize = 6f,
+                                        textProvider = { "${value.name}:" }
+                                    ),
+                                    ElementButton(
+                                        wProvider = { font.height(6f) },
+                                        hProvider = { font.height(6f) },
+                                        colorNormal = {
+                                            IntArray(4) {
+                                                if (value.inner) COLOR_ACTIVE
+                                                else COLOR_BACKGROUND
+                                            }
+                                        },
+                                        radiiProvider = { FloatArray(4) { 5f } },
+                                        onClick = { value.toggle() }
+                                    )
+                                )
+                            }
+                        }
 
-    private fun settingButton(value: Value<*>): Element {
-        return when (value) {
-            is BooleanValue -> ElementRow(gap = 2f).key(value).apply {
-                add(
+                        is MultiChoiceValue -> {
+                            val suffix = if (value.isOpen) "-" else "+"
+
+                            return ElementColumn(gap = 3f) {
+                                val content = mutableListOf<Element>(
+                                    ElementRow(gap = 3f) {
+                                        listOf(
+                                            ElementText(
+                                                font = font,
+                                                fontSize = 6f,
+                                                textProvider = { "${value.name}:" }
+                                            ),
+                                            ElementRect(
+                                                wProvider = { 20f + value.inner.maxOf { font.width(it.name, 6f) } },
+                                                hProvider = { font.height(6f) },
+                                                c0 = COLOR_BACKGROUND
+                                            ) {
+                                                listOf(
+                                                    ElementButton(
+                                                        wProvider = { 10f },
+                                                        hProvider = { font.height(6f) },
+                                                        colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                        fontProvider = { font },
+                                                        fontSizeProvider = { 6f },
+                                                        textProvider = { "<" },
+                                                        textColorProvider = { COLOR_TEXT },
+                                                        onClick = { value.selected = ((--value.selected % value.inner.size) + value.inner.size) % value.inner.size }
+                                                    ),
+                                                    ElementButton(
+                                                        xProvider = { 10f },
+                                                        wProvider = { value.inner.maxOf { font.width(it.name, 6f) } },
+                                                        hProvider = { font.height(6f) },
+                                                        colorNormal = { IntArray(4) { COLOR_BACKGROUND } },
+                                                        fontProvider = { font },
+                                                        fontSizeProvider = { 6f },
+                                                        textProvider = { value.inner[value.selected].name },
+                                                        textColorProvider = { if (value.inner[value.selected].toggled) COLOR_ACTIVE else COLOR_ELEMENT },
+                                                        onClick = { value.inner[value.selected].toggle() }
+                                                    ),
+                                                    ElementButton(
+                                                        xProvider = {
+                                                            10f + value.inner.maxOf { font.width(it.name, 6f) }
+                                                        },
+                                                        wProvider = { 10f },
+                                                        hProvider = { font.height(6f) },
+                                                        colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                        fontProvider = { font },
+                                                        fontSizeProvider = { 6f },
+                                                        textProvider = { ">" },
+                                                        textColorProvider = { COLOR_TEXT },
+                                                        onClick = { value.selected = ++value.selected % value.inner.size }
+                                                    ),
+                                                )
+                                            },
+                                            ElementButton(
+                                                xProvider = { 0f },
+                                                wProvider = { font.width(suffix, 6f) },
+                                                hProvider = { font.height(6f) },
+                                                colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                fontProvider = { font },
+                                                fontSizeProvider = { 6f },
+                                                textProvider = { suffix },
+                                                textColorProvider = { COLOR_TEXT },
+                                                onClick = { value.isOpen = !value.isOpen }
+                                            )
+                                        )
+                                    }
+                                )
+
+                                if (value.isOpen) {
+                                    content += values({ 3f }, value.inner[value.selected].inner.toList())
+                                }
+
+                                content
+                            }
+                        }
+
+                        is ChoiceValue -> {
+                            val suffix = if (value.isOpen) "-" else "+"
+
+                            return ElementColumn(gap = 3f) {
+                                val content = mutableListOf<Element>(
+                                    ElementRow(gap = 3f) {
+                                        listOf(
+                                            ElementText(
+                                                font = font,
+                                                fontSize = 6f,
+                                                textProvider = { "${value.name}:" }
+                                            ),
+                                            ElementRect(
+                                                wProvider = { 20f + value.choices.maxOf { font.width(it.name, 6f) } },
+                                                hProvider = { font.height(6f) },
+                                                c0 = COLOR_BACKGROUND
+                                            ) {
+                                                listOf(
+                                                    ElementButton(
+                                                        wProvider = { 10f },
+                                                        hProvider = { font.height(6f) },
+                                                        colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                        fontProvider = { font },
+                                                        fontSizeProvider = { 6f },
+                                                        textProvider = { "<" },
+                                                        textColorProvider = { COLOR_TEXT },
+                                                        onClick = { value.previous() }
+                                                    ),
+                                                    ElementText(
+                                                        xProvider = {
+                                                            10f + value.choices.maxOf {
+                                                                font.width(it.name, 6f)
+                                                            } / 2 - font.width(value.inner?.name ?: "None", 6f) / 2
+                                                        },
+                                                        font = font,
+                                                        fontSize = 6f,
+                                                        textProvider = { value.inner?.name ?: "None" },
+                                                        colorProvider = { COLOR_TEXT }
+                                                    ),
+                                                    ElementButton(
+                                                        xProvider = {
+                                                            10f + value.choices.maxOf {
+                                                                font.width(
+                                                                    it.name,
+                                                                    6f
+                                                                )
+                                                            }
+                                                        },
+                                                        wProvider = { 10f },
+                                                        hProvider = { font.height(6f) },
+                                                        colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                        fontProvider = { font },
+                                                        fontSizeProvider = { 6f },
+                                                        textProvider = { ">" },
+                                                        textColorProvider = { COLOR_TEXT },
+                                                        onClick = { value.next() }
+                                                    ),
+                                                )
+                                            },
+                                            ElementButton(
+                                                xProvider = { 0f },
+                                                wProvider = { font.width(suffix, 6f) },
+                                                hProvider = { font.height(6f) },
+                                                colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                fontProvider = { font },
+                                                fontSizeProvider = { 6f },
+                                                textProvider = { suffix },
+                                                textColorProvider = { COLOR_TEXT },
+                                                onClick = { value.isOpen = !value.isOpen }
+                                            )
+                                        )
+                                    }
+                                )
+
+                                val choice = value.inner
+                                if (choice != null && value.isOpen) {
+                                    content += values({ 3f }, choice.inner.toList())
+                                }
+
+                                content
+                            }
+                        }
+
+                        is IntValue -> {
+                            return ElementRow(gap = 3f) {
+                                listOf(
+                                    ElementText(
+                                        font = font,
+                                        fontSize = 6f,
+                                        textProvider = { "${value.name}:" }
+                                    ),
+                                    ElementSlider(
+                                        wProvider = { 100f },
+                                        hProvider = { font.height(6f) },
+                                        minProvider = { value.range.first.toFloat() },
+                                        maxProvider = { value.range.last.toFloat() },
+                                        valueProvider = { value.inner.toFloat() },
+                                        colorBg = COLOR_BACKGROUND,
+                                        colorFill = COLOR_ACTIVE,
+                                        onChange = { changedValue -> value.inner = changedValue.roundToInt() }
+                                    ),
+                                    ElementText(
+                                        font = font,
+                                        fontSize = 6f,
+                                        textProvider = { value.inner.toString() }
+                                    )
+                                )
+                            }
+                        }
+
+                        is FloatValue -> {
+                            return ElementRow(gap = 3f) {
+                                listOf(
+                                    ElementText(
+                                        font = font,
+                                        fontSize = 6f,
+                                        textProvider = { "${value.name}:" }
+                                    ),
+                                    ElementSlider(
+                                        wProvider = { 100f },
+                                        hProvider = { font.height(6f) },
+                                        minProvider = { value.range.start },
+                                        maxProvider = { value.range.endInclusive },
+                                        valueProvider = { value.inner },
+                                        colorBg = COLOR_BACKGROUND,
+                                        colorFill = COLOR_ACTIVE,
+                                        onChange = { changedValue -> value.inner = changedValue.roundTo(0.01f) }
+                                    ),
+                                    ElementText(
+                                        font = font,
+                                        fontSize = 6f,
+                                        textProvider = { "%.01f".format(value.inner) }
+                                    )
+                                )
+                            }
+                        }
+
+                        is ToggleableConfigurable -> {
+                            val suffix = if (value.isOpen) "-" else "+"
+
+                            return ElementColumn(gap = 3f) {
+                                val content = mutableListOf<Element>(
+                                    ElementRow(gap = 3f) {
+                                        listOf(
+                                            ElementButton(
+                                                wProvider = { font.height(6f) },
+                                                hProvider = { font.height(6f) },
+                                                colorNormal = {
+                                                    IntArray(4) {
+                                                        if (value.toggled) COLOR_ACTIVE
+                                                        else COLOR_BACKGROUND
+                                                    }
+                                                },
+                                                radiiProvider = { FloatArray(4) { 5f } },
+                                                onClick = { value.toggle() }
+                                            ),
+                                            ElementText(
+                                                font = font,
+                                                fontSize = 6f,
+                                                textProvider = { "${value.name}:" }
+                                            ),
+                                            ElementButton(
+                                                xProvider = { 0f },
+                                                wProvider = { font.width(suffix, 6f) },
+                                                hProvider = { font.height(6f) },
+                                                colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                fontProvider = { font },
+                                                fontSizeProvider = { 6f },
+                                                textProvider = { suffix },
+                                                textColorProvider = { COLOR_TEXT },
+                                                onClick = { value.isOpen = !value.isOpen }
+                                            )
+                                        )
+                                    }
+                                )
+
+                                if (value.isOpen) {
+                                    content += values({ 3f }, value.inner.toList())
+                                }
+
+                                content
+                            }
+                        }
+
+                        is Configurable -> {
+                            val suffix = if (value.isOpen) "-" else "+"
+
+                            return ElementColumn(gap = 3f) {
+                                val content = mutableListOf<Element>(
+                                    ElementRow(gap = 3f) {
+                                        listOf(
+                                            ElementText(
+                                                font = font,
+                                                fontSize = 6f,
+                                                textProvider = { "${value.name}:" }
+                                            ),
+                                            ElementButton(
+                                                xProvider = { 0f },
+                                                wProvider = { font.width(suffix, 6f) },
+                                                hProvider = { font.height(6f) },
+                                                colorNormal = { IntArray(4) { COLOR_ELEMENT } },
+                                                fontProvider = { font },
+                                                fontSizeProvider = { 6f },
+                                                textProvider = { suffix },
+                                                textColorProvider = { COLOR_TEXT },
+                                                onClick = { value.isOpen = !value.isOpen }
+                                            )
+                                        )
+                                    }
+                                )
+
+                                if (value.isOpen) {
+                                    content += values({ 3f }, value.inner.toList())
+                                }
+
+                                content
+                            }
+                        }
+
+                        else -> {
+                            return ElementText(
+                                font = font,
+                                fontSize = 6f,
+                                textProvider = { "${value.name}: Unknown" }
+                            )
+                        }
+                    }
+                }
+
+                return ElementColumn(xProvider = xProvider, gap = 5f) { values.filter { it.visible() }.map { value(it) } }
+            }
+
+            return ElementRect(
+                wProvider = { 310f },
+                hProvider = { 170f },
+                c0 = COLOR_ELEMENT,
+                r0 = 5f
+            ) {
+                listOf(
+                    ElementText(
+                        xProvider = { 5f },
+                        yProvider = { 5f },
+                        font = font,
+                        fontSize = 8f,
+                        textProvider = { selectedModule.name },
+                    ),
                     ElementButton(
+                        xProvider = { 295f },
+                        yProvider = { 5f },
                         wProvider = { 10f },
                         hProvider = { 10f },
-                        colorNormal = { if (value.inner) COLOR_ACTIVE else COLOR_IDLE },
-                        colorHover = { COLOR_HOVER },
-                        colorPressed = { COLOR_PRESSED },
-                        textColor = COLOR_TEXT,
-                        radius = 4f,
-                        onClick = { value.toggle() }
-                    )
-                )
-
-                add(label(value.name))
-            }
-
-            // ToggleableConfigurable должен идти раньше Configurable — он его наследник.
-            is ToggleableConfigurable -> ElementColumn().key(value).children {
-                buildList {
-                    add(
-                        ElementRow(gap = 2f).key("header").apply {
-                            add(
-                                ElementButton(
-                                    wProvider = { 10f },
-                                    hProvider = { 10f },
-                                    colorNormal = { if (value.toggled) COLOR_ACTIVE else COLOR_IDLE },
-                                    colorHover = { COLOR_HOVER },
-                                    colorPressed = { COLOR_PRESSED },
-                                    radius = 4f,
-                                    onClick = { value.toggle() }
-                                )
-                            )
-
-                            add(label(value.name))
-
-                            add(expandButton({ value.isOpen }) { value.isOpen = !value.isOpen })
+                        radiiProvider = { FloatArray(4) { 5f } },
+                        onClick = {
+                            this.selectedModule = null
                         }
-                    )
-
-                    if (value.isOpen) add(childColumn(value.inner).key("children"))
-                }
-            }
-
-            is Configurable -> ElementColumn().key(value).children {
-                buildList {
-                    add(
-                        ElementRow(gap = 2f).key("header").apply {
-                            add(label(value.name))
-
-                            add(expandButton({ value.isOpen }) { value.isOpen = !value.isOpen })
-                        }
-                    )
-
-                    if (value.isOpen) add(childColumn(value.inner).key("children"))
-                }
-            }
-
-            is FloatValue -> ElementRow(gap = 2f).key(value).apply {
-                add(label(value.name))
-
-                add(
-                    ElementSlider(
-                        wProvider = { 100f },
-                        hProvider = { 10f },
-                        min = value.range.start,
-                        max = value.range.endInclusive,
-                        value = value.inner,
-                        onChange = { changeValue -> value.inner = changeValue }
-                    )
-                )
-
-                add(label { "%.2f%s".format(value.inner, value.suffix) })
-            }
-
-            is IntValue -> ElementRow(gap = 2f).key(value).apply {
-                add(label(value.name))
-
-                add(
-                    ElementSlider(
-                        wProvider = { 100f },
-                        hProvider = { 10f },
-                        min = value.range.first.toFloat(),
-                        max = value.range.last.toFloat(),
-                        value = value.inner.toFloat(),
-                        onChange = { changeValue -> value.inner = changeValue.toInt() }
-                    )
-                )
-
-                add(label { "${value.inner}${value.suffix}" })
-            }
-
-            is FloatRangeValue -> ElementColumn().key(value).apply {
-                add(label(value.name))
-
-                add(
-                    ElementRow(gap = 2f).apply {
-                        add(
-                            ElementSlider(
-                                wProvider = { 100f },
-                                hProvider = { 10f },
-                                min = value.range.start,
-                                max = value.range.endInclusive,
-                                value = value.inner.start,
-                                onChange = { changeValue ->
-                                    value.inner = changeValue..value.inner.endInclusive
-                                }
-                            )
-                        )
-
-                        add(
-                            ElementSlider(
-                                wProvider = { 100f },
-                                hProvider = { 10f },
-                                min = value.range.start,
-                                max = value.range.endInclusive,
-                                value = value.inner.endInclusive,
-                                onChange = { changeValue ->
-                                    value.inner = value.inner.start..changeValue
-                                }
-                            )
-                        )
-                    }
-                )
-
-                add(label { "%.2f - %.2f%s".format(value.inner.start, value.inner.endInclusive, value.suffix) })
-            }
-
-            is IntRangeValue -> ElementColumn().key(value).apply {
-                add(label(value.name))
-
-                add(
-                    ElementRow(gap = 2f).apply {
-                        add(
-                            ElementSlider(
-                                wProvider = { 100f },
-                                hProvider = { 10f },
-                                min = value.range.first.toFloat(),
-                                max = value.range.last.toFloat(),
-                                value = value.inner.first.toFloat(),
-                                onChange = { changeValue ->
-                                    value.inner = changeValue.toInt()..value.inner.last
-                                }
-                            )
-                        )
-
-                        add(
-                            ElementSlider(
-                                wProvider = { 100f },
-                                hProvider = { 10f },
-                                min = value.range.first.toFloat(),
-                                max = value.range.last.toFloat(),
-                                value = value.inner.last.toFloat(),
-                                onChange = { changeValue ->
-                                    value.inner = value.inner.first..changeValue.toInt()
-                                }
-                            )
-                        )
-                    }
-                )
-
-                add(label { "${value.inner.first} - ${value.inner.last}${value.suffix}" })
-            }
-
-            is ChoiceValue -> ElementColumn().key(value).children {
-                buildList {
-                    val options = value.choices.map { it.name }
-                    val selectedIndex = value.choices.indexOf(value.inner).coerceAtLeast(0)
-
-                    add(
-                        ElementRow(gap = 2f).key("header").apply {
-                            add(label(value.name))
-
-                            add(
-                                ElementChoice(
-                                    wProvider = { 50f },
-                                    itemHeightProvider = { 10f },
-                                    options = options,
-                                    selected = selectedIndex,
-                                    font = font,
-                                    fontSize = 7f,
-                                    onSelect = { index -> value.choices.getOrNull(index)?.select() }
-                                )
-                            )
-                        }
-                    )
-
-                    // Настройки выбранного варианта (если есть)
-                    value.inner?.inner?.takeIf { it.isNotEmpty() }?.let { add(childColumn(it).key("children")) }
-                }
-            }
-
-            is MultiChoiceValue -> ElementColumn().key(value).apply {
-                add(label(value.name))
-
-                val options = value.inner.map { it.name }
-                val selected = value.inner
-                    .mapIndexedNotNull { index, choice -> if (choice.toggled) index else null }
-                    .toMutableSet()
-
-                add(
-                    ElementMultiChoice(
-                        wProvider = { 100f },
-                        options = options,
-                        selected = selected,
-                        font = font,
-                        onToggle = { picked ->
-                            value.inner.forEachIndexed { index, choice -> choice.toggled = index in picked }
-                        }
-                    )
+                    ),
+                    ElementCut(
+                        { 5f },
+                        { font.height(8f) + 10f },
+                        { 305f },
+                        { 170f - font.height(8f) - 10f }
+                    ) { listOf(values({ 0f }, selectedModule.inner.toList())) }
                 )
             }
+        }
 
-            is ColorValue -> ElementColumn().key(value).children {
-                buildList {
-                    add(
-                        ElementRow(gap = 2f).key("header").apply {
-                            add(label(value.name))
 
-                            // Превью текущего цвета — клик раскрывает/сворачивает пикер
-                            add(
-                                ElementButton(
-                                    wProvider = { 14f },
-                                    hProvider = { 10f },
-                                    colorNormal = { value.inner.toInt() },
-                                    colorHover = { value.inner.toInt() },
-                                    colorPressed = { value.inner.toInt() },
-                                    radius = 3f,
-                                    onClick = { value.isOpen = !value.isOpen }
-                                )
-                            )
-                        }
-                    )
+        return ElementColumn(gap = 5f) {
+            val content = mutableListOf(searchBar(), categoryTabs())
 
-                    if (value.isOpen) {
-                        add(
-                            ElementColorPicker(
-                                wProvider = { 100f },
-                                hProvider = { 60f },
-                                color = value.inner.toInt(),
-                                onChange = { argb -> value.inner.setFromARGB(argb) }
-                            ).key("picker")
-                        )
-                        // Пикер рисует полоску-превью ниже своей области — резервируем место, чтобы не было наложения.
-                        add(spacer(45f).key("spacer"))
-                    }
-                }
+            selectedModuleCategory?.let {
+                val selected = selectedModule
+
+                content += if (selected == null)
+                    modulesList(selectedModuleCategory!!)
+                else
+                    moduleSettings(selected)
             }
 
-            is StringValue -> ElementRow(gap = 2f).key(value).apply {
-                // Поля ввода текста пока нет — показываем значение только для чтения.
-                add(label(value.name))
-                add(label { ": ${value.inner}" })
-            }
-
-            else -> label { "Unknown: ${value.name}" }.key(value)
+            content
         }
     }
 
-    private fun label(text: String) = label { text }
-
-    private fun label(textProvider: () -> String) =
-        ElementText(font = font, fontSize = 7f, textProvider = textProvider)
-
-    private fun expandButton(isOpen: () -> Boolean, onClick: () -> Unit) = ElementButton(
-        wProvider = { 10f },
-        hProvider = { 10f },
-        font = font,
-        fontSize = 7f,
-        textProvider = { if (isOpen()) "-" else "+" },
-        colorNormal = { 0 },
-        colorHover = { 0 },
-        colorPressed = { 0 },
-        onClick = onClick
-    )
-
-    /** Вертикальная колонка дочерних настроек с отступом; состав пересчитывается каждый кадр по видимости. */
-    private fun childColumn(values: Collection<Value<*>>) = ElementColumn(xProvider = { 5f }).children {
-        values.filter { it.visible() }.map { settingButton(it) }
-    }
-
-    /** Невидимый прямоугольник заданной высоты — резервирует место в раскладке. */
-    private fun spacer(height: Float) = ElementButton(
-        wProvider = { 1f },
-        hProvider = { height },
-        colorNormal = { 0 },
-        colorHover = { 0 },
-        colorPressed = { 0 }
-    )
-
-    // Тёмно-фиолетовая пастельная тема
-    private const val COLOR_PANEL = 0xFF1C1726.toInt()    // фон панели — почти чёрный с фиолетом
-    private const val COLOR_IDLE = 0xFF2B2540.toInt()     // кнопка в покое
-    private const val COLOR_HOVER = 0xFF39315A.toInt()    // наведение
-    private const val COLOR_PRESSED = 0xFF221D33.toInt()  // нажатие
-    private const val COLOR_ACTIVE = 0xFF7E6CB8.toInt()   // активный/включённый — лавандовый акцент
-    private const val COLOR_SELECTED = 0xFF9B86D9.toInt() // выбранный модуль — яркий лавандовый
-    private const val COLOR_TEXT = 0xFFD8CEF0.toInt()     // светлый лавандовый текст
+    private const val COLOR_BACKGROUND = 0xFF000000.toInt()
+    private const val COLOR_ACTIVE = 0xFF7E6CB8.toInt()
+    private const val COLOR_TEXT = -1
+    private const val COLOR_ELEMENT = 0xFFACACAC.toInt()
 }

@@ -33,6 +33,12 @@ object FrameInput {
         lastPressed[2] = pressed[2]
     }
 
+    fun isPressed() = pressed[0] || pressed[1] || pressed[2]
+
+    fun isClicked() = clicked[0] || clicked[1] || clicked[2]
+
+    fun isReleased() = released[0] || released[1] || released[2]
+
     private fun fill(handle: Long, array: BooleanArray) {
         for (i in 0..2)
             array[i] = GLFW.glfwGetMouseButton(handle, i) > 0

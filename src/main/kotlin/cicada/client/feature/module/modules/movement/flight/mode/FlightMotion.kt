@@ -2,7 +2,7 @@ package cicada.client.feature.module.modules.movement.flight.mode
 
 import cicada.client.event.Event
 import cicada.client.event.impl.SendPosEvent
-import cicada.client.event.impl.TickEvent
+import cicada.client.event.impl.EventTick
 import cicada.client.setting.value.ChoiceValue
 import cicada.client.setting.value.Configurable
 import cicada.client.setting.value.ToggleableConfigurable
@@ -43,7 +43,7 @@ object FlightMotion : ChoiceValue.Choice("Motion") {
     }
 
     override fun onEvent(event: Event) {
-        if (event is TickEvent.Pre) {
+        if (event is EventTick.Pre) {
             val useSprintSpeed = mc.options.keySprint.isDown && SprintSpeed.toggled
             val hSpeed =
                 if (useSprintSpeed) SprintSpeed.horizontalSpeed else BaseSpeed.horizontalSpeed
