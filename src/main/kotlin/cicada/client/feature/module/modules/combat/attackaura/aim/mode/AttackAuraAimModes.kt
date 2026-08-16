@@ -40,31 +40,37 @@ object UniversalAimMode : AttackAuraAimMode("Universal") {
     val speed by float("Speed", 70f, 0f..100f)
 
     object Dependence : Configurable("Dependence") {
-        val xRadius by float("X radius", 1f, 0f..5f)
-        val xThreshold by float("X threshold", 4f, 0f..10f)
-        val yRadius by float("Y radius", 1f, 0f..5f)
-        val yThreshold by float("Y threshold", 4f, 0f..10f)
+        val xRadius by float("XRadius", 1f, 0f..5f)
+        val xThreshold by float("XThreshold", 4f, 0f..10f)
+        val yRadius by float("YRadius", 1f, 0f..5f)
+        val yThreshold by float("YThreshold", 4f, 0f..10f)
     }
 
-    object Sprint : Configurable("Spring") {
-        val x by floatRange("Factor X", 0.1f..0.3f, 0f..1f)
-        val y by floatRange("Factor Y", 0.3f..0.5f, 0f..1f)
+    object Spring : Configurable("Spring") {
+        val x by floatRange("FactorX", 0.1f..0.3f, 0f..1f)
+        val y by floatRange("FactorY", 0.3f..0.5f, 0f..1f)
     }
 
     object Jitter : Configurable("Jitter") {
-        val x by float("Factor X", 1f, 0f..5f)
-        val y by float("Factor Y", 1f, 0f..5f)
+        val x by float("FactorX", 1f, 0f..5f)
+        val y by float("FactorY", 1f, 0f..5f)
+    }
+
+    init {
+        tree(Dependence)
+        tree(Spring)
+        tree(Jitter)
     }
 
     private var lastDelta = Rotation(0f, 0f)
 
     override fun rotateTo(target: LivingEntity) {
-        val point = player.rotation().clamped(target.boundingBox).directionVector
+        val point = player.eyePosition.coerceIn(target.boundingBox)
         val delta = (rotationTo(point) - player.rotation()).wrapped()
         val speed = delta.length().coerceIn(-speed, speed)
         delta /= delta.length()
         delta *= speed
-        delta.gazLarpit(Sprint.x.random(), Sprint.y.random(), lastDelta)
+        delta.lerp(Spring.x.random(), Spring.y.random(), lastDelta)
 
         val dependOnX = delta.y >= Dependence.xThreshold
         val dependOnY = delta.x >= Dependence.yThreshold
@@ -85,83 +91,77 @@ object UniversalAimMode : AttackAuraAimMode("Universal") {
 }
 
 object NoiseAimMode : AttackAuraAimMode("Noise") {
+    private val amplitudeX by float("AmplitudeX", 1f, 0f..5f)
+    private val amplitudeY by float("AmplitudeY", 1f, 0f..5f)
+    private val amplitudeZ by float("AmplitudeZ", 1f, 0f..5f)
+    private val useGcd   by boolean("GCDRounding", true)
 
-    // Насколько шум смещает точку прицеливания относительно хитбокса
-    private val amplitudeX by float("Amplitude X", 1f, 0f..5f)
-    private val amplitudeY by float("Amplitude Y", 1f, 0f..5f)
-    private val amplitudeZ by float("Amplitude Z", 1f, 0f..5f)
-    private val useGcd   by boolean("GCD rounding", true)
-
-    // ── General ──────────────────────────────────────────────────────────────
     object General : Configurable("General") {
         val seed      by int("Seed", 1337, 0..99999)
         val frequency by float("Frequency", 1f, 0f..5f)
 
-        val noiseType = choice("Noise type").apply {
+        val noiseType = choice("NoiseType").apply {
             choice("OpenSimplex2")
             choice("OpenSimplex2S").select()
             choice("Cellular")
             choice("Perlin")
-            choice("Value cubic")
+            choice("ValueCubic")
             choice("Value")
         }
 
         val cellular = tree(Cellular())
 
-        val rotationType = choice("Rotation 3D").apply {
+        val rotationType = choice("Rotation3D").apply {
             choice("None").select()
-            choice("Improve XY planes")
-            choice("Improve XZ planes")
+            choice("ImproveXYPlanes")
+            choice("ImproveXZPlanes")
         }
 
-        // ── Cellular ──────────────────────────────────────────────────────────────
         class Cellular : Configurable("Cellular") {
-            val distanceFunction = choice("Distance func").apply {
+            val distanceFunction = choice("DistanceFunc").apply {
                 choice("Euclidean")
                 choice("EuclideanSq").select()
                 choice("Manhattan")
                 choice("Hybrid")
             }
-            val returnType = choice("Return type").apply {
-                choice("Cell value")
+            val returnType = choice("ReturnType").apply {
+                choice("CellValue")
                 choice("Distance").select()
                 choice("Distance2")
-                choice("Distance2 add")
-                choice("Distance2 sub")
-                choice("Distance2 mul")
-                choice("Distance2 div")
+                choice("Distance2Add")
+                choice("Distance2Sub")
+                choice("Distance2Mul")
+                choice("Distance2Div")
             }
             val jitter by float("Jitter", 1f, 0f..2f)
 
             init {
-                visible { General.noiseType.inner?.name == "Cellular" }
+                visible { noiseType.inner?.name == "Cellular" }
             }
         }
     }
 
-    // ── Fractal ───────────────────────────────────────────────────────────────
     object Fractal : Configurable("Fractal") {
         val type = choice("Type").apply {
             choice("None").select()
             choice("FBm")
             choice("Ridged")
-            choice("Ping pong")
-            choice("Domain warp progressive")
-            choice("Domain warp independent")
+            choice("PingPong")
+            choice("DomainWarpProgressive")
+            choice("DomainWarpIndependent")
         }
         val octaves           by int  ("Octaves",            3,    1..8)
         val lacunarity        by float("Lacunarity",         2f,   0f..10f)
         val gain              by float("Gain",               0.5f, 0f..1f)
-        val weightedStrength  by float("Weighted strength",  0f,   0f..1f)
-        val pingPongStrength  by float("Ping-pong strength", 2f,   0f..10f).visible { type.inner?.name == "Ping pong" }
+        val weightedStrength  by float("WeightedStrength",  0f,   0f..1f)
+        val pingPongStrength  by float("Ping-pongStrength", 2f,   0f..10f).visible { type.inner?.name == "Ping pong" }
     }
 
-    // ── Domain Warp (включается как группа) ───────────────────────────────────
     object DomainWarp : ToggleableConfigurable("Domain warp", false) {
         val type = choice("Type").apply {
             choice("OpenSimplex2").select()
-            choice("OpenSimplex2 reduced")
-            choice("Basic grid")
+            choice("OpenSimplex2Reduced")
+            choice("BasicGrid")
         }
         val amplitude by float("Amplitude", 30f, 0f..100f)
     }
@@ -182,23 +182,23 @@ object NoiseAimMode : AttackAuraAimMode("Noise") {
             "OpenSimplex2"  -> FastNoise.NoiseType.OpenSimplex2
             "Cellular"      -> FastNoise.NoiseType.Cellular
             "Perlin"        -> FastNoise.NoiseType.Perlin
-            "Value cubic"   -> FastNoise.NoiseType.ValueCubic
+            "ValueCubic"    -> FastNoise.NoiseType.ValueCubic
             "Value"         -> FastNoise.NoiseType.Value
             else            -> FastNoise.NoiseType.OpenSimplex2S
         })
 
         noiseGenerator.SetRotationType3D(when (General.rotationType.inner?.name) {
-            "Improve XY planes" -> FastNoise.RotationType3D.ImproveXYPlanes
-            "Improve XZ planes" -> FastNoise.RotationType3D.ImproveXZPlanes
+            "ImproveXYPlanes" -> FastNoise.RotationType3D.ImproveXYPlanes
+            "ImproveXZPlanes" -> FastNoise.RotationType3D.ImproveXZPlanes
             else                -> FastNoise.RotationType3D.None
         })
 
         noiseGenerator.SetFractalType(when (Fractal.type.inner?.name) {
             "FBm"                      -> FastNoise.FractalType.FBm
             "Ridged"                   -> FastNoise.FractalType.Ridged
-            "Ping pong"                -> FastNoise.FractalType.PingPong
-            "Domain warp progressive"  -> FastNoise.FractalType.DomainWarpProgressive
-            "Domain warp independent"  -> FastNoise.FractalType.DomainWarpIndependent
+            "PingPong"                 -> FastNoise.FractalType.PingPong
+            "DomainWarpProgressive"    -> FastNoise.FractalType.DomainWarpProgressive
+            "DomainWarpIndependent"    -> FastNoise.FractalType.DomainWarpIndependent
             else                       -> FastNoise.FractalType.None
         })
         noiseGenerator.SetFractalOctaves(Fractal.octaves)
@@ -214,21 +214,21 @@ object NoiseAimMode : AttackAuraAimMode("Noise") {
             else          -> FastNoise.CellularDistanceFunction.EuclideanSq
         })
         noiseGenerator.SetCellularReturnType(when (General.cellular.returnType.inner?.name) {
-            "Cell value"    -> FastNoise.CellularReturnType.CellValue
-            "Distance2"     -> FastNoise.CellularReturnType.Distance2
-            "Distance2 add" -> FastNoise.CellularReturnType.Distance2Add
-            "Distance2 sub" -> FastNoise.CellularReturnType.Distance2Sub
-            "Distance2 mul" -> FastNoise.CellularReturnType.Distance2Mul
-            "Distance2 div" -> FastNoise.CellularReturnType.Distance2Div
-            else            -> FastNoise.CellularReturnType.Distance
+            "CellValue"    -> FastNoise.CellularReturnType.CellValue
+            "Distance2"    -> FastNoise.CellularReturnType.Distance2
+            "Distance2Add" -> FastNoise.CellularReturnType.Distance2Add
+            "Distance2Sub" -> FastNoise.CellularReturnType.Distance2Sub
+            "Distance2Mul" -> FastNoise.CellularReturnType.Distance2Mul
+            "Distance2Div" -> FastNoise.CellularReturnType.Distance2Div
+            else           -> FastNoise.CellularReturnType.Distance
         })
         noiseGenerator.SetCellularJitter(General.cellular.jitter)
 
         if (DomainWarp.toggled) {
             noiseGenerator.SetDomainWarpType(when (DomainWarp.type.inner?.name) {
-                "OpenSimplex2 reduced" -> FastNoise.DomainWarpType.OpenSimplex2Reduced
-                "Basic grid"           -> FastNoise.DomainWarpType.BasicGrid
-                else                   -> FastNoise.DomainWarpType.OpenSimplex2
+                "OpenSimplex2Reduced" -> FastNoise.DomainWarpType.OpenSimplex2Reduced
+                "BasicGrid"           -> FastNoise.DomainWarpType.BasicGrid
+                else                  -> FastNoise.DomainWarpType.OpenSimplex2
             })
             noiseGenerator.SetDomainWarpAmp(DomainWarp.amplitude)
         }

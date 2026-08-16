@@ -7,6 +7,6 @@ object ModuleSprint : ClientModule(
     "Sprint",
     ModuleCategory.MOVEMENT
 ) {
-    val whileBlindness by boolean("While blindness", false)
+    val whileBlindness by boolean("WhileBlindness", false)
     val auto by boolean("Auto", true)
 }

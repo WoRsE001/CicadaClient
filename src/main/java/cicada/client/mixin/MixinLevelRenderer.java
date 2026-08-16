@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.RenderEvent;
+import cicada.client.event.events.EventRender;
 import cicada.client.utils.client.MinecraftExtensionsKt;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -38,9 +38,9 @@ public class MixinLevelRenderer {
             @Local(name="poseStack") PoseStack poseStack,
             @Local(name="bufferSource") MultiBufferSource.BufferSource bufferSource
     ) {
-        RenderEvent.World.INSTANCE.setPoseStack(poseStack);
-        RenderEvent.World.INSTANCE.setBufferSource(bufferSource);
-        RenderEvent.World.INSTANCE.setDeltaTracker(MinecraftExtensionsKt.getMc().getDeltaTracker());
-        RenderEvent.World.INSTANCE.call();
+        EventRender.World.INSTANCE.setPoseStack(poseStack);
+        EventRender.World.INSTANCE.setBufferSource(bufferSource);
+        EventRender.World.INSTANCE.setDeltaTracker(MinecraftExtensionsKt.getMc().getDeltaTracker());
+        EventRender.World.INSTANCE.call();
     }
 }

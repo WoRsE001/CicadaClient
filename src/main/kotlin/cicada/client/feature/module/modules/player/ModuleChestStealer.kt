@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.player
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.player.ModuleInventoryCleaner.ItemForSort
@@ -12,11 +12,11 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen
 import net.minecraft.world.inventory.ContainerInput
 
 object ModuleChestStealer : ClientModule("ChestStealer", ModuleCategory.PLAYER) {
-    private val startDelay by int("Start delay", 0, 0..10)
+    private val startDelay by int("StartDelay", 0, 0..10)
     private val delay by int("Delay", 5, 0..10)
     private val close by boolean("Close", true)
-    private val closeDelay by int("Close delay", 0, 0..10).visible { close }
-    private val invManager by boolean("Inv manager", true)
+    private val closeDelay by int("CloseDelay", 0, 0..10).visible { close }
+    private val invManager by boolean("InvManager", true)
 
     private var tick = 0
 

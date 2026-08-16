@@ -2,7 +2,7 @@ package cicada.client.key
 
 import cicada.client.event.Event
 import cicada.client.event.EventListener
-import cicada.client.event.impl.KeyEvent
+import cicada.client.event.events.EventKey
 import cicada.client.utils.client.nullCheck
 
 // created by dicves_recode on 22.02.2026
@@ -19,7 +19,7 @@ object KeyCaller : EventListener {
     }
 
     override fun onEvent(event: Event) {
-        if (event is KeyEvent) {
+        if (event is EventKey) {
             for (listener in listeners) {
                 if (!listener.listenKeybinds())
                     continue
@@ -33,5 +33,5 @@ object KeyCaller : EventListener {
         }
     }
 
-    override fun listenEvents() = nullCheck()
+    override fun shouldListenEvents() = nullCheck()
 }

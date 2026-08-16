@@ -3,7 +3,7 @@ package cicada.client
 import cicada.client.config.ConfigManager
 import cicada.client.event.EventCaller
 import cicada.client.feature.command.CommandManager
-import cicada.client.feature.module.ModuleManager
+import cicada.client.feature.module.Modules
 import cicada.client.font.Fonts
 import cicada.client.key.KeyCaller
 import cicada.client.packethandle.PacketHandler
@@ -32,7 +32,7 @@ object CicadaClient {
 			PacketHandler
 			RotationHandler
 
-			ModuleManager
+			Modules
 			CommandManager
 			ConfigManager
 
@@ -44,7 +44,7 @@ object CicadaClient {
 	}
 
     fun uninitialize() {
-        ConfigManager.save(ConfigManager.defaultConfig)
+        ConfigManager.saveDefault()
     }
 
 	fun of(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)

@@ -9,16 +9,8 @@ import java.nio.charset.StandardCharsets
 
 // SCWGxD regrets everything he did. 17.05.2026 11:53.
 object Fonts : LinkedHashMap<String, FontData>() {
-    val rootFolder = File(
-        mc.gameDirectory, CicadaClient.NAME
-    ).apply {
-        if (!exists()) {
-            mkdir()
-        }
-    }
-
     val fontFolder = File(
-        rootFolder, "fonts"
+        CicadaClient.rootFolder, "fonts"
     ).apply {
         if (!exists()) {
             mkdir()
@@ -34,27 +26,21 @@ object Fonts : LinkedHashMap<String, FontData>() {
     }
 
     fun update() {
-        // 1. Очищаем старые шрифты перед обновлением
         this.clear()
 
-        // 2. Ищем все .json файлы в папке fonts через ResourceManager
         val jsonResources = mc.resourceManager.listResources("fonts") { id ->
             id.path.endsWith(".json")
         }
 
-        // 3. Проходимся по каждому найденному файлу
         for ((id, resource) in jsonResources) {
             try {
-                // Извлекаем имя шрифта (например, из "fonts/inter-bold/inter-bold.json" получаем "inter-bold")
                 val fileName = id.path.substringAfterLast("/")
                 val fontName = fileName.substringBeforeLast(".json")
 
-                // Получаем текстуру
                 val textureId = CicadaClient.of("fonts/$fontName/$fontName.png")
                 val abstractTexture = mc.textureManager.getTexture(textureId)
                 val texture = TextureSetup.singleTexture(abstractTexture.textureView, abstractTexture.sampler)
 
-                // Парсим JSON в RawFontData (так как в JSON нет TextureSetup и готовых MsdfGlyph)
                 val rawFontData = resource.open()
                     .bufferedReader(StandardCharsets.UTF_8)
                     .use { reader -> GSON.fromJson(reader, RawFontData::class.java) }
@@ -62,23 +48,17 @@ object Fonts : LinkedHashMap<String, FontData>() {
                 val width = rawFontData.atlas.width
                 val height = rawFontData.atlas.height
 
-                // Конвертируем GlyphData в MsdfGlyph
-                val glyphs: Map<Int, MsdfGlyph> = rawFontData.glyphs.associate { glyphData ->
-                    glyphData.unicode to MsdfGlyph(glyphData, width, height)
+                val glyphs: Map<Int, MSDFGlyph> = rawFontData.glyphs.associate { glyphData ->
+                    glyphData.unicode to MSDFGlyph(glyphData, width, height)
                 }
 
                 val kernings: Map<Long, Float> = rawFontData.kernings
                     ?.associate { k -> kerningKey(k.leftChar, k.rightChar) to k.advance }
                     ?: emptyMap()
 
-                // 4. Создаем финальный FontData и кладем его в нашу мапу
                 this[fontName] = FontData(
                     fontName, texture, rawFontData.atlas, rawFontData.metrics, glyphs, kernings
                 )
-
-                // Раскомментируй для дебага:
-                // println("Successfully loaded font: $fontName")
-
             } catch (e: Exception) {
                 println("Failed to load font from resource: ${id.path}")
                 e.printStackTrace()

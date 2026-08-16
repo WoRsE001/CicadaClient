@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.visual
 
 import cicada.client.event.Event
-import cicada.client.event.impl.RenderEvent
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventRender
+import cicada.client.event.events.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.render.Renderer3D
@@ -16,15 +16,15 @@ import net.minecraft.world.phys.Vec3
 // SCWGxD regrets everything he did. 19.07.2026 2:04.
 object ModuleNoisePointSelect : ClientModule("NoisePointSelect", ModuleCategory.VISUAL) {
     private val targetFinder = tree(TargetFinder())
-    private val pointSize by float("Point size", 0.1f, 0f..1f)
+    private val pointSize by float("PointSize", 0.1f, 0f..1f)
 
-    private val amplitudeX by float("Amplitude X", 1f, 0f..5f)
-    private val amplitudeY by float("Amplitude Y", 1f, 0f..5f)
-    private val amplitudeZ by float("Amplitude Z", 1f, 0f..5f)
+    private val amplitudeX by float("AmplitudeX", 1f, 0f..5f)
+    private val amplitudeY by float("AmplitudeY", 1f, 0f..5f)
+    private val amplitudeZ by float("AmplitudeZ", 1f, 0f..5f)
 
-    private val xNoiseGenerator = tree(NoiseSetting("X noise generator"))
-    private val yNoiseGenerator = tree(NoiseSetting("Y noise generator"))
-    private val zNoiseGenerator = tree(NoiseSetting("Z noise generator"))
+    private val xNoiseGenerator = tree(NoiseSetting("XNoiseGenerator"))
+    private val yNoiseGenerator = tree(NoiseSetting("YNoiseGenerator"))
+    private val zNoiseGenerator = tree(NoiseSetting("ZNoiseGenerator"))
 
     override fun onEnable() {
         xNoiseGenerator.applySettings()
@@ -38,7 +38,7 @@ object ModuleNoisePointSelect : ClientModule("NoisePointSelect", ModuleCategory.
         }
 
         val target = targetFinder.target
-        if (event is RenderEvent.World && target != null) {
+        if (event is EventRender.World && target != null) {
             val time = (System.currentTimeMillis() % Int.MAX_VALUE).toFloat() / 1_000f
 
             val noiseX = xNoiseGenerator.genNosie(time, 0f  , 0f  )

@@ -1,12 +1,11 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.PacketEvent;
+import cicada.client.event.events.EventPacket;
 import cicada.client.packethandle.PacketHandler;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ServerGamePacketListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,10 +19,10 @@ public class MixinConnection {
         if (Minecraft.getInstance().getConnection() == null)
             return;
 
-        PacketEvent.Send.INSTANCE.setPacket(packet);
-        PacketEvent.Send.INSTANCE.call();
+        EventPacket.Send.INSTANCE.setPacket(packet);
+        EventPacket.Send.INSTANCE.call();
 
-        if (!PacketEvent.Send.INSTANCE.getCanceled())
+        if (!EventPacket.Send.INSTANCE.getCanceled())
             PacketHandler.INSTANCE.handlePacket(packet);
 
         ci.cancel();
@@ -31,7 +30,8 @@ public class MixinConnection {
 
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/protocol/Packet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;genericsFtw(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;)V", shift = At.Shift.BEFORE), cancellable = true)
     private static void callReceivePacketEvent(ChannelHandlerContext ctx, Packet<?> packet, CallbackInfo ci) {
-        PacketEvent.Receive packetEvent = new PacketEvent.Receive(packet);
+        EventPacket.Receive packetEvent = EventPacket.Receive.INSTANCE;
+        packetEvent.setPacket(packet);
         packetEvent.call();
 
         if (packetEvent.getCanceled())

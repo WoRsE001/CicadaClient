@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.combat.antikb.modes
 
 import cicada.client.event.Event
-import cicada.client.event.impl.MovementInputEvent
-import cicada.client.event.impl.PacketEvent
+import cicada.client.event.events.EventMovementInput
+import cicada.client.event.events.EventPacket
 import cicada.client.utils.client.player
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 
@@ -13,11 +13,12 @@ object AntiKBJump : AntiKBMode("Jump") {
     private var shouldJump = false
 
     override fun onEvent(event: Event) {
-        if (shouldJump && event is MovementInputEvent && player.hurtTime in hurtTime) {
+        if (shouldJump && event is EventMovementInput && player.hurtTime in hurtTime) {
             event.jump = true
+            shouldJump = false
         }
 
-        if (event is PacketEvent.Receive) {
+        if (event is EventPacket.Receive) {
             val packet = event.packet
 
             if (packet is ClientboundSetEntityMotionPacket && packet.id == player.id) {

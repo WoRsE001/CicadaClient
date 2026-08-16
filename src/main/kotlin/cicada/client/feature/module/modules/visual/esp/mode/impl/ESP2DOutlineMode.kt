@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.visual.esp.mode.impl
 
 import cicada.client.event.Event
-import cicada.client.event.impl.RenderEvent
+import cicada.client.event.events.EventRender
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.visual.esp.mode.ESPMode
 import cicada.client.utils.client.mc
@@ -15,11 +15,11 @@ import net.minecraft.world.entity.player.Player
 import org.joml.Vector3f
 
 // SCWGxD regrets everything he did. 04.04.2026 15:48.
-class ESP2DOutlineMode : ESPMode("Outline 2D") {
+class ESP2DOutlineMode : ESPMode("Outline2D") {
     override val color = color("Color", Color4f(1f))
 
     override fun onEvent(event: Event, entity: Entity) {
-        if (event !is RenderEvent.Gui.Post)
+        if (event !is EventRender.Gui.Post)
             return
 
         val graphics = event.graphics

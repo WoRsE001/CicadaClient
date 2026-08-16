@@ -7,7 +7,7 @@ class FontData(
     val texture: TextureSetup,
     val atlas: AtlasData,
     val metrics: MetricsData,
-    val glyphs: Map<Int, MsdfGlyph>,
+    val glyphs: Map<Int, MSDFGlyph>,
     val kernings: Map<Long, Float> = emptyMap()
 )
 
@@ -50,7 +50,7 @@ data class KerningData(
     val advance: Float
 )
 
-class MsdfGlyph(
+class MSDFGlyph(
     data: GlyphData,
     atlasWidth: Float,
     atlasHeight: Float

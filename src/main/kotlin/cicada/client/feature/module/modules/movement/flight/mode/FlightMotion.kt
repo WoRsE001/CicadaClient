@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.movement.flight.mode
 
 import cicada.client.event.Event
-import cicada.client.event.impl.SendPosEvent
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventSendPos
+import cicada.client.event.events.EventTick
 import cicada.client.setting.value.ChoiceValue
 import cicada.client.setting.value.Configurable
 import cicada.client.setting.value.ToggleableConfigurable
@@ -14,11 +14,11 @@ import net.minecraft.world.phys.Vec3
 
 // SCWGxD regrets everything he did. 02.05.2026 5:21.
 object FlightMotion : ChoiceValue.Choice("Motion") {
-    private val glideSpeed by float("Glide speed", 0f, -1f..1f)
-    private val kickBypass by boolean("Kick bypass", false)
-    private val saveMomentum by boolean("Save momentum", true)
+    private val glideSpeed by float("GlideSpeed", 0f, -1f..1f)
+    private val kickBypass by boolean("KickBypass", false)
+    private val saveMomentum by boolean("SaveMomentum", true)
 
-    object BaseSpeed : Configurable("Base speed") {
+    object BaseSpeed : Configurable("BaseSpeed") {
         val horizontalSpeed by float("Horizontal", 1f, 0f..10f)
         val verticalSpeed by float("Vertical", 1f, 0f..10f)
     }
@@ -62,7 +62,7 @@ object FlightMotion : ChoiceValue.Choice("Motion") {
             }
         }
 
-        if (event is SendPosEvent.Pre) {
+        if (event is EventSendPos.Pre) {
             if (kickBypass) {
                 if (player.position().distanceTo(lastPos) < 0.04) {
                     noMoveTick++

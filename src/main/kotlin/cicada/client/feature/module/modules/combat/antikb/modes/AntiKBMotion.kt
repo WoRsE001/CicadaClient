@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat.antikb.modes
 
 import cicada.client.event.Event
-import cicada.client.event.impl.PacketEvent
+import cicada.client.event.events.EventPacket
 import cicada.client.utils.client.player
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 
@@ -11,7 +11,7 @@ object AntiKBMotion : AntiKBMode("Motion") {
     private val motionY by float("Motion Y", 0f, -1f..1f)
 
     override fun onEvent(event: Event) {
-        if (event !is PacketEvent.Receive) return
+        if (event !is EventPacket.Receive) return
 
         val packet = event.packet
 

@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.player
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
@@ -19,16 +19,16 @@ object ModuleAutoOffhand : ClientModule("AutoOffhand", ModuleCategory.PLAYER) {
     private val swappers = mutableListOf<Swapper>()
 
     private object Totem : Swapper("Totem", true) {
-        val healthThreshold by int("Health threshold", 6, 0..20)
+        val healthThreshold by int("HealthThreshold", 6, 0..20)
 
         override fun doSwap() = player.health <= healthThreshold
 
         override fun slotToSwap(): Slot? = player.inventoryMenu.slotBy { it.isTotemOfUndying }
     }
 
-    private object GoldenApple : Swapper("Golden apple", true) {
-        val ifToggledAttackAura by boolean("If toggled attack aura", true)
-        val ifAttackAuraHasTarget by boolean("If attack aura has target", true).visible { ifToggledAttackAura }
+    private object GoldenApple : Swapper("GoldenApple", true) {
+        val ifToggledAttackAura by boolean("IfToggledAttackAura", true)
+        val ifAttackAuraHasTarget by boolean("IfAttackAuraHasTarget", true).visible { ifToggledAttackAura }
 
         override fun doSwap() = ifToggledAttackAura && (ModuleAttackAura.target != null || !ifAttackAuraHasTarget)
 

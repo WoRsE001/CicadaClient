@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.movement.fastclimb.mode
 
 import cicada.client.event.Event
-import cicada.client.event.impl.PlayerStateUpdateEvent
-import cicada.client.event.impl.SendPosEvent
+import cicada.client.event.events.EventPlayerStateUpdate
+import cicada.client.event.events.EventSendPos
 import cicada.client.setting.value.ChoiceValue
 import cicada.client.utils.client.player
 import cicada.client.utils.player.velocityY
@@ -12,11 +12,11 @@ object FastClimbPoral : ChoiceValue.Choice("Polar") {
     private val motion by float("Motion", 0.6f, 0f..10f)
 
     override fun onEvent(event: Event) {
-        if (event is PlayerStateUpdateEvent.Pre) {
+        if (event is EventPlayerStateUpdate.Pre) {
             player.velocityY = motion.toDouble()
         }
 
-        if (event is SendPosEvent.Pre) {
+        if (event is EventSendPos.Pre) {
             event.ground = true
         }
     }

@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat.antikb.modes
 
 import cicada.client.event.Event
-import cicada.client.event.impl.AttackEvent
+import cicada.client.event.events.EventAttack
 import cicada.client.utils.client.player
 
 // SCWGxD regrets everything he did. 17.04.2026 11:57.
@@ -10,7 +10,7 @@ object AntiKBReduce : AntiKBMode("Reduce") {
     private val motionXZOnHit by float("Factor motion on hit", 1f, -1f..1f)
 
     override fun onEvent(event: Event) {
-        if (event !is AttackEvent.Pre || Math.random() > chance) return
+        if (event !is EventAttack.Pre || Math.random() > chance) return
 
         if (player.hurtTime != 0) {
             if (player.isSprinting) {

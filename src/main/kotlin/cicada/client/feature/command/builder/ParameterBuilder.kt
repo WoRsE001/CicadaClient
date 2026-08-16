@@ -1,7 +1,7 @@
 package cicada.client.feature.command.builder
 
 import cicada.client.feature.command.Parameter
-import cicada.client.feature.module.ModuleManager
+import cicada.client.feature.module.Modules
 
 class ParameterBuilder<T : Any>(private val name: String) {
 
@@ -38,7 +38,7 @@ class ParameterBuilder<T : Any>(private val name: String) {
         }
 
         val MODULE_VALIDATOR = Parameter.Verifier { input ->
-            val module = ModuleManager.find { it.name.equals(input, ignoreCase = true) }
+            val module = Modules.find { it.name.equals(input, ignoreCase = true) }
             if (module != null) Parameter.Verifier.Ok(module)
             else Parameter.Verifier.Error("Модуль '$input' не найден")
         }

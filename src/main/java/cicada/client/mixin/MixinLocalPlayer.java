@@ -1,9 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.EventSendInput;
-import cicada.client.event.impl.PlayerStateUpdateEvent;
-import cicada.client.event.impl.SendPosEvent;
-import cicada.client.event.impl.SlowDownEvent;
+import cicada.client.event.events.*;
 import cicada.client.feature.module.modules.movement.ModuleSprint;
 import cicada.client.rotation.CameraRotation;
 import cicada.client.utils.client.MinecraftExtensionsKt;
@@ -19,7 +16,10 @@ import net.minecraft.stats.StatsCounter;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,6 +27,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LocalPlayer.class)
 public class MixinLocalPlayer {
+    @Shadow
+    private boolean wasSprinting;
+
     // test
     @Inject(method = "<init>", at = @At("TAIL"))
     private void resetCameraRotation(Minecraft minecraft, ClientLevel level, ClientPacketListener connection, StatsCounter stats, ClientRecipeBook recipeBook, Input lastSentInput, boolean wasSprinting, ChatAbilities chatAbilities, CallbackInfo ci) {
@@ -61,48 +64,53 @@ public class MixinLocalPlayer {
             PlayerStateUtilsKt.setUtilGroundTick(0);
         }
 
-        PlayerStateUpdateEvent.Pre.INSTANCE.call();
+        EventPlayerStateUpdate.Pre.INSTANCE.call();
     }
 
     @Inject(method = "aiStep", at = @At("TAIL"))
     private void callUpdateEventPost(CallbackInfo ci) {
-        PlayerStateUpdateEvent.Post.INSTANCE.call();
+        EventPlayerStateUpdate.Post.INSTANCE.call();
     }
 
     @Inject(method = "sendPosition", at = @At("HEAD"), cancellable = true)
     private void hookMovementPre(CallbackInfo ci) {
         LocalPlayer player = (LocalPlayer) (Object) this;
-        SendPosEvent.Pre.INSTANCE.setPos(player.position());
-        SendPosEvent.Pre.INSTANCE.setGround(player.onGround());
-        SendPosEvent.Pre.INSTANCE.call();
+        EventSendPos.Pre.INSTANCE.setPos(player.position());
+        EventSendPos.Pre.INSTANCE.setGround(player.onGround());
+        EventSendPos.Pre.INSTANCE.call();
 
-        if (SendPosEvent.Pre.INSTANCE.getCanceled())
+        if (EventSendPos.Pre.INSTANCE.getCanceled())
             ci.cancel();
     }
 
     @ModifyExpressionValue(method = "sendPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getX()D"))
     private double modifyXPosition(double original) {
-        return SendPosEvent.Pre.INSTANCE.getX();
+        return EventSendPos.Pre.INSTANCE.getX();
     }
 
     @ModifyExpressionValue(method = "sendPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getY()D"))
     private double modifyYPosition(double original) {
-        return SendPosEvent.Pre.INSTANCE.getY();
+        return EventSendPos.Pre.INSTANCE.getY();
     }
 
     @ModifyExpressionValue(method = "sendPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getZ()D"))
     private double modifyZPosition(double original) {
-        return SendPosEvent.Pre.INSTANCE.getZ();
+        return EventSendPos.Pre.INSTANCE.getZ();
+    }
+
+    @ModifyExpressionValue(method = "sendPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;position()Lnet/minecraft/world/phys/Vec3;"))
+    private Vec3 modifyPosition(Vec3 original) {
+        return EventSendPos.Pre.INSTANCE.getPos();
     }
 
     @ModifyExpressionValue(method = "sendPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;onGround()Z"))
     private boolean modifyOnGround(boolean original) {
-        return SendPosEvent.Pre.INSTANCE.getGround();
+        return EventSendPos.Pre.INSTANCE.getGround();
     }
 
     @Inject(method = "sendPosition", at = @At("RETURN"))
     private void hookMovementPost(CallbackInfo callbackInfo) {
-        SendPosEvent.Post.INSTANCE.call();
+        EventSendPos.Post.INSTANCE.call();
     }
 
     @ModifyExpressionValue(method = "isSprintingPossible", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isMobilityRestricted()Z"))
@@ -118,12 +126,12 @@ public class MixinLocalPlayer {
         LocalPlayer player = MinecraftExtensionsKt.getPlayer();
         ItemStack usedItemStack = player.getUseItem();
 
-        SlowDownEvent.Type type = SlowDownEvent.INSTANCE.getTypeByItem(usedItemStack);
+        EventSlowDown.Type type = EventSlowDown.INSTANCE.getTypeByItem(usedItemStack);
         if (type == null) return;
-        SlowDownEvent.INSTANCE.setType(type);
-        SlowDownEvent.INSTANCE.setSprint(!cir.getReturnValue());
-        SlowDownEvent.INSTANCE.call();
-        cir.setReturnValue(!SlowDownEvent.INSTANCE.getSprint());
+        EventSlowDown.INSTANCE.setType(type);
+        EventSlowDown.INSTANCE.setSprint(!cir.getReturnValue());
+        EventSlowDown.INSTANCE.call();
+        cir.setReturnValue(!EventSlowDown.INSTANCE.getSprint());
     }
 
     @ModifyExpressionValue(method = "modifyInput", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;itemUseSpeedMultiplier()F"))
@@ -131,19 +139,19 @@ public class MixinLocalPlayer {
         LocalPlayer player = MinecraftExtensionsKt.getPlayer();
         ItemStack usedItemStack = player.getUseItem();
 
-        SlowDownEvent.Type type = SlowDownEvent.INSTANCE.getTypeByItem(usedItemStack);
+        EventSlowDown.Type type = EventSlowDown.INSTANCE.getTypeByItem(usedItemStack);
         if (type == null) return original;
-        SlowDownEvent.INSTANCE.setType(type);
-        SlowDownEvent.INSTANCE.setSlowDown(original);
-        SlowDownEvent.INSTANCE.call();
-        return SlowDownEvent.INSTANCE.getSlowDown();
+        EventSlowDown.INSTANCE.setType(type);
+        EventSlowDown.INSTANCE.setSlowDown(original);
+        EventSlowDown.INSTANCE.call();
+        return EventSlowDown.INSTANCE.getSlowDown();
     }
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isShiftKeyDown()Z"))
     private boolean callNoSlowDownEvent2(boolean original) {
-        SlowDownEvent.INSTANCE.setType(SlowDownEvent.Type.Sneak);
-        SlowDownEvent.INSTANCE.setSprint(!original);
-        SlowDownEvent.INSTANCE.call();
+        EventSlowDown.INSTANCE.setType(EventSlowDown.Type.Sneak);
+        EventSlowDown.INSTANCE.setSprint(!original);
+        EventSlowDown.INSTANCE.call();
         return original; // TODO: FIX SNEAK SPRINT
     }
 
@@ -151,10 +159,10 @@ public class MixinLocalPlayer {
     private double callNoSlowDownEvent3(double original) {
         LocalPlayer player = MinecraftExtensionsKt.getPlayer();
 
-        SlowDownEvent.INSTANCE.setType(SlowDownEvent.Type.Sneak);
-        SlowDownEvent.INSTANCE.setSlowDown((float) player.getAttributeValue(Attributes.SNEAKING_SPEED));
-        SlowDownEvent.INSTANCE.call();
-        return SlowDownEvent.INSTANCE.getSlowDown();
+        EventSlowDown.INSTANCE.setType(EventSlowDown.Type.Sneak);
+        EventSlowDown.INSTANCE.setSlowDown((float) player.getAttributeValue(Attributes.SNEAKING_SPEED));
+        EventSlowDown.INSTANCE.call();
+        return EventSlowDown.INSTANCE.getSlowDown();
     }
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/ClientInput;keyPresses:Lnet/minecraft/world/entity/player/Input;"))
@@ -162,5 +170,24 @@ public class MixinLocalPlayer {
         EventSendInput.INSTANCE.setInput(original);
         EventSendInput.INSTANCE.call();
         return EventSendInput.INSTANCE.getInput();
+    }
+
+    @Inject(method = "sendIsSprintingIfNeeded", at = @At("HEAD"), cancellable = true)
+    private void callSendSprintPreEvent(CallbackInfo ci) {
+        EventSendSprint.Pre.INSTANCE.setWasSprinting(wasSprinting);
+        EventSendSprint.Pre.INSTANCE.call();
+        if (EventSendSprint.Pre.INSTANCE.getCanceled()) {
+            ci.cancel();
+        }
+    }
+
+    @ModifyExpressionValue(method = "sendIsSprintingIfNeeded", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/LocalPlayer;wasSprinting:Z", ordinal = 0, opcode = Opcodes.GETFIELD))
+    private boolean injectSendSprintPreEvent(boolean original) {
+        return EventSendSprint.Pre.INSTANCE.getWasSprinting();
+    }
+
+    @Inject(method = "sendIsSprintingIfNeeded", at = @At("TAIL"))
+    private void callSendSprintPostEvent(CallbackInfo ci) {
+        EventSendSprint.Post.INSTANCE.call();
     }
 }

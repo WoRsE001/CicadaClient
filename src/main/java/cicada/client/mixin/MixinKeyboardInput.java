@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.MovementInputEvent;
+import cicada.client.event.events.EventMovementInput;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.world.entity.player.Input;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MixinKeyboardInput {
     @ModifyExpressionValue(method = "tick", at = @At(value = "NEW", target = "(ZZZZZZZ)Lnet/minecraft/world/entity/player/Input;"))
     private Input callMovementInputEvent(Input original) {
-        MovementInputEvent MIE = MovementInputEvent.INSTANCE;
+        EventMovementInput MIE = EventMovementInput.INSTANCE;
         
         MIE.setForward(original.forward());
         MIE.setBackward(original.backward());

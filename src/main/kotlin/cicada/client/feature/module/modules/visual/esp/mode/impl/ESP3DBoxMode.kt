@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.visual.esp.mode.impl
 
 import cicada.client.event.Event
-import cicada.client.event.impl.RenderEvent
+import cicada.client.event.events.EventRender
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.visual.esp.mode.ESPMode
 import cicada.client.render.Renderer3D
@@ -18,7 +18,7 @@ class ESP3DBoxMode : ESPMode("Box") {
     override val color = color("Color", Color4f(1f, 1f, 1f, 1f))
 
     override fun onEvent(event: Event, entity: Entity) {
-        if (event !is RenderEvent.World)
+        if (event !is EventRender.World)
             return
 
         val color = if (

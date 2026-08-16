@@ -22,10 +22,10 @@ val gameMode: MultiPlayerGameMode
 fun Minecraft.displayMessage(content: Any?) =
     gui.chat.addClientSystemMessage(Component.literal("[${CicadaClient.NAME}] ${content.toString()}"))
 
-private var timer_ = 1f
+private var _gameSpeed = 1f
 
-var Minecraft.timer: Float
-    get() = timer_
-    set(value) { timer_ = value }
+var Minecraft.gameSpeed: Float
+    get() = _gameSpeed
+    set(value) { _gameSpeed = value }
 
 fun nullCheck() = mc.player != null && mc.level != null

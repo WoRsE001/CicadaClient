@@ -233,13 +233,13 @@ class FloatRangeValue(
     description: String = ""
 ) : Value<ClosedRange<Float>>(name, default, description) {
     override fun asJson(): JsonObject = buildJsonObject {
-        put("floatRange.start", inner.start)
-        put("floatRange.end", inner.endInclusive)
+        put("start", inner.start)
+        put("endInclusive", inner.endInclusive)
     }
 
     override fun fromJson(jsonObject: JsonObject) {
-        val start = jsonObject["floatRange.start"]?.jsonPrimitive?.floatOrNull ?: run { return }
-        val end = jsonObject["floatRange.end"]?.jsonPrimitive?.floatOrNull ?: run { return }
+        val start = jsonObject["start"]?.jsonPrimitive?.floatOrNull ?: run { return }
+        val end = jsonObject["endInclusive"]?.jsonPrimitive?.floatOrNull ?: run { return }
         inner = start..end
     }
 }
@@ -256,11 +256,11 @@ class FloatValue(
     description: String = ""
 ) : Value<Float>(name, default, description) {
     override fun asJson(): JsonObject = buildJsonObject {
-        put("float", inner)
+        put("value", inner)
     }
 
     override fun fromJson(jsonObject: JsonObject) {
-        inner = jsonObject["float"]?.jsonPrimitive?.floatOrNull ?: run { return }
+        inner = jsonObject["value"]?.jsonPrimitive?.floatOrNull ?: run { return }
     }
 }
 
@@ -278,7 +278,7 @@ open class MultiChoiceValue(
 
     override fun fromJson(jsonObject: JsonObject) {
         for (choice in inner) {
-            choice.toggled = jsonObject[choice.name]?.jsonPrimitive?.booleanOrNull ?: run { return }
+            choice.toggled = jsonObject[choice.name]?.jsonPrimitive?.booleanOrNull ?: false
         }
     }
 
@@ -314,13 +314,13 @@ class IntRangeValue(
     description: String = ""
 ) : Value<IntRange>(name, default, description) {
     override fun asJson(): JsonObject = buildJsonObject {
-        put("intRange.first", inner.first)
-        put("intRange.last", inner.last)
+        put("first", inner.first)
+        put("last", inner.last)
     }
 
     override fun fromJson(jsonObject: JsonObject) {
-        val first = jsonObject["intRange.first"]?.jsonPrimitive?.intOrNull ?: run { return }
-        val last = jsonObject["intRange.last"]?.jsonPrimitive?.intOrNull ?: run { return }
+        val first = jsonObject["first"]?.jsonPrimitive?.intOrNull ?: run { return }
+        val last = jsonObject["last"]?.jsonPrimitive?.intOrNull ?: run { return }
         inner = first..last
     }
 }
@@ -337,11 +337,11 @@ class IntValue(
     description: String = ""
 ) : Value<Int>(name, default, description) {
     override fun asJson(): JsonObject = buildJsonObject {
-        put("int", inner)
+        put("value", inner)
     }
 
     override fun fromJson(jsonObject: JsonObject) {
-        inner = jsonObject["int"]?.jsonPrimitive?.intOrNull ?: run { return }
+        inner = jsonObject["value"]?.jsonPrimitive?.intOrNull ?: run { return }
     }
 }
 

@@ -1,6 +1,7 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.RelativeMoveEvent;
+import cicada.client.event.events.EventPlayerTurn;
+import cicada.client.event.events.EventRelativeMove;
 import cicada.client.rotation.CameraRotation;
 import cicada.client.utils.client.MinecraftExtensionsKt;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -25,6 +26,8 @@ public class MixinEntity {
         if ((Object) this != MinecraftExtensionsKt.getPlayer())
             return;
 
+        EventPlayerTurn.Pre.INSTANCE.call();
+
         float pitchDelta = (float)cursorDeltaY * 0.15F;
         float yawDelta = (float)cursorDeltaX * 0.15F;
 
@@ -38,8 +41,13 @@ public class MixinEntity {
         }
     }
 
+    @Inject(method = "turn", at = @At("RETURN"))
+    private void kaka(double cursorDeltaX, double cursorDeltaY, CallbackInfo ci) {
+        EventPlayerTurn.Post.INSTANCE.call();
+    }
+
     @Inject(at = @At("TAIL"), method = "turn")
-    private void setCameraRotation(double cursorDeltaX, double cursorDeltaY, CallbackInfo ci) {
+    private void setRotation(double cursorDeltaX, double cursorDeltaY, CallbackInfo ci) {
         CameraRotation rotation = CameraRotation.INSTANCE;
 
         if (!rotation.getUnlocked()) {
@@ -50,8 +58,8 @@ public class MixinEntity {
 
     @ModifyExpressionValue(method = "moveRelative", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getYRot()F"))
     private float callRelativeMoveEvent(float original) {
-        RelativeMoveEvent.INSTANCE.setYaw(original);
-        RelativeMoveEvent.INSTANCE.call();
-        return RelativeMoveEvent.INSTANCE.getYaw();
+        EventRelativeMove.INSTANCE.setYaw(original);
+        EventRelativeMove.INSTANCE.call();
+        return EventRelativeMove.INSTANCE.getYaw();
     }
 }

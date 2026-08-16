@@ -1,15 +1,13 @@
 package cicada.client.feature.module.modules.visual.druns
 
 import cicada.client.event.Event
-import cicada.client.event.impl.RenderEvent
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventRender
+import cicada.client.event.events.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.feature.module.modules.combat.attackaura.ModuleAttackAura
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.player
-import cicada.client.utils.rotation.rotation
-import net.minecraft.world.item.BlockItem
 import org.joml.Vector3f
 import kotlin.math.PI
 import kotlin.math.cos
@@ -47,7 +45,7 @@ object ModuleDruns : ClientModule("Druns", ModuleCategory.VISUAL) {
             timer += 0.1f
         }
 
-        if (event is RenderEvent.World) {
+        if (event is EventRender.World) {
             for (drun in druns) {
                 drun.draw(event.bufferSource, event.poseStack, mc.deltaTracker.getGameTimeDeltaPartialTick(true))
             }

@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.player
 
 import cicada.client.event.Event
-import cicada.client.event.impl.LegitClickTimingEvent
+import cicada.client.event.events.EventClickTiming
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
@@ -14,8 +14,8 @@ import net.minecraft.world.phys.BlockHitResult
 
 // SCWGxD regrets everything he did. 18.06.2026 15:58.
 object ModuleAutoTool : ClientModule("AutoTool", ModuleCategory.PLAYER) {
-    private val switchDelay by int("Switch delay", 0, 0..20)
-    private val backSwitchDelay by int("Back switch delay", 0, 0..20)
+    private val switchDelay by int("SwitchDelay", 0, 0..20)
+    private val backSwitchDelay by int("BackSwitchDelay", 0, 0..20)
 
     private var switchTimer = 0
     private var bachSwitchTimer = 0
@@ -23,13 +23,11 @@ object ModuleAutoTool : ClientModule("AutoTool", ModuleCategory.PLAYER) {
     private var switched = false
 
     override fun onEvent(event: Event) {
-        if (event is LegitClickTimingEvent) {
+        if (event is EventClickTiming) {
             switchTimer++
             bachSwitchTimer++
 
-            val needSwitch = mc.hitResult is BlockHitResult &&
-                        (mc.hitResult as BlockHitResult).blockPos != null &&
-                        mc.options.keyAttack.isDown
+            val needSwitch = mc.hitResult is BlockHitResult && mc.options.keyAttack.isDown
 
             if (switchTimer >= switchDelay) {
                 if (needSwitch && !switched) {

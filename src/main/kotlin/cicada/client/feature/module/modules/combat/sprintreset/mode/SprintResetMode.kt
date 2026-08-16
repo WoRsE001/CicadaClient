@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.combat.sprintreset.mode
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventTick
 import cicada.client.setting.value.ChoiceValue
 
 // created by dicves_recode on 29.12.2025

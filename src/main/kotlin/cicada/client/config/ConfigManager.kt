@@ -1,7 +1,8 @@
 package cicada.client.config
 
 import cicada.client.CicadaClient
-import cicada.client.feature.module.ModuleManager
+import cicada.client.feature.hud.HUDs
+import cicada.client.feature.module.Modules
 import kotlinx.io.files.FileNotFoundException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
@@ -11,13 +12,13 @@ import java.io.File
 // SCWGxD regrets everything he did. 19.06.2026 15:11.
 object ConfigManager {
     val configsFolder = File(CicadaClient.rootFolder, "configs").apply { if (!exists()) mkdirs() }
-    val defaultConfig = File(configsFolder, "default.ccc")
+    private val defaultConfig = File(configsFolder, "default.ccc")
 
     init {
         if (defaultConfig.exists()) {
-            load(defaultConfig)
+            loadDefault()
         } else {
-            save(defaultConfig)
+            saveDefault()
         }
     }
 
@@ -31,11 +32,15 @@ object ConfigManager {
         }
 
         val configJson = buildJsonObject {
-            put("modules", ModuleManager.serializeTo())
-            //put("HUDs", HUDManager.serializeTo())
+            put("modules", Modules.serializeTo())
+            put("HUDs", HUDs.serializeTo())
         }
 
         file.writeText(Json.encodeToString(configJson))
+    }
+
+    fun saveDefault() {
+        save(defaultConfig)
     }
 
     fun load(file: File) {
@@ -45,9 +50,11 @@ object ConfigManager {
 
         val configJson = Json.parseToJsonElement(file.readText()).jsonObject
 
-        configJson["modules"]?.let { ModuleManager.deserializeFrom(it.jsonObject) }
-        //configJson["HUDs"]?.let { HUDManager.deserializeFrom(it.jsonObject) }
+        configJson["modules"]?.let { Modules.deserializeFrom(it.jsonObject) }
+        configJson["HUDs"]?.let { HUDs.deserializeFrom(it.jsonObject) }
+    }
 
-
+    fun loadDefault() {
+        load(defaultConfig)
     }
 }

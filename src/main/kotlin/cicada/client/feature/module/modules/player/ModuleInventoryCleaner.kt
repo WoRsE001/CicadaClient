@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.player
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventTick
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.setting.value.ChoiceValue
@@ -23,14 +23,14 @@ import net.minecraft.world.item.enchantment.Enchantments
 
 object ModuleInventoryCleaner : ClientModule("InventoryCleaner", ModuleCategory.PLAYER) {
     val sortedSlots = List(9) { i ->
-        choice("Slot $i").apply {
+        choice("Slot$i").apply {
             choice(ItemForSort("Sword", { it.isSword }, { a, b -> a.attackDamage > b.attackDamage }))
-            choice(ItemForSort("Fishing rod", { it.`is`(Items.FISHING_ROD) }, { a, b -> false }))
+            choice(ItemForSort("FishingRod", { it.`is`(Items.FISHING_ROD) }, { a, b -> false }))
             choice(ItemForSort("Bow", { it.`is`(Items.BOW) }, { a, b -> a.getEnchantment(Enchantments.PUNCH) >  b.getEnchantment(Enchantments.PUNCH) }))
-            choice(ItemForSort("Water bucket", { it.`is`(Items.WATER_BUCKET) }, { a, b -> false }))
-            choice(ItemForSort("Golden apples", { it.`is`(Items.GOLDEN_APPLE) }, { a, b -> a.count > b.count }))
+            choice(ItemForSort("WaterBucket", { it.`is`(Items.WATER_BUCKET) }, { a, b -> false }))
+            choice(ItemForSort("GoldenApples", { it.`is`(Items.GOLDEN_APPLE) }, { a, b -> a.count > b.count }))
             choice(ItemForSort("Food", { it.isFood && !it.`is`(Items.GOLDEN_APPLE)}, { a, b -> a.count > b.count }))
-            choice(ItemForSort("Ender pearls", { it.`is`(Items.ENDER_PEARL) }, { a, b -> a.count > b.count }))
+            choice(ItemForSort("EnderPearls", { it.`is`(Items.ENDER_PEARL) }, { a, b -> a.count > b.count }))
             choice(ItemForSort("Projectiles", { it.item is ProjectileItem }, { a, b -> a.count > b.count }))
             choice(ItemForSort("Blocks", { it.item is BlockItem }, { a, b -> a.count > b.count }))
         }
@@ -72,9 +72,9 @@ object ModuleInventoryCleaner : ClientModule("InventoryCleaner", ModuleCategory.
     private fun clear() {
         val itemsToClear = listOf(
             ItemForSort("Sword", { it.isSword }, { a, b -> a.attackDamage > b.attackDamage }),
-            ItemForSort("Fishing rod", { it.`is`(Items.FISHING_ROD) }, { a, b -> false }),
+            ItemForSort("FishingRod", { it.`is`(Items.FISHING_ROD) }, { a, b -> false }),
             ItemForSort("Bow", { it.`is`(Items.BOW) }, { a, b -> a.getEnchantment(Enchantments.PUNCH) >  b.getEnchantment(Enchantments.PUNCH) }),
-            ItemForSort("Water bucket", { it.`is`(Items.WATER_BUCKET) }, { a, b -> false }),
+            ItemForSort("WaterBucket", { it.`is`(Items.WATER_BUCKET) }, { a, b -> false }),
         )
 
         for (itemToClear in itemsToClear) {

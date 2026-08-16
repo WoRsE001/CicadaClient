@@ -10,14 +10,17 @@ import cicada.client.feature.module.modules.combat.antikb.modes.AntiKBReduce
 
 // SCWGxD regrets everything he did. 17.04.2026 11:47.
 object ModuleAntiKB : ClientModule("AntiKB", ModuleCategory.COMBAT) {
-    private val mode by multiChoice("Mode").apply {
+    private val modes by multiChoice("Modes").apply {
         choice(AntiKBJump)
         choice(AntiKBMotion)
         choice(AntiKBReduce)
     }
 
     override fun onEvent(event: Event) {
-        mode.filter { it is AntiKBMode && it.toggled }
-            .forEach { (it as AntiKBMode).onEvent(event) }
+        for (mode in modes) {
+            if (mode is AntiKBMode && mode.toggled) {
+                mode.onEvent(event)
+            }
+        }
     }
 }

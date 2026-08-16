@@ -6,8 +6,8 @@ import cicada.client.feature.module.modules.visual.handposition.ValueHandPositio
 
 // SCWGxD regrets everything he did. 18.04.2026 4:05.
 object ModuleHandPosition : ClientModule("HandPosition", ModuleCategory.VISUAL) {
-    val mainHandPosition = tree(ValueHandPosition("Main hand"))
-    val offHandPosition = tree(ValueHandPosition("Off hand"))
+    val mainHandPosition = tree(ValueHandPosition("MainHand"))
+    val offHandPosition = tree(ValueHandPosition("OffHand"))
 
-    override fun listenEvents() = false
+    override fun shouldListenEvents() = false
 }

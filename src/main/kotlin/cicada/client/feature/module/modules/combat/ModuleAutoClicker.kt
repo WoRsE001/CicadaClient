@@ -1,23 +1,22 @@
 package cicada.client.feature.module.modules.combat
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventGameLoop
-import cicada.client.event.impl.LegitClickTimingEvent
+import cicada.client.event.events.EventGameLoop
+import cicada.client.event.events.EventClickTiming
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
-import cicada.client.mixin.accessors.AccessorMinecraft
 import cicada.client.utils.client.mc
 import cicada.client.utils.math.gaussianRandom
 import cicada.client.utils.math.random
 import cicada.client.utils.time.Timer
 
 object ModuleAutoClicker : ClientModule("AutoClicker", ModuleCategory.COMBAT) {
-    private val CPS by floatRange("CPS", 14f..16f, 1f..40f)
-    private val randomType = choice("Random type")
-    private val randomTypeDefault = randomType.choice("Default")
-    private val randomTypeGaussian = randomType.choice("Gaussian").select()
+    private val CPS by floatRange("CPS", 20f..20f, 1f..40f)
+    private val randomType = choice("RandomType")
+    private val randomTypeDefault = randomType.choice("Default").select()
+    private val randomTypeGaussian = randomType.choice("Gaussian")
     private val condition = multiChoice("Condition")
-    private val whenClickMouse = condition.choice("When click mouse", true)
+    private val whenClickMouse = condition.choice("WhenClickMouse", true)
 
     private val clickTimer = Timer()
     private var time = 0f
@@ -39,10 +38,10 @@ object ModuleAutoClicker : ClientModule("AutoClicker", ModuleCategory.COMBAT) {
             }
         }
 
-        if (event is LegitClickTimingEvent) {
+        if (event is EventClickTiming) {
             repeat(clicks) {
                 mc.missTime = 0
-                (mc as AccessorMinecraft).invokeStartAttack()
+                mc.startAttack()
             }
 
             clicks = 0

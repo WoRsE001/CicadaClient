@@ -16,8 +16,8 @@ import java.math.RoundingMode
 import kotlin.math.*
 import kotlin.random.Random
 
-lateinit var lastProjectionMatrix: Matrix4f
-lateinit var lastModelViewMatrix: Matrix4f
+var lastProjectionMatrix = Matrix4f()
+var lastModelViewMatrix = Matrix4f()
 
 fun Float.roundTo(step: Float): Float {
     val bdThis = BigDecimal.valueOf(this.toDouble())
@@ -61,6 +61,8 @@ fun projectWorldToScreen(position: Vector3f, cameraPosition: Vector3f): Vector2i
 
     val px = (ndcX + 1) / 2 * window.width
     val py = (1 - ndcY) / 2 * window.height
+
+    if (px.isNaN() || py.isNaN()) return null
 
     return Vector2i(px.roundToInt(), py.roundToInt())
 }

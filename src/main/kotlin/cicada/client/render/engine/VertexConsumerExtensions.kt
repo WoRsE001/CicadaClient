@@ -1,21 +1,20 @@
 package cicada.client.render.engine
 
-import cicada.client.mixin.accessors.AccessorBufferBuilder
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import org.lwjgl.system.MemoryUtil
 
 // SCWGxD regrets everything he did. 17.05.2026 10:14.
-private fun VertexConsumer.beginElement(element: VertexFormatElement): Long {
+private fun VertexConsumer.begin(element: VertexFormatElement): Long {
     if (this !is BufferBuilder)
         throw IllegalStateException("Not a BufferBuilder!")
 
-    return (this as AccessorBufferBuilder).begin(element)
+    return this.beginElement(element)
 }
 
 fun VertexConsumer.setRounding(r1: Float, r2: Float, r3: Float, r4: Float) = apply {
-    val ptr = beginElement(ROUNDING_ELEMENT)
+    val ptr = begin(ROUNDING_ELEMENT)
 
     if (ptr != -1L) {
         MemoryUtil.memPutFloat(ptr, r1)
@@ -28,7 +27,7 @@ fun VertexConsumer.setRounding(r1: Float, r2: Float, r3: Float, r4: Float) = app
 fun VertexConsumer.setRounding(radius: Float) = setRounding(radius, radius, radius, radius)
 
 fun VertexConsumer.setDimensions(x: Float, y: Float, w: Float, h: Float) = apply {
-    val ptr = beginElement(DIMENSIONS_ELEMENT)
+    val ptr = begin(DIMENSIONS_ELEMENT)
 
     if (ptr != -1L) {
         MemoryUtil.memPutFloat(ptr, x)
@@ -39,7 +38,7 @@ fun VertexConsumer.setDimensions(x: Float, y: Float, w: Float, h: Float) = apply
 }
 
 fun VertexConsumer.setTime(t: Float) = apply {
-    val ptr = beginElement(TIME_ELEMENT)
+    val ptr = begin(TIME_ELEMENT)
 
     if (ptr != -1L) {
         MemoryUtil.memPutFloat(ptr, t)

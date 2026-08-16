@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.EventWorldChange;
+import cicada.client.event.events.EventWorldChange;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.LevelRenderer;

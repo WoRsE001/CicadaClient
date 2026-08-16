@@ -2,7 +2,7 @@ package cicada.client.rotation
 
 import cicada.client.event.Event
 import cicada.client.event.EventListener
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventTick
 import cicada.client.utils.client.nullCheck
 import cicada.client.utils.client.player
 import cicada.client.utils.rotation.gcd
@@ -49,5 +49,5 @@ object RotationHandler : EventListener {
         }
     }
 
-    override fun listenEvents() = nullCheck()
+    override fun shouldListenEvents() = nullCheck()
 }

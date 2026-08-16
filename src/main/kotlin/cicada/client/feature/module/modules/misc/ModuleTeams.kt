@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.misc
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventTick
-import cicada.client.event.impl.EventWorldChange
+import cicada.client.event.events.EventTick
+import cicada.client.event.events.EventWorldChange
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
@@ -41,8 +41,8 @@ object ModuleTeams : ClientModule("Teams", ModuleCategory.MISC) {
                 }
 
                 if (nameCheck.toggled) {
-                    val playerColorName = player.displayName?.style?.color
-                    val entityColorName = entity.displayName?.style?.color
+                    val playerColorName = player.displayName.style.color
+                    val entityColorName = entity.displayName.style.color
 
                     if (playerColorName != null && entityColorName != null && playerColorName.value == entityColorName.value) {
                         _teams += entity

@@ -37,7 +37,7 @@ abstract class ClientModule(
     init {
         registerToEvents()
         registerToKeybinds()
-        ModuleManager += this
+        Modules += this
         category += this
     }
 
@@ -59,9 +59,9 @@ abstract class ClientModule(
         }
     }
 
-    override fun onEvent(event: Event) {}
+    override fun shouldListenEvents() = toggled && nullCheck()
 
-    override fun listenEvents() = toggled && nullCheck()
+    override fun onEvent(event: Event) {}
 
     override fun onKey(action: Int) {
         if (action == 2)

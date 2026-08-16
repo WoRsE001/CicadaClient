@@ -1,11 +1,11 @@
 package cicada.client.mixin;
 
 import cicada.client.CicadaClient;
-import cicada.client.event.impl.EventGameLoop;
-import cicada.client.event.impl.LegitClickTimingEvent;
-import cicada.client.event.impl.EventTick;
+import cicada.client.event.events.EventGameLoop;
+import cicada.client.event.events.EventClickTiming;
+import cicada.client.event.events.EventTick;
 import cicada.client.feature.module.modules.player.ModuleMultiAction;
-import cicada.client.mixin.accessors.AccessorKeyMapping;
+import cicada.client.feature.module.modules.world.ModuleFastBreak;
 import cicada.client.packethandle.PacketHandler;
 import cicada.client.utils.input.FrameInput;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft {
@@ -77,13 +78,8 @@ public abstract class MixinMinecraft {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z", ordinal = 0, shift = At.Shift.BEFORE), method = "handleKeybinds")
 	private void callLegitClickTimingEvent(CallbackInfo ci) {
-		LegitClickTimingEvent.INSTANCE.call();
+		EventClickTiming.INSTANCE.call();
 	}
-
-	/*@Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
-	private void customStartAttack(CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(RaycastUtilsKt.startAttack(player.entityInteractionRange(), false));
-	}*/
 
 	@ModifyExpressionValue(method = "continueAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
 	private boolean injectMultiActionsBreakingWhileUsing(boolean original) {
@@ -98,11 +94,11 @@ public abstract class MixinMinecraft {
 			}
 
 			if (!ModuleMultiAction.mayAttackWhileUsing()) {
-				((AccessorKeyMapping) this.options.keyAttack).setClickCount(0);
+				this.options.keyAttack.clickCount = 0;
 			}
 
-			((AccessorKeyMapping) this.options.keyPickItem).setClickCount(0);
-			((AccessorKeyMapping) this.options.keyUse).setClickCount(0);
+			this.options.keyPickItem.clickCount = 0;
+			this.options.keyUse.clickCount = 0;
 		}
 
 		return false;

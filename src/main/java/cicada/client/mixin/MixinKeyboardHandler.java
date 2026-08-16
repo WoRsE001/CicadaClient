@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.KeyEvent;
+import cicada.client.event.events.EventKey;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +16,7 @@ public class MixinKeyboardHandler {
         if (Minecraft.getInstance().screen != null)
             return;
 
-        KeyEvent keyEvent = KeyEvent.INSTANCE;
+        EventKey keyEvent = EventKey.INSTANCE;
         keyEvent.setAction(action);
         keyEvent.setInput(event);
         keyEvent.call();

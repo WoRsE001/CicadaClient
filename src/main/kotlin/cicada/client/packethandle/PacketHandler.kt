@@ -1,33 +1,23 @@
 package cicada.client.packethandle
 
-import cicada.client.event.Event
-import cicada.client.event.EventListener
-import cicada.client.event.impl.RenderEvent
-import cicada.client.render.Renderer3D
-import cicada.client.render.engine.FILLED_QUAD_TYPE
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.mc
-import cicada.client.utils.client.player
-import cicada.client.utils.math.Color4f
-import cicada.client.utils.math.unaryMinus
-import net.minecraft.network.PacketListener
+import net.fabricmc.loader.impl.lib.sat4j.core.Vec
 import net.minecraft.network.protocol.Packet
-import net.minecraft.network.protocol.configuration.ClientConfigurationPacketListener
-import net.minecraft.network.protocol.game.ClientGamePacketListener
-import net.minecraft.network.protocol.game.ServerGamePacketListener
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.world.phys.Vec3
 import java.util.concurrent.CopyOnWriteArrayList
 
 // SCWGxD regrets everything he did. 06.07.2026 11:13.
 object PacketHandler {
-    private val packets = CopyOnWriteArrayList<Pair<Packet<*>, Long>>()
-    private val packetKAKAs = mutableListOf<PacketKAKA>()
+    val packets = CopyOnWriteArrayList<Pair<Packet<*>, Long>>()
+    private val packetDelayers = mutableListOf<PacketDelayer>()
 
     var delay = 0
+    var serverPos = Vec3(0.0, 0.0, 0.0)
 
-    fun registerPacketKAKA(packetKAKA: PacketKAKA) {
-        packetKAKAs += packetKAKA
+    fun registerPacketKAKA(packetDelayer: PacketDelayer) {
+        packetDelayers += packetDelayer
     }
 
     fun handlePacket(packet: Packet<*>) {
@@ -37,7 +27,7 @@ object PacketHandler {
     fun recalcDelay() {
         delay = 0
 
-        for (packetKAKA in packetKAKAs) {
+        for (packetKAKA in packetDelayers) {
             if (!packetKAKA.shouldDetain()) continue
             delay += packetKAKA.getDelay()
         }
@@ -48,8 +38,20 @@ object PacketHandler {
             return
 
         packets.removeIf {
-            if (System.currentTimeMillis() - it.second >= delay) {
-                connection.connection.send(it.first, null)
+            val packet = it.first
+            val packetTime = it.second
+
+            if (System.currentTimeMillis() - packetTime >= delay) {
+                connection.connection.send(packet, null)
+
+                if (packet is ServerboundMovePlayerPacket && packet.hasPosition()) {
+                    serverPos = Vec3(
+                        packet.getX(0.0),
+                        packet.getY(0.0),
+                        packet.getZ(0.0)
+                    )
+                }
+
                 return@removeIf true
             }
 
@@ -62,16 +64,16 @@ object PacketHandler {
         handlePackets()
     }
 
-    fun handleWithDelay(packetKAKA: PacketKAKA, delay: Int) {
+    fun handleWithDelay(packetDelayer: PacketDelayer, delay: Int) {
         this.delay = 0
 
-        for (packetKAKA1 in packetKAKAs) {
+        for (packetKAKA1 in packetDelayers) {
             if (!packetKAKA1.shouldDetain()) continue
-            if (packetKAKA1 == packetKAKA) {
+            if (packetKAKA1 == packetDelayer) {
                 this.delay += delay
                 continue
             }
-            this.delay += packetKAKA.getDelay()
+            this.delay += packetDelayer.getDelay()
         }
 
         handlePackets()

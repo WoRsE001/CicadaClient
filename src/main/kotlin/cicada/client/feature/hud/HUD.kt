@@ -6,20 +6,22 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 
 // SCWGxD regrets everything he did. 02.04.2026 11:12.
 abstract class HUD(
-    var x: Float,
-    var y: Float,
-    var w: Float,
-    var h: Float,
+    var x: Float = 0f,
+    var y: Float = 0f,
+    var w: Float = 0f,
+    var h: Float = 0f,
     name: String,
     defaultToggled: Boolean = true
-) : ToggleableConfigurable(name, defaultToggled), Renderable {
+) : ToggleableConfigurable(name, defaultToggled) {
     var isDragging = false
 
     init {
-        HUDManager += this
+        HUDs += this
     }
 
-    override fun render(graphics: GuiGraphicsExtractor) {}
+    abstract fun render(graphics: GuiGraphicsExtractor)
+
+    abstract fun renderInHUDEditor(graphics: GuiGraphicsExtractor)
 
     fun shouldRender() = toggled
 }

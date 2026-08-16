@@ -11,7 +11,7 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 
 object ModuleESP : ClientModule("ESP", ModuleCategory.VISUAL) {
-    private val entityTypeRenderer = multiChoice("Entity type").apply {
+    private val entityTypeRenderer = multiChoice("EntityType").apply {
         choice(ESPEntityTypeRenderer("Player") { it is Player && (it !is LocalPlayer || !mc.options.cameraType.isFirstPerson) })
         choice(ESPEntityTypeRenderer("Item") { it is ItemEntity })
     }

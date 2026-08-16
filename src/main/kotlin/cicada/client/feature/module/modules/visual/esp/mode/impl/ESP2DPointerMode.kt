@@ -1,7 +1,7 @@
 package cicada.client.feature.module.modules.visual.esp.mode.impl
 
 import cicada.client.event.Event
-import cicada.client.event.impl.RenderEvent
+import cicada.client.event.events.EventRender
 import cicada.client.feature.module.modules.misc.ModuleMurderMysteryHelper
 import cicada.client.feature.module.modules.visual.esp.mode.ESPMode
 import cicada.client.render.triangle
@@ -26,7 +26,7 @@ class ESP2DPointerMode : ESPMode("Pointer") {
     override val color = color("Color", Color4f(0f, 0f, 0f, 1f))
 
     override fun onEvent(event: Event, entity: Entity) {
-        if (event is RenderEvent.Gui.Post) {
+        if (event is EventRender.Gui.Post) {
             val radius = 70f
             val size = 10f
 

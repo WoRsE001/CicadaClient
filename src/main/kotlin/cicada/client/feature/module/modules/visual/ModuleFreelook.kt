@@ -20,5 +20,5 @@ object ModuleFreelook : ClientModule(
     }
 
     override fun rotate() {}
-    override fun willRotate() = listenEvents()
+    override fun willRotate() = shouldListenEvents()
 }

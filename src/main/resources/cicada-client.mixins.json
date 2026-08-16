@@ -8,11 +8,7 @@
     "MixinEntity",
     "MixinLevel",
     "MixinLivingEntity",
-    "MixinPlayer",
-    "accessors.AccessorBlockBehaviour",
-    "accessors.AccessorClientboundMoveEntityPacket",
-    "accessors.AccessorConnection",
-    "accessors.AccessorSoundEvents"
+    "MixinPlayer"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -23,10 +19,12 @@
   "client": [
     "MixinBlindnessFogEnvironment",
     "MixinCamera",
+    "MixinChatComponent",
     "MixinClientClockManager",
     "MixinClientLevel",
     "MixinClientPacketListener",
     "MixinDarknessFogEnvironment",
+    "MixinDeltaTracker$Timer",
     "MixinGameRenderer",
     "MixinGui",
     "MixinItemInHandRenderer",
@@ -41,11 +39,6 @@
     "MixinProjection",
     "MixinScreenEffectRenderer",
     "MixinWaterFogEnvironment",
-    "MixinWeatherEffectRenderer",
-    "accessors.AccessorBufferBuilder",
-    "accessors.AccessorGameRenderer",
-    "accessors.AccessorKeyMapping",
-    "accessors.AccessorLocalPlayer",
-    "accessors.AccessorMinecraft"
+    "MixinWeatherEffectRenderer"
   ]
 }

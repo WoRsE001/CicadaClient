@@ -31,6 +31,10 @@ dependencies {
 	implementation(files("libraries/FastNoise.jar"))
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/cicada-client.classtweaker")
+}
+
 processResources {
 	def version = project.version
 	inputs.property "version", version

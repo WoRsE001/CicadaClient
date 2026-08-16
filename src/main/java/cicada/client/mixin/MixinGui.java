@@ -1,7 +1,7 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.RenderEvent;
-import cicada.client.feature.hud.HUDManager;
+import cicada.client.event.events.EventRender;
+import cicada.client.feature.hud.HUDs;
 import cicada.client.feature.module.modules.visual.ModuleNoRender;
 import cicada.client.feature.module.modules.visual.ModuleOverlay;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGui {
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractCameraOverlays(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", shift = At.Shift.BEFORE), method = "extractRenderState")
     private void callRenderEvent$Gui$PRE(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        RenderEvent.Gui.Pre event = RenderEvent.Gui.Pre.INSTANCE;
+        EventRender.Gui.Pre event = EventRender.Gui.Pre.INSTANCE;
         event.setGraphics(graphics);
         event.setDeltaTracker(deltaTracker);
         event.call();
@@ -25,11 +25,11 @@ public class MixinGui {
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractSubtitleOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Z)V", shift = At.Shift.AFTER, ordinal = 0), method = "extractRenderState")
     private void callRenderEvent$Gui$POST(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-        RenderEvent.Gui.Post event = RenderEvent.Gui.Post.INSTANCE;
+        EventRender.Gui.Post event = EventRender.Gui.Post.INSTANCE;
         event.setGraphics(graphics);
         event.setDeltaTracker(deltaTracker);
         event.call();
-        HUDManager.INSTANCE.render(graphics);
+        HUDs.INSTANCE.render(graphics);
     }
 
     @ModifyExpressionValue(method = "extractCameraOverlays", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getTicksFrozen()I"))

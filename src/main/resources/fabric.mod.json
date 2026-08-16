@@ -13,9 +13,8 @@
 	"license": "CC0-1.0",
 	"icon": "assets/cicada-client/icon.png",
 	"environment": "*",
-	"entrypoints": {
-		"main": []
-	},
+    "accessWidener": "cicada-client.classtweaker",
+	"entrypoints": {},
 	"mixins": [
 		"cicada-client.mixins.json"
 	],

@@ -68,12 +68,12 @@ open class Rotation(var x: Float, var y: Float) {
 
     fun length() = hypot(x, y)
 
-    fun gazLarpit(xFactor: Float, yFactor: Float, otherRotation: Rotation) {
+    fun lerp(xFactor: Float, yFactor: Float, otherRotation: Rotation) {
         this.x = (1 - xFactor) * this.x + xFactor * otherRotation.x
         this.y = (1 - yFactor) * this.y + yFactor * otherRotation.y
     }
 
-    fun gazLarpited(xFactor: Float, yFactor: Float, otherRotation: Rotation): Rotation {
+    fun lerped(xFactor: Float, yFactor: Float, otherRotation: Rotation): Rotation {
         val factor = Rotation(xFactor, yFactor)
         val unFactor = Rotation(1 - xFactor, 1 - yFactor)
         return unFactor * this + factor * otherRotation

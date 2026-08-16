@@ -1,9 +1,8 @@
 package cicada.client.feature.module.modules.combat.attackaura
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventGameLoop
-import cicada.client.event.impl.LegitClickTimingEvent
-import cicada.client.mixin.accessors.AccessorMinecraft
+import cicada.client.event.events.EventGameLoop
+import cicada.client.event.events.EventClickTiming
 import cicada.client.setting.value.Configurable
 import cicada.client.setting.value.ToggleableConfigurable
 import cicada.client.utils.client.mc
@@ -12,17 +11,17 @@ import cicada.client.utils.math.coerceIn
 import cicada.client.utils.math.random
 import cicada.client.utils.player.canCrit
 import cicada.client.utils.player.groundTick
+import cicada.client.utils.raycast.findEntityInCrosshair
+import cicada.client.utils.rotation.rotation
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.phys.EntityHitResult
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 // SCWGxD regrets everything he did. 19.04.2026 15:22.
 object AttackAuraAttacker : ToggleableConfigurable("Attacker", true) {
-    private val maxClicksPerSecond by floatRange("Max clicks per second", 20f..20f, 0f..40f)
-    private val recalculateIn by floatRange("Recalculate in", 0f..0f, 0f..40f, "clicks")
+    private val maxClicksPerSecond by floatRange("MaxClicksPerSecond", 20f..20f, 0f..40f)
+    private val recalculateIn by floatRange("RecalculateIn", 0f..0f, 0f..40f, "clicks")
 
-    object AttackConditions : Configurable("Attack conditions") {
+    object ClickConditions : Configurable("ClickConditions") {
         abstract class Condition(
             name: String,
             defaultToggled: Boolean
@@ -31,7 +30,7 @@ object AttackAuraAttacker : ToggleableConfigurable("Attacker", true) {
         }
 
         object Crit : Condition("Crit", false) {
-            val ignoreWhileOnGround by boolean("Ignore while on ground", false)
+            val ignoreWhileOnGround by boolean("IgnoreWhileOnGround", false)
             val groundTicks by int("Ground ticks", 2, 1..10).visible { ignoreWhileOnGround }
 
             override fun shouldAttack(target: LivingEntity) = (
@@ -41,41 +40,34 @@ object AttackAuraAttacker : ToggleableConfigurable("Attacker", true) {
                     ) || player.canCrit()
         }
 
-        object Distance : Condition("Distance", false) {
-            val preAttackRange by float("Pre attack range", 6f, 0f..10f)
-
-            override fun shouldAttack(target: LivingEntity) =
-                player.eyePosition
-                    .coerceIn(target.boundingBox)
-                    .distanceTo(player.eyePosition) <= max(preAttackRange, attackRange)
-
-        }
-
-        object ItemCooldown : Condition("Item cooldown", false) {
-            val itemCooldown by float("Item cooldown", 0.9f, 0f..1f)
+        object ItemCooldown : Condition("ItemCooldown", false) {
+            val itemCooldown by float("ItemCooldown", 0.9f, 0f..1f)
 
             override fun shouldAttack(target: LivingEntity) = player.getAttackStrengthScale(0.5f) > itemCooldown
         }
 
+        object Range : Condition("Range", false) {
+            val range by float("Range", 6f, 0f..10f)
+
+            override fun shouldAttack(target: LivingEntity) =
+                player.eyePosition.coerceIn(target.boundingBox).distanceTo(player.eyePosition) <= range
+        }
+
         object RayCast : Condition("RayCast", true) {
-            val onlyOnEntity by boolean("Only on entity", false)
-            val onlyOnTarget by boolean("Only on target", false).visible { onlyOnEntity }
-            // val xFOV by float("X FOX", 20f, 0f..180f).visible { onlyOnTarget }
-            // val yFOV by float("Y FOX", 20f, 0f..180f).visible { onlyOnTarget }
+            val onlyOnEntity by boolean("OnlyOnEntity", false)
+            val onlyOnTarget by boolean("OnlyOnTarget", false).visible { onlyOnEntity }
 
             override fun shouldAttack(target: LivingEntity): Boolean {
                 if (!onlyOnEntity) return true
-                val hitResult = mc.hitResult ?: return false
-                if (hitResult !is EntityHitResult) return false
-                if (onlyOnTarget && hitResult.entity != target) return false
-                return true
+                val hitResult = findEntityInCrosshair(67.0, player.rotation()) ?: return false
+                return !(onlyOnTarget && hitResult.entity != target)
             }
         }
 
         init {
             tree(Crit)
-            tree(Distance)
             tree(ItemCooldown)
+            tree(Range)
             tree(RayCast)
         }
 
@@ -89,8 +81,8 @@ object AttackAuraAttacker : ToggleableConfigurable("Attacker", true) {
         }
     }
 
-    private val attackConditions = tree(AttackConditions)
-    private val attackRange by float("Attack range", 3f, 0f..6f)
+    private val clickConditions = tree(ClickConditions)
+    private val attackRange by float("AttackRange", 3f, 0f..6f)
 
     private var clickDelay = 0
     private var lastClickTime = 0L
@@ -104,16 +96,16 @@ object AttackAuraAttacker : ToggleableConfigurable("Attacker", true) {
                 clicksBeforeRecalculation = recalculateIn.random().roundToInt()
             }
 
-            if (attackConditions.shouldAttack(target) && System.currentTimeMillis() - lastClickTime >= clickDelay) {
+            if (clickConditions.shouldAttack(target) && System.currentTimeMillis() - lastClickTime >= clickDelay) {
                 clicks++
                 lastClickTime = System.currentTimeMillis()
                 clicksBeforeRecalculation--
             }
         }
 
-        if (event is LegitClickTimingEvent) {
+        if (event is EventClickTiming) {
             repeat(clicks) {
-                (mc as AccessorMinecraft).invokeStartAttack()
+                mc.startAttack()
             }
 
             clicks = 0

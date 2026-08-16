@@ -1,6 +1,6 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.SlowDownEvent;
+import cicada.client.event.events.EventSlowDown;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -32,15 +32,15 @@ public class MixinPlayer {
 
         Vec3 motion = player.getDeltaMovement().multiply(1 / 0.6, 1, 1 / 0.6);
 
-        SlowDownEvent.INSTANCE.setType(SlowDownEvent.Type.Hit);
-        SlowDownEvent.INSTANCE.setSprint(false);
-        SlowDownEvent.INSTANCE.setSlowDown(0.6f);
-        SlowDownEvent.INSTANCE.call();
+        EventSlowDown.INSTANCE.setType(EventSlowDown.Type.Hit);
+        EventSlowDown.INSTANCE.setSprint(false);
+        EventSlowDown.INSTANCE.setSlowDown(0.6f);
+        EventSlowDown.INSTANCE.call();
         player.setDeltaMovement(motion.multiply(
-                SlowDownEvent.INSTANCE.getSlowDown(),
+                EventSlowDown.INSTANCE.getSlowDown(),
                 1.0,
-                SlowDownEvent.INSTANCE.getSlowDown()
+                EventSlowDown.INSTANCE.getSlowDown()
         ));
-        player.setSprinting(lastSprint && SlowDownEvent.INSTANCE.getSprint());
+        player.setSprinting(lastSprint && EventSlowDown.INSTANCE.getSprint());
     }
 }

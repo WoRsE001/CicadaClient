@@ -1,6 +1,8 @@
 package cicada.client.mixin;
 
-import cicada.client.event.impl.AttackEvent;
+import cicada.client.event.events.EventAttack;
+import cicada.client.feature.module.modules.world.ModuleFastBreak;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -11,27 +13,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MultiPlayerGameMode.class)
 public class MixinMultiPlayerGameMode {
-    @Inject(at = @At("HEAD"), method = "attack")
+    @Inject(at = @At("HEAD"), method = "attack", cancellable = true)
     private void callAttackEvent$Pre(Player player, Entity entity, CallbackInfo ci) {
-        AttackEvent.Pre event = AttackEvent.Pre.INSTANCE;
+        EventAttack.Pre event = EventAttack.Pre.INSTANCE;
         event.setPlayer(player);
         event.setTarget(entity);
         event.call();
+        if (event.getCanceled()) ci.cancel();
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;ensureHasSentCarriedItem()V", shift = At.Shift.AFTER), method = "attack")
-    private void callAttackEvent$BeforeAttackPacket(Player player, Entity entity, CallbackInfo ci) {
-        AttackEvent.BeforeAttackPacket event = AttackEvent.BeforeAttackPacket.INSTANCE;
-        event.setPlayer(player);
-        event.setTarget(entity);
-        event.call();
-    }
+    @ModifyExpressionValue(method = "startDestroyBlock", at = @At(value = "CONSTANT", args = "intValue=5"))
+    private int noDestroyDelay(int original) {
+        ModuleFastBreak fastBreak = ModuleFastBreak.INSTANCE;
 
-    @Inject(at = @At(value = "TAIL"), method = "attack")
-    private void callAttackEvent$Post(Player player, Entity entity, CallbackInfo ci) {
-        AttackEvent.Post event = AttackEvent.Post.INSTANCE;
-        event.setPlayer(player);
-        event.setTarget(entity);
-        event.call();
+        if (fastBreak.shouldFastBreak()) {
+            return fastBreak.getBreakDelay();
+        }
+
+        return original;
     }
 }

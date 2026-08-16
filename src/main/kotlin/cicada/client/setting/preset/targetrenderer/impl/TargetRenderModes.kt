@@ -2,7 +2,7 @@ package cicada.client.setting.preset.targetrenderer.impl
 
 import cicada.client.CicadaClient
 import cicada.client.event.Event
-import cicada.client.event.impl.RenderEvent
+import cicada.client.event.events.EventRender
 import cicada.client.render.image
 import cicada.client.setting.preset.targetrenderer.TargetRenderMode
 import cicada.client.utils.client.mc
@@ -16,7 +16,7 @@ class TargetRender2DRectMode : TargetRenderMode("2D rect") {
     private val size by int("Size", 150, 1..500)
 
     override fun render(event: Event, target: Entity) {
-        if (event !is RenderEvent.Gui.Post)
+        if (event !is EventRender.Gui.Post)
             return
 
         val graphics = event.graphics

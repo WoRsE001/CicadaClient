@@ -40,7 +40,7 @@ object SettingScreen : net.minecraft.client.gui.screens.Screen(Component.literal
     }
 
     override fun onClose() {
-        ConfigManager.save(ConfigManager.defaultConfig)
+        ConfigManager.saveDefault()
         super.onClose()
     }
 

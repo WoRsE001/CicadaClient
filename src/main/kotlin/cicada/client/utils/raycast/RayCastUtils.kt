@@ -1,121 +1,56 @@
 package cicada.client.utils.raycast
 
-import cicada.client.mixin.accessors.AccessorLocalPlayer
-import net.minecraft.client.Minecraft
-import net.minecraft.client.player.LocalPlayer
-import net.minecraft.core.component.DataComponents
-import net.minecraft.world.InteractionHand
+import cicada.client.rotation.Rotation
+import cicada.client.utils.client.mc
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntitySelector
+import net.minecraft.world.entity.projectile.ProjectileUtil
+import net.minecraft.world.level.ClipContext
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.EntityHitResult
-import net.minecraft.world.phys.HitResult
+import java.util.function.Predicate
 
-// SCWGxD regrets everything he did. 17.06.2026 17:05.
-fun Minecraft.customStartAttack(entityInteractRange: Double): Boolean {
-    val player = player
-    if (level == null || player == null)
-        return false
+fun Entity.findEntityInCrosshair(
+    range: Double,
+    rotation: Rotation,
+    predicate: Predicate<Entity>? = null,
+): EntityHitResult? {
+    val cameraVec = eyePosition
+    val rotationVec = rotation.directionVector
 
-    if (missTime > 0 || player.isHandsBusy)
-        return false
+    val vec3d3 = cameraVec.add(rotationVec.x * range, rotationVec.y * range, rotationVec.z * range)
+    val box = boundingBox.expandTowards(rotationVec.scale(range)).inflate(1.0, 1.0, 1.0)
 
-    val heldItem = player.getItemInHand(InteractionHand.MAIN_HAND)
-
-    if (!heldItem.isItemEnabled(level!!.enabledFeatures()) || player.cannotAttackWithItem(heldItem, 0))
-        return false
-
-    val piercingWeapon = heldItem.get(DataComponents.PIERCING_WEAPON)
-
-    if (piercingWeapon != null) {
-        gameMode!!.piercingAttack(piercingWeapon)
-        player.swing(InteractionHand.MAIN_HAND)
-        return true
-    }
-
-    val hitResult = player.rayCastHitResult(cameraEntity!!, 1f, entityInteractRange)
-    var endAttack = false
-
-    if (hitResult == null) {
-        if (gameMode!!.hasMissTime()) {
-            missTime = 10
-        }
-
-        return false
-    }
-
-    if (gameMode!!.isSpectator) {
-        if (hitResult is EntityHitResult) {
-            gameMode!!.spectate(hitResult.entity)
-        }
-
-        return true
-    }
-
-    when (hitResult.type) {
-        HitResult.Type.ENTITY -> {
-            val customItemRange = heldItem.get(DataComponents.ATTACK_RANGE)
-
-            if (customItemRange == null || customItemRange.isInRange(player, hitResult.getLocation())) {
-                gameMode!!.attack(player, (hitResult as EntityHitResult).entity)
-            }
-        }
-
-        HitResult.Type.BLOCK -> {
-            val blockHit = hitResult as BlockHitResult
-            val pos = blockHit.blockPos
-            if (!level!!.getBlockState(pos).isAir) {
-                gameMode!!.startDestroyBlock(pos, blockHit.direction)
-                if (level!!.getBlockState(pos).isAir) {
-                    endAttack = true
-                }
-            }
-        }
-
-        HitResult.Type.MISS -> {
-            if (gameMode!!.hasMissTime()) {
-                missTime = 10
-            }
-
-            player.resetAttackStrengthTicker()
-        }
-    }
-
-    player.swing(InteractionHand.MAIN_HAND)
-
-    return endAttack
-}
-
-fun LocalPlayer.rayCastHitResult(
-    cameraEntity: Entity,
-    a: Float,
-    entityInteractRange: Double = entityInteractionRange()
-): HitResult? {
-    val itemStack = activeItem
-    val itemAttackRange = itemStack.get(DataComponents.ATTACK_RANGE)
-    val blockInteractionRange = blockInteractionRange()
-    var hitResult: HitResult? = null
-
-    if (itemAttackRange != null) {
-        hitResult = itemAttackRange.getClosesetHit(cameraEntity, a, EntitySelector.CAN_BE_PICKED)
-
-        if (hitResult is BlockHitResult) {
-            hitResult = (this as AccessorLocalPlayer).invokeFilterHitResult(
-                hitResult,
-                cameraEntity.getEyePosition(a),
-                blockInteractionRange
-            )
-        }
-    }
-
-    if (hitResult == null || hitResult.type == HitResult.Type.MISS) {
-        hitResult = (this as AccessorLocalPlayer).invokePick(
-            cameraEntity,
-            blockInteractionRange,
-            entityInteractRange,
-            a
-        )
-    }
+    val hitResult = ProjectileUtil.getEntityHitResult(
+        this,
+        cameraVec,
+        vec3d3,
+        box,
+        if (predicate != null) EntitySelector.CAN_BE_PICKED.or(predicate) else EntitySelector.CAN_BE_PICKED,
+        range * range
+    )
 
     return hitResult
+}
+
+fun findEntityInCrosshair(
+    range: Double,
+    rotation: Rotation,
+    predicate: Predicate<Entity>? = null,
+): EntityHitResult? = mc.cameraEntity?.findEntityInCrosshair(range, rotation, predicate)
+
+fun Entity.rayCast(
+    rotation: Rotation,
+    range: Float
+): BlockHitResult {
+    val from = this.eyePosition
+    val viewVector = rotation.directionVector
+    val to = from.add(viewVector.x * range, viewVector.y * range, viewVector.z * range);
+    return this.level().clip(
+        ClipContext(
+            from, to,
+            ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE,
+            this
+        )
+    )
 }

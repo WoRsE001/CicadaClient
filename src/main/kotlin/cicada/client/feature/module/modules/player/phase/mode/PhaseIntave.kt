@@ -1,9 +1,9 @@
 package cicada.client.feature.module.modules.player.phase.mode
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventBlockShape
-import cicada.client.event.impl.MovementInputEvent
-import cicada.client.event.impl.EventTick
+import cicada.client.event.events.EventBlockShape
+import cicada.client.event.events.EventMovementInput
+import cicada.client.event.events.EventTick
 import cicada.client.setting.value.ChoiceValue
 import cicada.client.utils.client.connection
 import cicada.client.utils.client.mc
@@ -15,7 +15,7 @@ import net.minecraft.world.phys.shapes.Shapes
 
 // SCWGxD regrets everything he did. 28.06.2026 7:22.
 object PhaseIntave : ChoiceValue.Choice("Intave") {
-    private val packetCount by int("Packet count", 5, 0..10)
+    private val packetCount by int("PacketCount", 5, 0..10)
 
     override fun onEnable() {
 
@@ -41,13 +41,13 @@ object PhaseIntave : ChoiceValue.Choice("Intave") {
             }
         }
 
-        if (event is MovementInputEvent) {
+        if (event is EventMovementInput) {
             /*event.sneak = true
             event.jump = false*/
         }
 
         if (event is EventBlockShape) {
-            if (event.pos.y >= player.y || mc.options.keyShift.isDown && player.onGround()) {
+            if ((event.pos.y >= player.y && player.verticalCollision) || mc.options.keyShift.isDown && player.onGround()) {
                 EventBlockShape.shape = Shapes.empty()
             }
         }

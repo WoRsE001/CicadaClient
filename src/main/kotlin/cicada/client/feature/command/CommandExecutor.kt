@@ -2,7 +2,7 @@ package cicada.client.feature.command
 
 import cicada.client.event.Event
 import cicada.client.event.EventListener
-import cicada.client.event.impl.ChatMessageEvent
+import cicada.client.event.events.EventChatMessage
 import cicada.client.utils.client.displayMessage
 import cicada.client.utils.client.mc
 import cicada.client.utils.client.nullCheck
@@ -16,7 +16,7 @@ object CommandExecutor : EventListener {
     }
 
     override fun onEvent(event: Event) {
-        if (event is ChatMessageEvent.Send) {
+        if (event is EventChatMessage.Send) {
             val prefix = CommandManager.prefix
 
             if (!event.content.startsWith(prefix)) return
@@ -45,5 +45,5 @@ object CommandExecutor : EventListener {
         }
     }
 
-    override fun listenEvents() = nullCheck()
+    override fun shouldListenEvents() = nullCheck()
 }

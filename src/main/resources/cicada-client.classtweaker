@@ -1,0 +1,9 @@
+classTweaker v1 official
+
+accessible method net/minecraft/client/Minecraft startAttack ()Z
+accessible method net/minecraft/client/Minecraft startUseItem ()V
+accessible method net/minecraft/world/entity/player/Player canCriticalAttack (Lnet/minecraft/world/entity/Entity;)Z
+accessible method com/mojang/blaze3d/vertex/BufferBuilder beginElement (Lcom/mojang/blaze3d/vertex/VertexFormatElement;)J
+accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyProgress F
+accessible field net/minecraft/world/level/block/state/BlockBehaviour hasCollision Z
+accessible field net/minecraft/client/KeyMapping clickCount I

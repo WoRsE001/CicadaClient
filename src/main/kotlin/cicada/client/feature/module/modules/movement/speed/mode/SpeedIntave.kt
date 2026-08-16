@@ -1,8 +1,8 @@
 package cicada.client.feature.module.modules.movement.speed.mode
 
 import cicada.client.event.Event
-import cicada.client.event.impl.EventSendInput
-import cicada.client.event.impl.PlayerStateUpdateEvent
+import cicada.client.event.events.EventSendInput
+import cicada.client.event.events.EventPlayerStateUpdate
 import cicada.client.setting.value.ChoiceValue
 import cicada.client.utils.client.level
 import cicada.client.utils.client.player
@@ -25,7 +25,7 @@ object SpeedIntave : ChoiceValue.Choice("Intave") {
             }
         }
 
-        if (event is PlayerStateUpdateEvent.Pre) {
+        if (event is EventPlayerStateUpdate.Pre) {
             if (level.getBlockState(player.blockPosition().offset(0, -1, 0)).isAir) {
                 player.deltaMovement = player.deltaMovement.multiply(1.043, 1.0, 1.043)
             }

@@ -1,9 +1,9 @@
 package cicada.client.feature.module.modules.misc
 
 import cicada.client.event.Event
-import cicada.client.event.impl.AttackEvent
-import cicada.client.event.impl.EventTick
-import cicada.client.event.impl.EventWorldChange
+import cicada.client.event.events.EventAttack
+import cicada.client.event.events.EventTick
+import cicada.client.event.events.EventWorldChange
 import cicada.client.feature.module.ClientModule
 import cicada.client.feature.module.ModuleCategory
 import cicada.client.utils.client.level
@@ -18,13 +18,13 @@ object ModuleMurderMysteryHelper : ClientModule(
     "MurderMysteryHelper",
     ModuleCategory.MISC
 ) {
-    val rolesHighlight = toggleableGroup("Roles highlight", false)
-    val murdersColor = rolesHighlight.color("Murders color", Color4f(1f, 0f, 0f, 1f))
-    val detectivesColor = rolesHighlight.color("Detectives color", Color4f(0f, 1f, 0f, 1f))
+    val rolesHighlight = toggleableGroup("RolesHighlight", false)
+    val murdersColor = rolesHighlight.color("MurdersColor", Color4f(1f, 0f, 0f, 1f))
+    val detectivesColor = rolesHighlight.color("DetectivesColor", Color4f(0f, 1f, 0f, 1f))
 
-    private val silentKill = toggleableGroup("Silent kill", false)
-    private val staticSlot by silentKill.boolean("Static slot", false)
-    private val slot by silentKill.int("Static slot", 0, 0..8).visible { staticSlot }
+    private val silentKill = toggleableGroup("SilentKill", false)
+    private val staticSlot by silentKill.boolean("StaticSlot", false)
+    private val slot by silentKill.int("StaticSlot", 0, 0..8).visible { staticSlot }
 
     private val _murders = mutableListOf<Player>()
     private val _detectives = mutableListOf<Player>()
@@ -38,7 +38,7 @@ object ModuleMurderMysteryHelper : ClientModule(
     }
 
     override fun onEvent(event: Event) {
-        if (event is AttackEvent.Pre) {
+        if (event is EventAttack.Pre) {
             val slot = if (staticSlot) slot else getSwordSlot()
 
             stashSlot = -1
@@ -51,7 +51,7 @@ object ModuleMurderMysteryHelper : ClientModule(
             player.inventory.setSelectedSlot(slot)
         }
 
-        if (event is AttackEvent.Post) {
+        if (event is EventAttack.Post) {
             if (stashSlot != -1)
                 player.inventory.setSelectedSlot(stashSlot)
         }
